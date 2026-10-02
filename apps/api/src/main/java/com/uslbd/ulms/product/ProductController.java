@@ -37,7 +37,9 @@ class ProductController {
                                        Authentication auth) {
         for (String required : List.of("code", "nameEn", "minAmountMinor", "maxAmountMinor",
                                        "tenorMinMonths", "tenorMaxMonths", "rateBp")) {
-            if (!(body.get(required) instanceof Number) && !(required.equals("nameEn") && body.get(required) instanceof String)) {
+            // code/nameEn are strings; the numeric fields must be Numbers
+            if (!(body.get(required) instanceof Number)
+                    && !(List.of("code", "nameEn").contains(required) && body.get(required) instanceof String)) {
                 throw new org.springframework.web.server.ResponseStatusException(
                         HttpStatus.UNPROCESSABLE_ENTITY, required + " is required");
             }

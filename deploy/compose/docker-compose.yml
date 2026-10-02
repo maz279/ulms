@@ -30,9 +30,11 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set in .env}
       KC_DB: dev-file
       KC_HTTP_ENABLED: "true"
-      # Tokens carry issuer http://keycloak:8080/... which the api can validate
-      # on the compose network (host access stays via the mapped port below).
-      KC_HOSTNAME: http://keycloak:8080
+      # Q2.2 first-boot finding: the browser PKCE flow lives on the HOST
+      # (localhost:8082) while the api validates on the compose network — a
+      # container-internal hostname here breaks the browser redirect. Pin the
+      # EXTERNAL url; the api fetches JWKS over the internal name (see api).
+      KC_HOSTNAME: http://localhost:8082
     volumes:
       - ../seed/realm-ulms.json:/opt/keycloak/data/import/realm-ulms.json:ro
     ports: ["8082:8080"]
@@ -102,7 +104,10 @@ services:
       ULMS_DB_URL: jdbc:postgresql://postgres:5432/ulms
       ULMS_DB_USER: ulms
       ULMS_DB_PASSWORD: ${ULMS_DB_PASSWORD}
-      ULMS_OIDC_ISSUER: http://keycloak:8080/realms/ulms
+      ULMS_OIDC_ISSUER: http://localhost:8082/realms/ulms
+      # issuer (token iss claim) is the EXTERNAL url; JWKS travels the compose
+      # network — jwk-set-uri overrides the discovery fetch location
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/ulms/protocol/openid-connect/certs
       FINERACT_URL: https://fineract:8083/fineract-provider/api/v1
       FINERACT_USER: ${FINERACT_USER}
       FINERACT_PASSWORD: ${FINERACT_PASSWORD}
