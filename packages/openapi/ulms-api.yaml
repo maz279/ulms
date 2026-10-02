@@ -1,0 +1,1754 @@
+openapi: 3.0.3
+info:
+  title: ULMS API
+  version: 1.7.0
+  description: |
+    Unisoft Loan Management System — public API (source of truth per PLANNING/05).
+    Conventions: problem+json errors (stable `code`, registry docs/errors.md),
+    Idempotency-Key on creating POSTs (replays return the original response
+    with `Idempotent-Replay: true`, 48h window), list responses use the
+    {data, meta} envelope, money is integer minor units, bilingual objects
+    {en,bn} render ONE per request.
+    Mutating routes are role-gated (403 ULMS-FORBIDDEN) — realm roles per 06 §1;
+    the approval act() ladder-level check maps roles per the band table.
+    v1.2 (P2): assessments (CIB/score/DBR/collateral), disbursements with dual
+    authorization, compliance EOD/classification/calculator.
+    v1.2.1: CIB file channel + 24-month repayment track + raw kept only in the
+    encrypted object store (06 §5) + approver inbox.
+    v1.3: optimistic concurrency (PATCH version ⇒ 409 ULMS-STATE-0002),
+    collateral valuation history, application detail incl. workflow state,
+    ?officer= list filter, CIB retry×5 + RB-05 alert on outage.
+    v1.4 (P3): payments + rails (intent→redirect→HMAC webhook idempotent by
+    UTR), schedules/statements (JSON+CSV), settle quotes, reschedules,
+    collections (worklist/actions/PTP/field tasks), tax certificates,
+    borrower portal projections.
+    v1.4.1: ESCALATE approval action, dunning-ladder timers (queue/run/
+    resolve), legal-case CRUD, collections interest waiver (Fineract
+    adjustment), portal statement CSV download.
+    v1.5.0 (P4/G4): regulatory returns pack — CL-1..CL-5 / CIB-S / CIB-C /
+    CAR / EDW / ECL / LLF generation with WORM staging + sha256, preparer→
+    checker→compliance sign-off chain, submission calendar, IFRS-9 ECL
+    runway (snapshot + board), Basel CAR inputs, fee charges, and the
+    portfolio reporting read model.
+    v1.5.1 (P4 audit-G): provision JV to the Fineract GL (zero-sum, idempotent
+    per run-date, drift ⇒ 409 + alert), compliance sign-off must be a
+    DIFFERENT officer than the checker, packs now carry their WORM
+    storage_key, and report definitions (the writer slice).
+servers:
+  - url: http://localhost:8081/api/v1
+    description: local compose
+tags: [{name: platform}, {name: customers}, {name: applications}, {name: approvals}, {name: assessments}, {name: disbursements}, {name: compliance}, {name: loans}, {name: payments}, {name: collections}, {name: portal}]
+security: [{bearerAuth: []}]
+paths:
+  /actuator/health:
+    get:
+      tags: [platform]
+      summary: Liveness/readiness (public)
+      security: []
+      responses: { "200": { description: ok } }
+  /applications:
+    get:
+      tags: [applications]
+      summary: List applications (pipeline; ?stage=&branch= filters)
+      parameters:
+        - {name: stage, in: query, schema: {type: string}}
+        - {name: branch, in: query, schema: {type: string}}
+        - {name: page, in: query, schema: {type: integer, default: 1}}
+        - {name: size, in: query, schema: {type: integer, default: 25, maximum: 100}}
+      responses:
+        "200":
+          description: paged list envelope
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ApplicationList"}
+    post:
+      tags: [applications]
+      summary: Draft application (wizard autosave creates the server draft); submit is a separate action
+      parameters:
+        - {name: Idempotency-Key, in: header, required: true, schema: {type: string, format: uuid}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/ApplicationDraft"}
+      responses:
+        "201":
+          description: "drafted (replays carry Idempotent-Replay: true)"
+          headers:
+            Idempotent-Replay: {schema: {type: string, enum: ["true"]}}
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Application"}
+  /applications/{id}:
+    get:
+      tags: [applications]
+      summary: Application detail incl. workflow state (03 — node/phase/SLA inline)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: detail, content: {application/json: {schema: {$ref: "#/components/schemas/Application"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+    patch:
+      tags: [applications]
+      summary: Autosave PATCH (07 §4) — only while stage=SCREENING; optional body `version` = optimistic lock (05 §4, stale ⇒ 409 ULMS-STATE-0002)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/DraftPatch"}
+      responses:
+        "200": {description: updated, content: {application/json: {schema: {$ref: "#/components/schemas/Application"}}}}
+        "409": {$ref: "#/components/responses/Problem"}
+  /applications/{id}/submit:
+    post:
+      tags: [applications]
+      summary: Submit → CIB pull → server-side scoring (DBR + versioned scorecard; AUTO_DECLINE rolls back to SCREENING) → CPV
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: stage CPV (proceed) or SCREENING (auto-declined — score persisted)}
+        "404": {$ref: "#/components/responses/Problem"}
+        "409": {$ref: "#/components/responses/Problem"}
+        "422": {$ref: "#/components/responses/Problem"}
+  /applications/{id}/cpv:
+    post:
+      tags: [applications]
+      summary: CPV gate (03) — PASS starts the approval ladder; FAIL rolls back to SCREENING
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [passed], properties: {passed: {type: boolean}, notes: {type: string}}}
+      responses:
+        "200": {description: stage APPROVAL (pass) or SCREENING (fail), content: {application/json: {schema: {$ref: "#/components/schemas/Application"}}}}
+        "409": {$ref: "#/components/responses/Problem"}
+  /applications/{id}/documents:
+    get:
+      tags: [applications]
+      summary: List application documents (metadata + checksums + scan status)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200":
+          description: list envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: {type: array, items: {$ref: "#/components/schemas/ApplicationDocument"}}
+                  meta: {$ref: "#/components/schemas/Meta"}
+    post:
+      tags: [applications]
+      summary: Upload document (multipart → object store; sha256 + virus-scan hook; identical (type,sha256) is idempotent)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}, {name: docType, in: query, required: true, schema: {type: string}}]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema: {type: object, properties: {file: {type: string, format: binary}}}
+      responses:
+        "201":
+          description: stored (scanStatus CLEAN or quarantined INFECTED)
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ApplicationDocument"}
+  /approvals/ladder:
+    get:
+      tags: [approvals]
+      summary: The 7-level approval ladder (bank-tunable config rows)
+      responses:
+        "200":
+          description: list envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: {type: array, items: {$ref: "#/components/schemas/LadderRung"}}
+                  meta: {$ref: "#/components/schemas/Meta"}
+  /approvals/my-inbox:
+    get:
+      tags: [approvals]
+      summary: Approver inbox (03) — OPEN tasks whose ladder level matches the caller's realm roles (admin sees all)
+      responses:
+        "200":
+          description: list envelope
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: {type: array, items: {$ref: "#/components/schemas/InboxItem"}}
+                  meta: {$ref: "#/components/schemas/Meta"}
+  /approvals/current/{applicationId}:
+    get:
+      tags: [approvals]
+      summary: Current approval task (node, role, phase, SLA)
+      parameters: [{name: applicationId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: current task, content: {application/json: {schema: {$ref: "#/components/schemas/ApprovalTask"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /approvals/{taskId}/act:
+    post:
+      tags: [approvals]
+      summary: Act on a task (APPROVE|REJECT|RETURN); actor = JWT sub (body actor ignored); caller's realm role must cover the ladder level; maker-checker enforced on dual nodes; completion creates the Fineract loan
+      parameters: [{name: taskId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [action], properties: {action: {type: string, enum: [APPROVE, REJECT, RETURN]}, actor: {type: string, description: ignored — audited actor is the JWT sub}, remark: {type: string}}}
+      responses:
+        "200":
+          description: outcome
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/ActResult"}
+        "403": {$ref: "#/components/responses/Problem"}
+        "404": {$ref: "#/components/responses/Problem"}
+        "409": {$ref: "#/components/responses/Problem"}
+  /customers:
+    get:
+      tags: [customers]
+      summary: List customers (paginated, branch-scoped by token)
+      parameters:
+        - {name: page, in: query, schema: {type: integer, default: 1}}
+        - {name: size, in: query, schema: {type: integer, default: 25, maximum: 100}}
+      responses:
+        "200":
+          description: page of customers
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/CustomerPage"}
+    post:
+      tags: [customers]
+      summary: Create customer (creates Fineract client via adapter; NID stored masked; audit CUSTOMER_CREATED)
+      parameters:
+        - {name: Idempotency-Key, in: header, required: true, schema: {type: string, format: uuid}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/CustomerCreate"}
+            examples:
+              retail:
+                value: {nameEn: "Md. Rafiqul Islam", nameBn: "মোঃ রফিকুল ইসলাম", segment: RETAIL, mobile: "+8801712345678", branchCode: "BR-001"}
+      responses:
+        "201":
+          description: "created (replays carry Idempotent-Replay: true)"
+          headers:
+            Idempotent-Replay: {schema: {type: string, enum: ["true"]}}
+          content:
+            application/json:
+              schema: {$ref: "#/components/schemas/Customer"}
+        "422": {$ref: "#/components/responses/Problem"}
+  /customers/{idOrCif}:
+    get:
+      tags: [customers]
+      summary: Customer 360 aggregate (accepts UUID or CIF number; applications + kycChecks + screeningHits)
+      parameters: [{name: idOrCif, in: path, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: 360 view, content: {application/json: {schema: {$ref: "#/components/schemas/Customer360"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /customers/{id}/kyc-refresh:
+    post:
+      tags: [customers]
+      summary: NIDW e-KYC refresh (mock adapter in P1); every attempt appends kyc_check history; gateway ERROR parks at PENDING (officer fallback)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [nid, dob], properties: {nid: {type: string}, dob: {type: string, format: date}}}
+      responses:
+        "200": {description: customer with new kycStatus, content: {application/json: {schema: {$ref: "#/components/schemas/Customer"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /customers/{id}/screen:
+    post:
+      tags: [customers]
+      summary: Sanctions/PEP screening hook (06 §8) — hits persist and surface for compliance review; P1 default list is empty (CLEAR)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: screening result, content: {application/json: {schema: {$ref: "#/components/schemas/ScreeningResult"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /assessments/cib/file:
+    post:
+      tags: [assessments]
+      summary: Monthly SFTP file channel (11 §1 parseFile) — same parser as real-time; deduped by (cif, period, file); raw stored encrypted (06 §5)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [cif, period, fileId, raw], properties: {cif: {type: string}, period: {type: string, description: YYYY-MM}, fileId: {type: string}, raw: {type: string, description: fixed-width file body}}}
+      responses:
+        "200": {description: pull status, content: {application/json: {schema: {$ref: "#/components/schemas/CibPull"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /assessments/cib/{cif}:
+    post:
+      tags: [assessments]
+      summary: CIB pull (11 §1 — mock real-time in P2; dedupe by cif/period/file; malformed rows quarantined)
+      parameters: [{name: cif, in: path, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: pull status, content: {application/json: {schema: {$ref: "#/components/schemas/CibPull"}}}}
+    get:
+      tags: [assessments]
+      summary: Latest parsed report + facilities (CIB viewer)
+      parameters: [{name: cif, in: path, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: detail, content: {application/json: {schema: {$ref: "#/components/schemas/CibDetail"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /assessments/{applicationId}/score:
+    post:
+      tags: [assessments]
+      summary: (Re)run assessment — server-computed DBR (income + bureau installments + EMI oracle) + versioned scorecard
+      parameters: [{name: applicationId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AssessmentFacts"}
+      responses:
+        "200": {description: outcome, content: {application/json: {schema: {$ref: "#/components/schemas/Score"}}}}
+        "422": {$ref: "#/components/responses/Problem"}
+    get:
+      tags: [assessments]
+      summary: Latest stored score
+      parameters: [{name: applicationId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: score, content: {application/json: {schema: {$ref: "#/components/schemas/Score"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /assessments/{applicationId}/dbr:
+    post:
+      tags: [assessments]
+      summary: DBR-only computation with the policy breakdown (income + bureau installments + EMI oracle)
+      parameters: [{name: applicationId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {$ref: "#/components/schemas/AssessmentFacts"}
+      responses:
+        "200": {description: breakdown, content: {application/json: {schema: {$ref: "#/components/schemas/DbrBreakdown"}}}}
+        "422": {$ref: "#/components/responses/Problem"}
+  /assessments/{applicationId}/collateral:
+    post:
+      tags: [assessments]
+      summary: Add collateral (valuation + insurance tracking)
+      parameters: [{name: applicationId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [type, valueMinor], properties: {type: {type: string, enum: [LAND, PROPERTY, FDR, MACHINERY, GUARANTEE]}, description: {type: string}, valueMinor: {type: integer}, valuedOn: {type: string, format: date}, insuredUntil: {type: string, format: date}}}
+      responses:
+        "200": {description: created, content: {application/json: {schema: {$ref: "#/components/schemas/Collateral"}}}}
+    get:
+      tags: [assessments]
+      summary: List collateral for an application
+      parameters: [{name: applicationId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/Collateral"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /disbursements/{applicationId}/prepare:
+    post:
+      tags: [disbursements]
+      summary: Prepare disbursement from a SANCTIONED application (actor = JWT sub; app → DISBURSEMENT stage)
+      parameters: [{name: applicationId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: PREPARED, content: {application/json: {schema: {$ref: "#/components/schemas/Disbursement"}}}}
+        "409": {$ref: "#/components/responses/Problem"}
+  /disbursements/{id}/authorize:
+    post:
+      tags: [disbursements]
+      summary: Second-officer authorization — MUST be a different user than the preparer (409 ULMS-STATE-0001 otherwise)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: AUTHORIZED, content: {application/json: {schema: {$ref: "#/components/schemas/Disbursement"}}}}
+        "409": {$ref: "#/components/responses/Problem"}
+  /disbursements/{id}/release:
+    post:
+      tags: [disbursements]
+      summary: Release (third officer) — Fineract approve+disburse, ULMS loan mirror created, app → DISBURSED; STR alert ≥ ৳10L
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: RELEASED with fineractTxnId, content: {application/json: {schema: {$ref: "#/components/schemas/Disbursement"}}}}
+        "409": {$ref: "#/components/responses/Problem"}
+  /disbursements/{id}:
+    get:
+      tags: [disbursements]
+      summary: Disbursement detail with the dual-auth trail
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: detail, content: {application/json: {schema: {$ref: "#/components/schemas/Disbursement"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /disbursements/application/{applicationId}:
+    get:
+      tags: [disbursements]
+      summary: Disbursement for an application
+      parameters: [{name: applicationId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: detail, content: {application/json: {schema: {$ref: "#/components/schemas/Disbursement"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /assessments/collateral/{collateralId}/valuation:
+    post:
+      tags: [assessments]
+      summary: Revalue collateral — appends an immutable history row + updates current (04 §3)
+      parameters: [{name: collateralId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [valueMinor], properties: {valueMinor: {type: integer}, valuedOn: {type: string, format: date}}}
+      responses:
+        "200": {description: updated collateral, content: {application/json: {schema: {$ref: "#/components/schemas/Collateral"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+    get:
+      tags: [assessments]
+      summary: Full valuation history (04 §3 collateral_valuation)
+      parameters: [{name: collateralId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object, properties: {id: {type: string, format: uuid}, valueMinor: {type: integer}, valuedOn: {type: string, nullable: true}, valuedBy: {type: string}, createdAt: {type: string}}}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /compliance/eod/run:
+    post:
+      tags: [compliance]
+      summary: BRPD 15/2024 EOD batch (operator trigger; also scheduled 23:30) — idempotent per run-date with rerun semantics
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: {type: object, properties: {date: {type: string, format: date}}}
+      responses:
+        "200": {description: run summary, content: {application/json: {schema: {$ref: "#/components/schemas/EodRun"}}}}
+  /compliance/classification:
+    get:
+      tags: [compliance]
+      summary: Classification board — latest run + loan portfolio + open STR alerts
+      responses:
+        "200": {description: board, content: {application/json: {schema: {$ref: "#/components/schemas/Board"}}}}
+  /compliance/provision-calculator:
+    get:
+      tags: [compliance]
+      summary: Provision calculator — the policy oracle shared with the frontend (03)
+      parameters: [{name: classification, in: query, required: true, schema: {type: string}}, {name: outstandingMinor, in: query, required: true, schema: {type: integer}}]
+      responses:
+        "200": {description: provision, content: {application/json: {schema: {$ref: "#/components/schemas/ProvisionCalc"}}}}
+        "422": {$ref: "#/components/responses/Problem"}
+  /compliance/alerts:
+    get:
+      tags: [compliance]
+      summary: Open compliance alerts (STR cash-threshold, CIB failures, recon mismatches)
+      responses:
+        "200": {description: alerts envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /compliance/returns:
+    get:
+      tags: [compliance]
+      summary: Regcon board (P4) — the 12-row BB returns catalog × latest pack with statuses, sign-off chain state, and KPIs (due 30d, on-time streak, CAR, IFRS-9 runway)
+      responses:
+        "200": {description: board, content: {application/json: {schema: {$ref: "#/components/schemas/RegconBoard"}}}}
+  /compliance/returns/{code}/generate:
+    post:
+      tags: [compliance]
+      summary: Generate (or regenerate) a returns pack for a period — CL-1..CL-5, CIB-S, CIB-C, CAR, EDW, ECL, LLF; payload WORM-staged with sha256; preparer=system; CIB-R (continuous) is rejected; regenerate replaces the (code, period) wholesale
+      parameters:
+        - {name: code, in: path, required: true, schema: {type: string, enum: [CL-1, CL-2, CL-3, CL-4, CL-5, CIB-S, CIB-C, CAR, EDW, ECL, LLF]}}
+        - {name: period, in: query, required: false, schema: {type: string, pattern: '^\d{4}-\d{2}$'}, description: 'YYYY-MM; default = prior month (a 10-Oct return reports September)'}
+      responses:
+        "200": {description: generated pack summary, content: {application/json: {schema: {$ref: "#/components/schemas/ReturnGenerated"}}}}
+        "422": {description: bad code / period (ULMS-VAL-0001)}
+  /compliance/returns/{id}/signoff/check:
+    post:
+      tags: [compliance]
+      summary: Checker sign-off — STAGED → CHECKED (06 §8 P4 chain preparer→checker→compliance); out-of-order ⇒ 409 ULMS-STATE-0001
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: checked}
+        "409": {description: wrong stage in the chain}
+  /compliance/returns/{id}/signoff/file:
+    post:
+      tags: [compliance]
+      summary: Compliance sign-off + submission — CHECKED → FILED (submitted to Bangladesh Bank; submittedAt set)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: filed}
+        "409": {description: wrong stage in the chain}
+  /compliance/returns/{id}/file:
+    get:
+      tags: [compliance]
+      summary: WORM-staged file download — CSV (CL/CAR/EDW/ECL/LLF) or fixed-width (CIB-S/CIB-C); rendered server-side (money in TAKA); X-ULMS-Sha256 header; checksum re-verified on read
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: file bytes, headers: {X-ULMS-Sha256: {schema: {type: string}}}}
+  /compliance/provision-jv:
+    post:
+      tags: [compliance]
+      summary: Post the EOD provision total to the Fineract GL as a zero-sum JV (03 "JV queue to Fineract GL") — debit provision expense, credit loan-loss reserve; idempotent per run-date; a drifted rerun total after posting ⇒ 409 + PROVISION_JV_DRIFT alert
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: {type: object, properties: {date: {type: string, format: date}}}
+      responses:
+        "200": {description: "zero-sum entry incl. Fineract transaction id"}
+        "409": {description: drift after posting — reversing entry is a bank process}
+    get:
+      tags: [compliance]
+      summary: Latest posted provision JVs (zero-sum evidence chain)
+      responses:
+        "200": {description: entries, content: {application/json: {schema: {type: array, items: {type: object}}}}}
+  /compliance/regcon-calendar:
+    get:
+      tags: [compliance]
+      summary: BB submission calendar — upcoming due dates (continuous CIB-R excluded), each carrying the reporting period
+      parameters: [{name: months, in: query, required: false, schema: {type: integer, default: 6, maximum: 24}}]
+      responses:
+        "200": {description: chronological dues, content: {application/json: {schema: {type: array, items: {$ref: "#/components/schemas/CalendarDue"}}}}}
+  /compliance/ifrs9/ecl:
+    get:
+      tags: [compliance]
+      summary: IFRS-9 ECL runway board — snapshot rows per BRPD stage (PD/LGD/EAD, ECL vs BRPD provision) + months to the mandatory Dec-2027 date
+      parameters: [{name: asOf, in: query, required: false, schema: {type: string, format: date}}]
+      responses:
+        "200": {description: ECL board, content: {application/json: {schema: {$ref: "#/components/schemas/EclBoard"}}}}
+  /compliance/ifrs9/ecl/run:
+    post:
+      tags: [compliance]
+      summary: Run (or rerun) the ECL snapshot for an as-of date — replaces that date's rows
+      parameters: [{name: asOf, in: query, required: false, schema: {type: string, format: date}}]
+      responses:
+        "200": {description: run summary}
+  /compliance/basel/car:
+    get:
+      tags: [compliance]
+      summary: Basel III CAR inputs — RWA per BRPD class (standardized weights), CAR vs the 12.5% floor, buffer; eligible capital is a configured pilot input
+      responses:
+        "200": {description: CAR detail}
+  /reporting/portfolio:
+    get:
+      tags: [compliance]
+      summary: Portfolio read model (MV_LOAN_PORTFOLIO shape) — grouped aggregates for the Report Viewer; money in minor units
+      parameters: [{name: groupby, in: query, required: false, schema: {type: string, enum: [classification, stage, branch], default: classification}}]
+      responses:
+        "200": {description: grouped aggregates}
+        "422": {description: bad groupby (ULMS-VAL-0001)}
+  /reporting/definitions:
+    get:
+      tags: [compliance]
+      summary: Saved governed reports (12 W11 writer slice) — a definition binds the portfolio read model to a group-by
+      responses:
+        "200": {description: definitions, content: {application/json: {schema: {type: array, items: {type: object}}}}}
+    post:
+      tags: [compliance]
+      summary: Save a report definition (name 3–120 chars, unique; groupBy validated against the read model)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [name, groupBy], properties: {name: {type: string}, groupBy: {type: string, enum: [classification, stage, branch]}, schedule: {type: string}}}
+      responses:
+        "200": {description: saved definition}
+        "422": {description: bad name or groupBy}
+        "409": {description: duplicate name}
+  /reporting/definitions/{id}/run:
+    get:
+      tags: [compliance]
+      summary: Execute a saved definition — runs the portfolio read model with its group-by (assembly-only, no free-form SQL)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: read-model result + definition}
+        "404": {description: no such definition}
+  /hooks/payments/{rail}:
+    post:
+      tags: [payments]
+      summary: Rail callback (05 §7) — PUBLIC; HMAC-SHA256 over `timestamp "." rail "." rawBody` (±5 min; the rail path segment is INSIDE the MAC — P5 F8) IS the auth; idempotent by UTR; absent secret → 503 fail-closed
+      security: []
+      parameters: [{name: rail, in: path, required: true, schema: {type: string}}, {name: X-ULMS-Timestamp, in: header, required: true, schema: {type: string}}, {name: X-ULMS-Signature, in: header, required: true, schema: {type: string}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [utr, amountMinor, intentId], properties: {utr: {type: string}, amountMinor: {type: integer}, intentId: {type: string, format: uuid}}}
+      responses:
+        "200": {description: posted (replay=true on duplicate storms), content: {application/json: {schema: {type: object, properties: {status: {type: string}, paymentId: {type: string, format: uuid}, replay: {type: boolean}}}}}}
+        "401": {description: bad signature}
+        "403": {description: stale timestamp}
+        "503": {description: webhook secret not configured}
+  /loans:
+    get:
+      tags: [loans]
+      summary: Loan portfolio (ULMS mirror)
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/Loan"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /loans/{id}:
+    get:
+      tags: [loans]
+      summary: Loan detail (outstanding, DPD, class, suspense, tenor, rate)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: loan, content: {application/json: {schema: {$ref: "#/components/schemas/Loan"}}}}
+        "404": {$ref: "#/components/responses/Problem"}
+  /loans/{id}/payments:
+    post:
+      tags: [payments]
+      summary: Counter payment (staff) — idempotent by externalRef; Fineract repayment + mirror update in one tx (03)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [amountMinor], properties: {amountMinor: {type: integer}, externalRef: {type: string}, rail: {type: string, enum: [BKASH, NAGAD, ROCKET, BEFTN, CARD]}}}
+      responses:
+        "200": {description: posted, content: {application/json: {schema: {$ref: "#/components/schemas/Payment"}}}}
+        "409": {$ref: "#/components/responses/Problem"}
+    get:
+      tags: [payments]
+      summary: Payment history for a loan
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/Payment"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /loans/{id}/payment-intents:
+    post:
+      tags: [payments]
+      summary: Initiate a rail checkout → redirect URL (11 §3 redirect model — never card data)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [amountMinor, rail], properties: {amountMinor: {type: integer}, rail: {type: string, enum: [BKASH, NAGAD, BEFTN]}}}
+      responses:
+        "200": {description: intent with railUrl, content: {application/json: {schema: {$ref: "#/components/schemas/PaymentIntent"}}}}
+    get:
+      tags: [payments]
+      summary: Intents for a loan
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/PaymentIntent"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /loans/{id}/schedule:
+    get:
+      tags: [loans]
+      summary: Amortization schedule — EMI-oracle derived, Σprincipal = principal (09 §3 parity)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/ScheduleLine"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /loans/{id}/statement:
+    get:
+      tags: [loans]
+      summary: Statement page over the payment ledger — ?format=csv is byte-parity CSV; generations audited (statement_run)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}, {name: page, in: query, schema: {type: integer, default: 1}}, {name: size, in: query, schema: {type: integer, default: 25}}, {name: format, in: query, schema: {type: string, enum: [json, csv], default: json}}]
+      responses:
+        "200": {description: statement page (JSON) or text/csv attachment}
+  /loans/{id}/settle-quote:
+    post:
+      tags: [loans]
+      summary: Early-settlement quote (03 policy oracle) — penalty 2% inside 6-installment lock-in, rebate 50% of unearned interest ≥12 paid, valid 7 days
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: quote, content: {application/json: {schema: {$ref: "#/components/schemas/SettleQuote"}}}}
+  /loans/{id}/reschedule-request:
+    post:
+      tags: [loans]
+      summary: Record a reschedule request; approval regenerates the schedule tenor (03)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [newTenorMonths, reason], properties: {newTenorMonths: {type: integer, minimum: 3, maximum: 120}, reason: {type: string}}}
+      responses:
+        "200": {description: request, content: {application/json: {schema: {$ref: "#/components/schemas/Reschedule"}}}}
+  /loans/reschedule/{requestId}/decision:
+    post:
+      tags: [loans]
+      summary: Officer decision — approve updates the loan tenor (schedule regenerates)
+      parameters: [{name: requestId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [approve], properties: {approve: {type: boolean}}}
+      responses:
+        "200": {description: decided, content: {application/json: {schema: {$ref: "#/components/schemas/Reschedule"}}}}
+        "409": {$ref: "#/components/responses/Problem"}
+  /loans/payments/reconcile:
+    post:
+      tags: [payments]
+      summary: Reconciliation run (11 §3) — bank settlement lines vs posted payments; each mismatch raises a RECON_MISMATCH alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [settlements], properties: {settlements: {type: array, items: {type: object, required: [utr, amountMinor], properties: {utr: {type: string}, amountMinor: {type: integer}}}}}}
+      responses:
+        "200": {description: summary, content: {application/json: {schema: {type: object, properties: {lines: {type: integer}, matched: {type: integer}, mismatches: {type: integer}}}}}}
+  /collections/worklist:
+    get:
+      tags: [collections]
+      summary: Bucket worklist (03) — DPD>0 loans; priority P1 (broken PTP) / P2 (DPD>90) / P3; DPD desc
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/WorklistRow"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /collections/{loanId}/actions/{actionType}:
+    post:
+      tags: [collections]
+      summary: Dunning-ladder action (CALL|SMS|VISIT|NOTICE) with outcome
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}, {name: actionType, in: path, required: true, schema: {type: string, enum: [CALL, SMS, VISIT, NOTICE]}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [outcome], properties: {outcome: {type: string}, notes: {type: string}}}
+      responses:
+        "200": {description: action, content: {application/json: {schema: {type: object}}}}
+    get:
+      tags: [collections]
+      summary: Action history for a loan (audit R1 — route existed undocumented)
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}, {name: actionType, in: path, required: true, schema: {type: string, enum: [CALL, SMS, VISIT, NOTICE]}}]
+      responses:
+        "200": {description: list envelope of past actions, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /collections/{loanId}/ptp:
+    post:
+      tags: [collections]
+      summary: PTP promise (prototype F3 contextual form) — DPD/class snapshot at promise; kept/broken derives from payments
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [promisedAmountMinor, promisedOn, confidence], properties: {promisedAmountMinor: {type: integer}, promisedOn: {type: string, format: date}, confidence: {type: string, enum: [HIGH, MEDIUM, LOW]}, contactName: {type: string}, contactRelation: {type: string}, contactPhone: {type: string, description: masked in every projection (06 §5)}, remark: {type: string}}}
+      responses:
+        "200": {description: ptp (phone masked), content: {application/json: {schema: {$ref: "#/components/schemas/Ptp"}}}}
+  /collections/ptp/{ptpId}/outcome:
+    post:
+      tags: [collections]
+      summary: PTP state machine transition (PENDING→KEPT|BROKEN, terminal)
+      parameters: [{name: ptpId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [kept], properties: {kept: {type: boolean}}}
+      responses:
+        "200": {description: ptp, content: {application/json: {schema: {$ref: "#/components/schemas/Ptp"}}}}
+        "409": {$ref: "#/components/responses/Problem"}
+  /collections/ptp/calendar:
+    get:
+      tags: [collections]
+      summary: PTP calendar (promises in a date range)
+      parameters: [{name: from, in: query, required: true, schema: {type: string, format: date}}, {name: to, in: query, required: true, schema: {type: string, format: date}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/Ptp"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /collections/field-tasks:
+    post:
+      tags: [collections]
+      summary: Assign a field-visit task (Expo sync contract, 03)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [loanId, assignedTo, dueOn], properties: {loanId: {type: string, format: uuid}, assignedTo: {type: string}, dueOn: {type: string, format: date}}}
+      responses:
+        "200": {description: task, content: {application/json: {schema: {$ref: "#/components/schemas/FieldTask"}}}}
+    get:
+      tags: [collections]
+      summary: Open field tasks (due-date order)
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/FieldTask"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /collections/field-tasks/{taskId}/complete:
+    post:
+      tags: [collections]
+      summary: Complete from mobile — server-wins status, append-only evidence (replays suppressed but evidence kept, 03)
+      parameters: [{name: taskId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        content:
+          application/json:
+            schema: {type: object, properties: {evidence: {type: string}}}
+      responses:
+        "200": {description: task with evidence log, content: {application/json: {schema: {$ref: "#/components/schemas/FieldTask"}}}}
+  /collections/dunning/queue:
+    get:
+      tags: [collections]
+      summary: Dunning-ladder timer queue (03) — queued AUTO_QUEUED steps due for officer action
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/DunningStep"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /collections/dunning/run:
+    post:
+      tags: [collections]
+      summary: Operator trigger for the nightly ladder pass (06:00) — queues next due SMS/CALL/VISIT per DPD bucket; PENDING PTPs suspend
+      responses:
+        "200": {description: summary, content: {application/json: {schema: {type: object, properties: {queued: {type: integer}}}}}}
+  /collections/dunning/{actionId}/resolve:
+    post:
+      tags: [collections]
+      summary: Officer acts a queued dunning step — outcome recorded, timer cleared
+      parameters: [{name: actionId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [outcome], properties: {outcome: {type: string}, notes: {type: string}}}
+      responses:
+        "200": {description: action, content: {application/json: {schema: {$ref: "#/components/schemas/DunningStep"}}}}
+  /collections/{loanId}/legal-case:
+    post:
+      tags: [collections]
+      summary: File a legal case (03 recovery & legal case tracking)
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [claimMinor], properties: {court: {type: string}, filedOn: {type: string, format: date}, claimMinor: {type: integer}, lawyer: {type: string}, notes: {type: string}}}
+      responses:
+        "200": {description: case, content: {application/json: {schema: {$ref: "#/components/schemas/LegalCase"}}}}
+    get:
+      tags: [collections]
+      summary: Legal cases for a loan
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/LegalCase"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /collections/legal-case/{caseId}/status:
+    post:
+      tags: [collections]
+      summary: Update case status (FILED→ONGOING→WON|LOST|WITHDRAWN)
+      parameters: [{name: caseId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [status], properties: {status: {type: string, enum: [FILED, ONGOING, WON, LOST, WITHDRAWN]}}}
+      responses:
+        "200": {description: case, content: {application/json: {schema: {$ref: "#/components/schemas/LegalCase"}}}}
+  /collections/{loanId}/waive-interest:
+    post:
+      tags: [collections]
+      summary: Collections resolution adjustment (03 Fineract row) — waive interest via Fineract transaction; mirror-only migrated loans reject 409
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [amountMinor], properties: {amountMinor: {type: integer}}}
+      responses:
+        "200": {description: txn, content: {application/json: {schema: {type: object, properties: {fineractTxn: {type: integer}}}}}}
+        "409": {$ref: "#/components/responses/Problem"}
+  /portal/me/loans/{loanId}/statement.csv:
+    get:
+      tags: [portal]
+      summary: Borrower statement download (08 B1) — CSV attachment
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: text/csv attachment}
+  /loans/{id}/fees:
+    post:
+      tags: [payments]
+      summary: Charge a fee on the loan (03 repayment/fee/waiver triple) — Fineract loan charge (charge def 1 = ULMS Penalty Fee)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [amountMinor], properties: {amountMinor: {type: integer}, chargeName: {type: string}}}
+      responses:
+        "200": {description: charge, content: {application/json: {schema: {type: object, properties: {fineractCharge: {type: integer}}}}}}
+        "422": {$ref: "#/components/responses/Problem"}
+        "409": {$ref: "#/components/responses/Problem"}
+  /portal/me:
+    get:
+      tags: [portal]
+      summary: Borrower own-CIF lookup by registered mobile → loan cards (balance+EMI+nextDue, 08 B1)
+      parameters: [{name: mobile, in: query, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: portal home, content: {application/json: {schema: {type: object, properties: {cifNo: {type: string}, nameEn: {type: string}, kycStatus: {type: string}, loans: {type: array, items: {type: object}}}}}}}
+  /portal/me/application:
+    get:
+      tags: [portal]
+      summary: Application tracker — read projection of the SAME workflow tables (08 B2, no second truth)
+      parameters: [{name: cif, in: query, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: list envelope}
+  /portal/me/payments:
+    get:
+      tags: [portal]
+      summary: Own payment history for a loan
+      parameters: [{name: loanId, in: query, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: list envelope}
+  /portal/me/payments/initiate:
+    post:
+      tags: [portal]
+      summary: Initiate a payment → rail redirect URL (no card data through ULMS, 08 B2)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [loanId, amountMinor, rail], properties: {loanId: {type: string, format: uuid}, amountMinor: {type: integer}, rail: {type: string, enum: [BKASH, NAGAD, ROCKET, BEFTN, CARD], description: allowlist (P5 F5)}}}
+      responses:
+        "200": {description: intent, content: {application/json: {schema: {$ref: "#/components/schemas/PaymentIntent"}}}}
+  /certificates/tax/{year}:
+    get:
+      tags: [loans]
+      summary: Tax certificate — interest paid per loan for the year (03 mod-servicing)
+      parameters: [{name: year, in: path, required: true, schema: {type: integer}}, {name: cif, in: query, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object, properties: {cifNo: {type: string}, nameEn: {type: string}, year: {type: integer}, loanNo: {type: string}, interestPaidMinor: {type: integer}, totalPaidMinor: {type: integer}}}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+
+  # ================= R3 (v1.6) — origination completion =================
+  /products:
+    get:
+      tags: [platform]
+      summary: "Loan-product catalog (R3): bilingual info, amounts/tenors, rates, charges, security rules"
+      parameters: [{name: includeInactive, in: query, required: false, schema: {type: boolean, default: false}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+    post:
+      tags: [platform]
+      summary: "Create product version (maker-checker; admin)"
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses:
+        "201": {description: created, content: {application/json: {schema: {type: object}}}}
+        "409": {description: "a live version (DRAFT or ACTIVE) already exists for the code — activate/supersede instead"}
+  /products/{code}:
+    get:
+      tags: [platform]
+      summary: Product by code (versioned)
+      parameters: [{name: code, in: path, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: product, content: {application/json: {schema: {type: object}}}}
+    patch:
+      tags: [platform]
+      summary: Amend draft product (admin)
+      parameters: [{name: code, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"200": {description: updated, content: {application/json: {schema: {type: object}}}}}
+  /products/{code}/activate:
+    post:
+      tags: [platform]
+      summary: Activate a product version (deactivates the previous active one)
+      parameters: [{name: code, in: path, required: true, schema: {type: string}}]
+      responses: {"200": {description: activated, content: {application/json: {schema: {type: object}}}}}
+  /products/{code}/eligibility:
+    get:
+      tags: [platform]
+      summary: Eligibility pre-check (amount/tenor bounds + EMI preview)
+      parameters: [{name: code, in: path, required: true, schema: {type: string}}, {name: amountMinor, in: query, required: true, schema: {type: integer}}, {name: tenorMonths, in: query, required: true, schema: {type: integer}}]
+      responses:
+        "200": {description: eligibility, content: {application/json: {schema: {type: object}}}}
+  /sanctions:
+    get:
+      tags: [approval]
+      summary: Recent letters (page rehydration; newest first)
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /sanctions/{applicationId}/generate:
+    post:
+      tags: [approval]
+      summary: "Generate the bilingual sanction letter on SANCTION (R3; renders EN+BN, tracks acceptance)"
+      parameters: [{name: applicationId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {"201": {description: letter, content: {application/json: {schema: {type: object}}}}}
+  /sanctions/{id}:
+    get:
+      tags: [approval]
+      summary: Letter by id (status, acceptance token presence, body refs)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {"200": {description: letter, content: {application/json: {schema: {type: object}}}}}
+  /sanctions/{id}/accept:
+    post:
+      tags: [approval]
+      summary: Customer acceptance via tokenized link (portal) — records signed-at
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}, {name: token, in: query, required: true, schema: {type: string}}]
+      responses: {"200": {description: accepted, content: {application/json: {schema: {type: object}}}}}
+  /sanctions/{id}/resend:
+    post:
+      tags: [approval]
+      summary: Resend letter (SMS/email dispatch + branch copy) — audit
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {"200": {description: resent, content: {application/json: {schema: {type: object}}}}}
+  /bocc/meetings:
+    get:
+      tags: [approval]
+      summary: "BOCC meetings (R3): calendar + status"
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+    post:
+      tags: [approval]
+      summary: Schedule a sitting (branch, date, members) — agenda auto-built from pending cases
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"201": {description: meeting, content: {application/json: {schema: {type: object}}}}}
+  /bocc/meetings/{id}:
+    get:
+      tags: [approval]
+      summary: Meeting detail — agenda cases, attendance, votes, minutes state
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {"200": {description: meeting, content: {application/json: {schema: {type: object}}}}}
+  /bocc/meetings/{id}/attendance:
+    post:
+      tags: [approval]
+      summary: Check-in a member (digital signature)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"200": {description: recorded, content: {application/json: {schema: {type: object}}}}}
+  /bocc/meetings/{id}/vote:
+    post:
+      tags: [approval]
+      summary: Vote on an agenda case (APPROVE/REJECT/HOLD/DEFER + dissent note)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"200": {description: vote, content: {application/json: {schema: {type: object}}}}}
+  /bocc/meetings/{id}/close:
+    post:
+      tags: [approval]
+      summary: Close sitting — auto-minutes draft, quorum enforced, resolutions routed
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {"200": {description: minutes, content: {application/json: {schema: {type: object}}}}}
+  /outbox:
+    get:
+      tags: [platform]
+      summary: "Transactional outbox (ADR-004, R3): pending/relayed events — admin ops view"
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /outbox/relay:
+    post:
+      tags: [platform]
+      summary: Drain the outbox (scheduled in prod; manual for ops drills)
+      responses: {"200": {description: relay result, content: {application/json: {schema: {type: object}}}}}
+
+  # ================= R4 (v1.7) — depth =================
+  /collections/{loanId}/write-off:
+    post:
+      tags: [collections]
+      summary: "Propose write-off (R4): board-band validation, provision state pinned"
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"201": {description: case, content: {application/json: {schema: {type: object}}}}}
+  /write-offs:
+    get:
+      tags: [collections]
+      summary: Write-off register (CL-4 feed)
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /write-offs/{id}/approve:
+    post:
+      tags: [collections]
+      summary: Committee approval — GL write-off JV + CIB flag + outstanding zeroing
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {"200": {description: approved, content: {application/json: {schema: {type: object}}}}}
+  /write-offs/{id}/reverse:
+    post:
+      tags: [collections]
+      summary: Reverse an executed write-off (recovery received after write-off)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {"200": {description: reversed, content: {application/json: {schema: {type: object}}}}}
+  /collections/{loanId}/recoveries:
+    get:
+      tags: [collections]
+      summary: Recovery ledger for a loan (CL-3 feed)
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+    post:
+      tags: [collections]
+      summary: Record a recovery receipt (incentive computed per policy)
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"201": {description: entry, content: {application/json: {schema: {type: object}}}}}
+  /customers/{survivorCif}/merge-duplicate:
+    post:
+      tags: [customers]
+      summary: "Merge a duplicate CIF into the survivor (R10 P-B) — idempotent, re-points applications/loans/guarantors/collateral"
+      parameters: [{name: survivorCif, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses:
+        "200": {description: merge counts}
+        "409": {description: duplicate already merged into a different survivor}
+        "422": {description: duplicateCif required / self-merge rejected}
+  /customers/{cif}/risk:
+    post:
+      tags: [customers]
+      summary: "Update the AML risk class (R10 P-B) — drives EDD posture and the 1/2/3-year KYC refresh cycle"
+      parameters: [{name: cif, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"200": {description: updated}, "422": {description: "risk must be Low, Medium or High"}}
+  /customers/{customerId}/collateral:
+    get:
+      tags: [assessment]
+      summary: "Collateral portfolio of a customer (R10 P-C registry)"
+      parameters: [{name: customerId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {"200": {description: list envelope}}
+    post:
+      tags: [assessment]
+      summary: "Register a security — valuation ≤ 1 year, FSV ≤ MV enforced (USER-CR §5)"
+      parameters: [{name: customerId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses:
+        "201": {description: registered}
+        "422": {description: valuation stale/future-dated or FSV exceeds MV}
+  /customers/{customerId}/collateral/ltv:
+    get:
+      tags: [assessment]
+      summary: "LTV verdict for an exposure — breach raises the approval-condition event"
+      parameters: [{name: customerId, in: path, required: true, schema: {type: string, format: uuid}},
+                   {name: exposureMinor, in: query, required: true, schema: {type: integer}},
+                   {name: productMaxLtvBp, in: query, required: false, schema: {type: integer, default: 0}}]
+      responses: {"200": {description: "verdict — realizable, acceptable, breach flag"}}
+  /compliance/basel/summary:
+    get:
+      tags: [compliance]
+      summary: "Basel RWA/CAR inputs, segment split, leverage and single-borrower breaches (R10 P-F)"
+      responses: {"200": {description: summary object}}
+  /compliance/regcon/push:
+    post:
+      tags: [compliance]
+      summary: "Operator trigger for the regcon transmission + GL reconciliation pass (drills)"
+      responses: {"200": {description: "{ transmitted: n }"}}
+  /servicing/blr:
+    get:
+      tags: [servicing]
+      summary: "Current active BLR in bp (R10 P-E floating-rate anchor)"
+      responses: {"200": {description: "{ rateBp }"}}
+    post:
+      tags: [servicing]
+      summary: "Apply a new BLR (admin/treasury) — every FLOATING loan re-prices to BLR+spread with RATE_REPRICED notifications"
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses:
+        "200": {description: "reprice summary — from/to bp and loans repriced"}
+        "422": {description: rateBp must be positive}
+  /servicing/loans/{loanId}/moratorium:
+    post:
+      tags: [servicing]
+      summary: "Grant a 1–12 month moratorium — paused interest capitalizes into outstanding (R10 P-E)"
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses:
+        "200": {description: updated loan}
+        "409": {description: moratorium applies to ACTIVE loans only}
+        "422": {description: months must be 1–12}
+  /servicing/loans/{loanId}/top-up:
+    post:
+      tags: [servicing]
+      summary: "Top-up a running loan — combined exposure raises principal+outstanding, schedule regenerates (R10 P-E)"
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses:
+        "200": {description: updated loan}
+        "409": {description: top-up applies to ACTIVE loans only}
+        "422": {description: amountMinor must be positive}
+  /portal/otp:
+    post:
+      tags: [portal]
+      summary: "Portal OTP issue (R10): 6-digit code, 5-min TTL, ≤5 attempts, one live code per mobile"
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses:
+        "202": {description: issued (never the code itself in production; dev-mode mock surfaces devCode)}
+        "429": {description: an active code already exists for the mobile}
+        "422": {description: BD mobile required}
+  /portal/otp/verify:
+    post:
+      tags: [portal]
+      summary: "Portal OTP verify — consumes the code and returns the confirmation token"
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses:
+        "200": {description: "{ otpToken }"}
+        "401": {description: no active code / expired / mismatch}
+        "429": {description: too many attempts}
+  /customers/{idOrCif}/guarantors:
+    get:
+      tags: [customers]
+      summary: Guarantor registry for a customer (R4)
+      parameters: [{name: idOrCif, in: path, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+    post:
+      tags: [customers]
+      summary: Attach a guarantor (CIB check via assessment port)
+      parameters: [{name: idOrCif, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"201": {description: guarantor, content: {application/json: {schema: {type: object}}}}}
+  /notifications/templates:
+    get:
+      tags: [platform]
+      summary: "Notification templates (R4): BN/EN pairs by trigger type"
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+    post:
+      tags: [platform]
+      summary: Upsert a template (maker-checker; admin)
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"201": {description: template, content: {application/json: {schema: {type: object}}}}}
+  /notifications/outbox:
+    get:
+      tags: [platform]
+      summary: Notification delivery log (status per channel)
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /notifications/send:
+    post:
+      tags: [platform]
+      summary: Render + dispatch a template to a recipient (SMS/email port)
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"200": {description: delivery, content: {application/json: {schema: {type: object}}}}}
+  /customers/{idOrCif}/aml:
+    get:
+      tags: [customers]
+      summary: AML posture — CDD/EDD flag, list hits, STR drafts (R4)
+      parameters: [{name: idOrCif, in: path, required: true, schema: {type: string}}]
+      responses: {"200": {description: posture, content: {application/json: {schema: {type: object}}}}}
+  /customers/{idOrCif}/str:
+    post:
+      tags: [customers]
+      summary: File/record an STR (BFIU export shape)
+      parameters: [{name: idOrCif, in: path, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"201": {description: str, content: {application/json: {schema: {type: object}}}}}
+
+  # ================= R5 — portal & partner =================
+  /portal/me/applications:
+    post:
+      tags: [portal]
+      summary: "Borrower self-service application (R5): mobile-identified, product from catalog"
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"201": {description: application, content: {application/json: {schema: {type: object}}}}}
+  /portal/me/documents:
+    post:
+      tags: [portal]
+      summary: Borrower document upload (checksum + scan passthrough in dev)
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"201": {description: document, content: {application/json: {schema: {type: object}}}}}
+  /portal/me/loans/{loanId}/statement:
+    get:
+      tags: [portal]
+      summary: Statement browse (JSON rows; CSV via format=csv)
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}, {name: format, in: query, required: false, schema: {type: string, enum: [json, csv]}}]
+      responses: {"200": {description: statement, content: {application/json: {schema: {type: object}}}}}
+  /partner/applications:
+    post:
+      tags: [platform]
+      summary: "Partner API intake (R5): X-Api-Key identified, rate-limited, idempotent"
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses: {"201": {description: application, content: {application/json: {schema: {type: object}}}}}
+  /partner/applications/{id}/status:
+    get:
+      tags: [platform]
+      summary: Partner status poll (tracker projection)
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses: {"200": {description: status, content: {application/json: {schema: {type: object}}}}}
+components:
+  securitySchemes:
+    bearerAuth: {type: http, scheme: bearer, bearerFormat: JWT}
+  responses:
+    Problem:
+      description: error
+      content:
+        application/problem+json:
+          schema: {$ref: "#/components/schemas/Problem"}
+  schemas:
+    Problem:
+      type: object
+      properties:
+        type: {type: string}
+        title: {type: string}
+        status: {type: integer}
+        code: {type: string, description: "stable code — registry docs/errors.md (ULMS-NOT-FOUND, ULMS-FORBIDDEN, ULMS-VAL-0001, ULMS-STATE-0001)"}
+        detail: {type: string}
+        requestId: {type: string, format: uuid}
+        fields:
+          type: array
+          items:
+            type: object
+            properties: {path: {type: string}, code: {type: string}, message: {type: string}, messageBn: {type: string}}
+    Meta:
+      type: object
+      properties:
+        requestId: {type: string, format: uuid}
+        page: {type: integer}
+        size: {type: integer}
+        totalElements: {type: integer}
+        totalPages: {type: integer}
+    Bilingual:
+      type: object
+      description: render exactly ONE of en/bn per active language (never both)
+      properties: {en: {type: string}, bn: {type: string}}
+    CustomerCreate:
+      type: object
+      required: [nameEn, segment, mobile, branchCode]
+      properties:
+        nameEn: {type: string, maxLength: 140}
+        nameBn: {type: string, maxLength: 140}
+        segment: {type: string, enum: [RETAIL, SME, CORPORATE, AGRI]}
+        mobile: {type: string, pattern: '^\+8801[3-9]\d{8}$'}
+        nid: {type: string, description: stored masked only (06 §5)}
+        branchCode: {type: string}
+    Customer:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        cifNo: {type: string}
+        name: {$ref: "#/components/schemas/Bilingual"}
+        segment: {type: string}
+        mobile: {type: string}
+        branchCode: {type: string}
+        fineractClientId: {type: integer, nullable: true}
+        kycStatus: {type: string, enum: [PENDING, VERIFIED, REJECTED]}
+        createdAt: {type: string, format: date-time}
+    CustomerPage:
+      type: object
+      properties:
+        data: {type: array, items: {$ref: "#/components/schemas/Customer"}}
+        meta: {$ref: "#/components/schemas/Meta"}
+    Customer360:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        cifNo: {type: string}
+        customer:
+          type: object
+          properties:
+            nameEn: {type: string}
+            nameBn: {type: string, nullable: true}
+            segment: {type: string}
+            mobile: {type: string}
+            branchCode: {type: string}
+            kycStatus: {type: string}
+            nidMasked: {type: string, nullable: true}
+            fineractClientId: {type: integer, nullable: true}
+        applications:
+          type: array
+          items:
+            type: object
+            properties:
+              id: {type: string, format: uuid}
+              appNo: {type: string}
+              stage: {type: string}
+              amountMinor: {type: integer}
+              tenorMonths: {type: integer}
+              createdAt: {type: string, format: date-time}
+        kycChecks:
+          type: array
+          items:
+            type: object
+            properties:
+              status: {type: string, enum: [VERIFIED, REJECTED, ERROR]}
+              referenceId: {type: string, nullable: true}
+              checkedAt: {type: string, format: date-time}
+        screeningHits:
+          type: array
+          items:
+            type: object
+            properties:
+              listName: {type: string}
+              matchedName: {type: string}
+              checkedAt: {type: string, format: date-time}
+    ScreeningResult:
+      type: object
+      properties:
+        customerId: {type: string, format: uuid}
+        clear: {type: boolean}
+        hits:
+          type: array
+          items:
+            type: object
+            properties: {listName: {type: string}, matchedName: {type: string}, checkedAt: {type: string, format: date-time}}
+    ApplicationDraft:
+      type: object
+      required: [customerId, productCode, amountMinor, tenorMonths, branchCode]
+      properties:
+        customerId: {type: string, format: uuid}
+        productCode: {type: string, description: "product config key (ADR-009), e.g. sme-term"}
+        amountMinor: {type: integer, description: BDT minor units (৳1 = 100)}
+        tenorMonths: {type: integer, minimum: 1, maximum: 360}
+        rateType: {type: string, enum: [FIXED, FLOATING], default: FIXED}
+        branchCode: {type: string}
+    DraftPatch:
+      type: object
+      required: [productCode, amountMinor, tenorMonths, rateType]
+      properties:
+        productCode: {type: string}
+        amountMinor: {type: integer}
+        tenorMonths: {type: integer}
+        rateType: {type: string, enum: [FIXED, FLOATING]}
+        incomeMinor: {type: integer, nullable: true}
+        existingEmiMinor: {type: integer, nullable: true}
+        version: {type: integer, nullable: true, description: optimistic lock — stale ⇒ 409 ULMS-STATE-0002}
+    Application:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        appNo: {type: string}
+        customerId: {type: string, format: uuid}
+        productCode: {type: string}
+        amountMinor: {type: integer}
+        tenorMonths: {type: integer}
+        rateType: {type: string}
+        stage: {type: string, enum: [SCREENING, CIB_PULL, SCORING, CPV, APPROVAL, SANCTION, DOCUMENTATION, DISBURSEMENT, DISBURSED]}
+        dbrPercent: {type: number, nullable: true}
+        branchCode: {type: string}
+        version: {type: integer, description: optimistic-concurrency version (05 §4)}
+        workflowNode: {type: string, nullable: true, description: current ladder node when in approval}
+        workflowPhase: {type: string, nullable: true, enum: [ACTION, CHECK]}
+        workflowSla: {type: string, format: date-time, nullable: true}
+        createdAt: {type: string, format: date-time}
+    ApplicationList:
+      type: object
+      properties:
+        data: {type: array, items: {$ref: "#/components/schemas/Application"}}
+        meta: {$ref: "#/components/schemas/Meta"}
+    ApplicationDocument:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        docType: {type: string}
+        sha256: {type: string}
+        sizeBytes: {type: integer}
+        scanStatus: {type: string, enum: [PENDING, CLEAN, INFECTED]}
+    LadderRung:
+      type: object
+      properties:
+        level: {type: integer}
+        roleKey: {type: string}
+        roleNameEn: {type: string}
+        minMinor: {type: integer}
+        maxMinor: {type: integer, nullable: true}
+    ApprovalTask:
+      type: object
+      properties:
+        taskId: {type: string, format: uuid}
+        node: {type: string, description: "L1..L7"}
+        role: {type: string}
+        phase: {type: string, enum: [ACTION, CHECK], description: CHECK = maker-checker second signature}
+        status: {type: string}
+        slaDeadline: {type: string, format: date-time, nullable: true}
+    InboxItem:
+      type: object
+      properties:
+        taskId: {type: string, format: uuid}
+        node: {type: string}
+        role: {type: string}
+        phase: {type: string, enum: [ACTION, CHECK]}
+        slaDeadline: {type: string, format: date-time, nullable: true}
+        applicationId: {type: string, format: uuid, nullable: true}
+    ActResult:
+      type: object
+      properties:
+        instanceStatus: {type: string, enum: [RUNNING, COMPLETED, REJECTED, RETURNED]}
+        event: {type: string, enum: [DUAL_PHASE_CHECK, NODE_ADVANCED, COMPLETED, REJECTED, RETURNED_TO_MAKER, ESCALATED]}
+        nextTaskId: {type: string, format: uuid, nullable: true}
+    CibPull:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        status: {type: string, enum: [PENDING, PARSED, FAILED]}
+        period: {type: string, description: YYYY-MM}
+        error: {type: string, nullable: true}
+    CibDetail:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        status: {type: string}
+        period: {type: string}
+        pulledAt: {type: string, format: date-time}
+        facilities:
+          type: array
+          items:
+            type: object
+            properties:
+              lenderCode: {type: string}
+              lenderName: {type: string}
+              facilityType: {type: string}
+              limitMinor: {type: integer}
+              outstandingMinor: {type: integer}
+              overdueMinor: {type: integer}
+              installmentMinor: {type: integer}
+              dpd: {type: integer}
+              classification: {type: string}
+              lastPaymentDate: {type: string, nullable: true}
+              repaymentTrack: {type: string, description: "24 digits — '0' clean · '1' overdue · '2' missed, oldest→latest"}
+        pullHistory:
+          type: array
+          description: every pull for the subject (03 "parsed facilities + history")
+          items:
+            type: object
+            properties: {period: {type: string}, status: {type: string}, source: {type: string}, pulledAt: {type: string}}
+    AssessmentFacts:
+      type: object
+      required: [customerId, amountMinor, tenorMonths, rateType]
+      properties:
+        customerId: {type: string, format: uuid}
+        amountMinor: {type: integer}
+        tenorMonths: {type: integer}
+        rateType: {type: string, enum: [FIXED, FLOATING]}
+        incomeMinor: {type: integer, nullable: true}
+        existingEmiMinor: {type: integer, nullable: true}
+        collateralValueMinor: {type: integer, nullable: true}
+    Score:
+      type: object
+      properties:
+        score: {type: integer, description: 300–900}
+        grade: {type: string, enum: [A, B, C, D]}
+        decision: {type: string, enum: [AUTO_PASS, REFER, AUTO_DECLINE]}
+        version: {type: integer, description: scorecard policy version (03 score versioning)}
+        dbrPercent: {type: string, nullable: true}
+        cibObligationMinor: {type: integer}
+        proposedEmiMinor: {type: integer}
+        factors: {type: string, description: JSON factor→points breakdown}
+    DbrBreakdown:
+      type: object
+      properties:
+        dbrPercent: {type: string, nullable: true, description: null when income ≤ 0}
+        incomeMinor: {type: integer}
+        existingEmiMinor: {type: integer}
+        cibObligationMinor: {type: integer}
+        proposedEmiMinor: {type: integer}
+    Collateral:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        type: {type: string}
+        description: {type: string}
+        valueMinor: {type: integer}
+        valuedOn: {type: string, nullable: true}
+        insuredUntil: {type: string, nullable: true}
+    Disbursement:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        applicationId: {type: string, format: uuid}
+        amountMinor: {type: integer}
+        state: {type: string, enum: [PREPARED, AUTHORIZED, RELEASED]}
+        preparedBy: {type: string}
+        authorizedBy: {type: string, nullable: true}
+        fineractTxnId: {type: integer, nullable: true}
+        trail:
+          type: array
+          items:
+            type: object
+            properties: {action: {type: string, enum: [PREPARE, AUTHORIZE, RELEASE]}, actor: {type: string}, actedAt: {type: string, format: date-time}}
+    EodRun:
+      type: object
+      properties:
+        runDate: {type: string, format: date}
+        loansClassified: {type: integer}
+        totalOutstandingMinor: {type: integer}
+        totalProvisionMinor: {type: integer}
+        provisionsByClass: {type: object, additionalProperties: {type: integer}}
+    ReturnGenerated:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        code: {type: string}
+        period: {type: string, description: YYYY-MM}
+        status: {type: string, enum: [STAGED], description: freshly generated packs are always STAGED}
+        rowCount: {type: integer}
+        fileSha256: {type: string, description: sha256 of the rendered file (court-grade provenance)}
+        fileFormat: {type: string, enum: [csv, fixed-width]}
+    RegconBoardEntry:
+      type: object
+      properties:
+        code: {type: string}
+        description: {type: string}
+        frequency: {type: string, enum: [MONTHLY, QUARTERLY, ANNUAL, CONTINUOUS]}
+        nextDue: {type: string, format: date, nullable: true}
+        status: {type: string, enum: [Filed, "In sign-off", Staged, Live, "Not started"]}
+        latestPeriod: {type: string, nullable: true}
+        returnId: {type: string, format: uuid, nullable: true}
+        rowCount: {type: integer}
+        fileSha256: {type: string, nullable: true}
+        storageKey: {type: string, nullable: true, description: WORM object-store key of the staged file (11 §6)}
+        preparer: {type: string, nullable: true}
+        checker: {type: string, nullable: true}
+        complianceOfficer: {type: string, nullable: true}
+        submittedAt: {type: string, nullable: true}
+    RegconBoard:
+      type: object
+      properties:
+        today: {type: string, format: date}
+        entries: {type: array, items: {$ref: "#/components/schemas/RegconBoardEntry"}}
+        kpis:
+          type: object
+          properties:
+            dueIn30Days: {type: integer}
+            filedTotal: {type: integer}
+            onTimeStreak: {type: integer}
+            carPercent: {type: number, nullable: true}
+            carFloorPercent: {type: number}
+            eclRunwayMonths: {type: integer}
+            eclMandatoryFrom: {type: string, format: date}
+    CalendarDue:
+      type: object
+      properties:
+        code: {type: string}
+        dueDate: {type: string, format: date}
+        period: {type: string, description: the reporting period the due date covers}
+    EclRow:
+      type: object
+      properties:
+        stage: {type: string, description: BRPD stage STD-0…B/L}
+        ifrsStage: {type: integer, enum: [1, 2, 3], description: IFRS-9 stage (1 performing · 2 SICR · 3 credit-impaired)}
+        loans: {type: integer}
+        eadMinor: {type: integer}
+        pdBp: {type: integer}
+        lgdBp: {type: integer}
+        eclMinor: {type: integer}
+        brpdProvisionMinor: {type: integer}
+    EclBoard:
+      type: object
+      properties:
+        asOf: {type: string, format: date}
+        rows: {type: array, items: {$ref: "#/components/schemas/EclRow"}}
+        eclMinor: {type: integer}
+        brpdProvisionMinor: {type: integer}
+        deltaMinor: {type: integer}
+        runwayMonths: {type: integer}
+        mandatoryFrom: {type: string, format: date}
+    Board:
+      type: object
+      properties:
+        latestRun:
+          type: object
+          nullable: true
+          properties:
+            runDate: {type: string, format: date}
+            loansClassified: {type: integer}
+            totalOutstandingMinor: {type: integer}
+            totalProvisionMinor: {type: integer}
+            detail: {type: string}
+        loans:
+          type: array
+          items:
+            type: object
+            properties:
+              id: {type: string, format: uuid}
+              loanNo: {type: string}
+              customerId: {type: string, format: uuid}
+              principalMinor: {type: integer}
+              outstandingMinor: {type: integer}
+              dpd: {type: integer}
+              classification: {type: string}
+              interestSuspense: {type: boolean}
+        openAlerts:
+          type: array
+          items: {type: object}
+    ProvisionCalc:
+      type: object
+      properties:
+        classification: {type: string}
+        provisionRateBp: {type: integer, description: basis points (100 = 1%)}
+        interestSuspense: {type: boolean}
+        provisionMinor: {type: integer}
+    Loan:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        loanNo: {type: string}
+        customerId: {type: string, format: uuid}
+        principalMinor: {type: integer}
+        outstandingMinor: {type: integer}
+        dpd: {type: integer}
+        stage: {type: string, enum: [ACTIVE, CLOSED]}
+        classification: {type: string}
+        interestSuspense: {type: boolean}
+        tenorMonths: {type: integer}
+        interestRateBp: {type: integer}
+        disbursedAt: {type: string, format: date-time}
+    Payment:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        loanId: {type: string, format: uuid}
+        amountMinor: {type: integer}
+        externalRef: {type: string, description: idempotency axis (03)}
+        rail: {type: string}
+        utr: {type: string, nullable: true, description: webhook idempotency axis (05 §7)}
+        fineractTxnId: {type: integer, nullable: true, description: null on migrated mirror-only loans}
+        paidAt: {type: string, format: date-time}
+    PaymentIntent:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        loanId: {type: string, format: uuid}
+        amountMinor: {type: integer}
+        rail: {type: string}
+        railRef: {type: string, nullable: true}
+        railUrl: {type: string, nullable: true, description: redirect/deeplink — never card data}
+        status: {type: string, enum: [CREATED, COMPLETED, EXPIRED]}
+    ScheduleLine:
+      type: object
+      properties:
+        no: {type: integer}
+        dueDate: {type: string, format: date}
+        emiMinor: {type: integer}
+        principalMinor: {type: integer}
+        interestMinor: {type: integer}
+        balanceAfterMinor: {type: integer}
+    SettleQuote:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        outstandingMinor: {type: integer}
+        penaltyMinor: {type: integer}
+        rebateMinor: {type: integer}
+        totalMinor: {type: integer}
+        validUntil: {type: string, format: date-time}
+    Reschedule:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        loanId: {type: string, format: uuid}
+        newTenorMonths: {type: integer}
+        reason: {type: string}
+        status: {type: string, enum: [REQUESTED, APPROVED, REJECTED]}
+        requestedBy: {type: string}
+    WorklistRow:
+      type: object
+      properties:
+        loanId: {type: string, format: uuid}
+        loanNo: {type: string}
+        customerId: {type: string, format: uuid}
+        dpd: {type: integer}
+        classification: {type: string}
+        outstandingMinor: {type: integer}
+        priority: {type: string, enum: [P1, P2, P3], description: P1 = broken PTP propensity}
+        hasBrokenPtp: {type: boolean}
+    Ptp:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        loanId: {type: string, format: uuid}
+        promisedAmountMinor: {type: integer}
+        promisedOn: {type: string, format: date}
+        confidence: {type: string, enum: [HIGH, MEDIUM, LOW]}
+        contactName: {type: string, nullable: true}
+        contactRelation: {type: string, nullable: true}
+        contactPhoneMasked: {type: string, nullable: true}
+        remark: {type: string, nullable: true}
+        dpdAtPromise: {type: integer}
+        classificationAtPromise: {type: string}
+        kept: {type: string, enum: [PENDING, KEPT, BROKEN]}
+    FieldTask:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        loanId: {type: string, format: uuid}
+        assignedTo: {type: string}
+        dueOn: {type: string, format: date}
+        status: {type: string, enum: [OPEN, DONE]}
+        notes: {type: string, description: append-only JSON-lines evidence log}
+        doneAt: {type: string, format: date-time, nullable: true}
+    DunningStep:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        loanId: {type: string, format: uuid}
+        actionType: {type: string, enum: [SMS, CALL, VISIT]}
+        outcome: {type: string, description: AUTO_QUEUED until resolved}
+        notes: {type: string, nullable: true}
+        actor: {type: string}
+        actedAt: {type: string, format: date-time}
+        dueOn: {type: string, format: date, nullable: true, description: null once acted}
+    LegalCase:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        loanId: {type: string, format: uuid}
+        caseNo: {type: string}
+        court: {type: string, nullable: true}
+        filedOn: {type: string, format: date, nullable: true}
+        status: {type: string, enum: [FILED, ONGOING, WON, LOST, WITHDRAWN]}
+        claimMinor: {type: integer}
+        lawyer: {type: string, nullable: true}

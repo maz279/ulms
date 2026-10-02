@@ -1,0 +1,15 @@
+{
+  "name": "bkash-grant-token",
+  "request": {
+    "method": "POST",
+    "urlPath": "/tokenized/checkout/token/grant"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "idToken": "test-id-token-{{randomValue length=16 type='ALPHANUMERIC'}}",
+      "token_type": "Bearer",
+      "expires_in": 3600
+    }
+  }
+}

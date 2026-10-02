@@ -1,0 +1,16 @@
+{
+  "name": "bkash-create-payment",
+  "request": {
+    "method": "POST",
+    "urlPath": "/tokenized/checkout/create",
+    "headers": { "Authorization": { "contains": "test-id-token" } }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "paymentID": "TR bkash-test-{{randomValue length=10 type='ALPHANUMERIC'}}",
+      "bkashURL": "https://sandbox.bkash.com/checkout?id={{randomValue length=8 type='ALPHANUMERIC'}}",
+      "status": "Initiated"
+    }
+  }
+}

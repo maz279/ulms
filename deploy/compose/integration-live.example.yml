@@ -1,0 +1,53 @@
+# R7 feature-flag matrix — mock ↔ live flip per adapter (env-only)
+# WireMock drills and UAT set these profiles; dev/compose stay on mocks.
+ulms:
+  cib:
+    base-url: ${ULMS_CIB_BASE_URL:}          # live BB endpoint (mTLS)
+    timeout-ms: 30000
+    cache-ttl-ms: 3600000                     # 1h (11 §1)
+    # mTLS client cert — the adapter reads these two from the PROCESS ENV
+    # (System.getenv, keystore-path + passphrase, never literals):
+    #   ULMS_CIB_KEYSTORE           PKCS12 keystore path (bank-issued client cert)
+    #   ULMS_CIB_KEYSTORE_PASSWORD  keystore passphrase (secret store only)
+    # Absent ⇒ plain TLS (WireMock drills need no client cert).
+  nidw:
+    base-url: ${ULMS_NIDW_BASE_URL:}
+    timeout-ms: 2000                          # <5s SLA budget with 1 retry
+  screening:
+    lists-dir: ${ULMS_SCREENING_LISTS_DIR:/var/ulms/screening-lists}
+  rails:
+    bkash:
+      base-url: ${ULMS_BKASH_BASE_URL:}
+      username: ${ULMS_BKASH_USERNAME:}
+      password: ${ULMS_BKASH_PASSWORD:}
+      app-key: ${ULMS_BKASH_APP_KEY:}
+      app-secret: ${ULMS_BKASH_APP_SECRET:}
+  sms:
+    base-url: ${ULMS_SMS_BASE_URL:}
+    api-key: ${ULMS_SMS_API_KEY:}
+  cbs:
+    base-url: ${ULMS_CBS_BASE_URL:}
+    token: ${ULMS_CBS_TOKEN:}
+  av:
+    base-url: ${ULMS_AV_BASE_URL:}
+
+# Mirrors application.yml's live values (single source of truth — the app
+# config carries the same instance; this overlay only demonstrates the
+# UAT-tunable knobs). CIB-003 (429 → CibRateLimitedException) must stay in
+# ignore-exceptions: never retried, requeued with backoff by the caller.
+resilience4j:
+  retry:
+    instances:
+      cib:
+        max-attempts: 4                       # 1 attempt + 3 retries (CIB-001/002)
+        wait-duration: 250ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        ignore-exceptions:
+          - com.uslbd.ulms.integration.cib.CibOnlineAdapter.CibRateLimitedException
+  circuit-breaker:
+    instances:
+      cib:
+        sliding-window-size: 20
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 60s

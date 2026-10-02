@@ -1,0 +1,22 @@
+{
+  "name": "cib-report-ok",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/cib/reports/CIF-[0-9]+/2026-09"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "cifNo": "{{request.path.[2]}}",
+      "period": "2026-09",
+      "status": "OK",
+      "score": 724,
+      "grade": "AA",
+      "facilities": [
+        { "lender": "ABC Bank", "type": "TERM_LOAN", "limitMinor": 250000000, "outstandingMinor": 190000000, "dpd": 0, "classification": "STD-0" },
+        { "lender": "Eastern Bank PLC", "type": "AUTO_LOAN", "limitMinor": 80000000, "outstandingMinor": 42000000, "dpd": 74, "classification": "SMA" }
+      ]
+    },
+    "headers": { "Content-Type": "application/json" }
+  }
+}

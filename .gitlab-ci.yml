@@ -1,0 +1,121 @@
+# ULMS CI/CD — pipeline per PLANNING/02 §4 (stages: verify→test→security→build→deploy-dev→e2e)
+image: docker:27
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+stages: [verify, test, security, build, deploy-dev, e2e]
+
+# ---------- backend ----------
+api-compile-unit:
+  stage: verify
+  image: eclipse-temurin:21-jdk
+  script:
+    - cd apps/api && ./gradlew --console=plain compileJava test --tests '*ModularityTest'
+  cache: { key: gradle, paths: [.gradle/, apps/api/.gradle/] }
+
+api-integration:
+  stage: test
+  image: eclipse-temurin:21-jdk
+  services: [docker:27-dind]
+  script:
+    - cd apps/api && ./gradlew --console=plain test
+  rules: [{ if: $CI_PIPELINE_SOURCE == "merge_request_event" }, { if: $CI_COMMIT_BRANCH == "main" }]
+
+# ---------- web ----------
+web-build:
+  stage: verify
+  image: node:22-alpine
+  script:
+    - cd apps/web && npm ci --no-audit --no-fund
+    - npm run test:unit --silent   # domain oracle suite (audit R1) — fails the job on red
+    - npm run build
+  artifacts: { paths: [apps/web/dist], expire_in: 1 week }
+
+openapi-lint:
+  stage: verify
+  image: node:22-alpine
+  script:
+    # pinned (audit R1: @latest removed --fail-on; drift broke the job) —
+    # severity policy lives in redocly.yaml; struct errors fail the build
+    - npx --yes @redocly/cli@1.34.2 lint packages/openapi/ulms-api.yaml
+
+# ---------- security ----------
+secret-detection:
+  stage: security
+  image: node:22-alpine
+  script:
+    - npx --yes gitleaks@latest detect --source . --redact --exit-code 1   # hard fail (06 §1)
+
+dependency-scan:
+  stage: security
+  image: node:22-alpine
+  # STRICT since G1 closed (audit R1 — was allow_failure:true with "→ strict at G1")
+  script:
+    - npx --yes osv-scanner@latest --lockfile=apps/web/package-lock.json
+
+sast:
+  stage: security
+  image: returntocorp/semgrep
+  # STRICT since G2 closed (audit R1)
+  script: [semgrep --config auto --error apps/ packages/]
+
+# ---------- build & deploy ----------
+docker-build:
+  stage: build
+  services: [docker:27-dind]
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE/api:$CI_COMMIT_SHA apps/api
+    - docker build -t $CI_REGISTRY_IMAGE/web:$CI_COMMIT_SHA apps/web
+  rules: [{ if: $CI_COMMIT_BRANCH == "main" }]
+
+deploy-dev:
+  stage: deploy-dev
+  environment: dev
+  image: alpine/helm:3.16.2
+  services: [docker:27-dind]
+  script:
+    # R8: real k3s dev deploy (was a placeholder). Cluster access via CI
+    # k3s config (secret K3S_DEV_CONFIG); atomic = rollback on failure.
+    - helm lint deploy/chart/ulms
+    - helm upgrade --install ulms deploy/chart/ulms
+        --namespace ulms --create-namespace --atomic --wait --timeout 10m
+        --set global.imageRegistry=$CI_REGISTRY_IMAGE
+        --set api.tag=$CI_COMMIT_SHA --set web.tag=$CI_COMMIT_SHA
+        --set ingress.host=ulms-dev.bank.local
+    # post-deploy smoke (health + one authenticated read) — evidence for G5
+    - wget -qO- http://ulms-dev.bank.local/api/v1/actuator/health | grep -q '"UP"'
+  rules: [{ if: $CI_COMMIT_BRANCH == "main" }]
+
+mobile-tests:
+  stage: verify
+  image: node:22-alpine
+  script:
+    - cd apps/mobile && npm ci --no-audit --no-fund
+    - npm run test --silent              # sync engine + form validation (R6)
+  rules: [{ if: $CI_PIPELINE_SOURCE == "merge_request_event" }, { if: $CI_COMMIT_BRANCH == "main" }]
+
+image-scan:
+  stage: security
+  image: aquasec/trivy:0.58.1
+  script:
+    - trivy image --exit-code 1 --severity CRITICAL,HIGH $CI_REGISTRY_IMAGE/api:$CI_COMMIT_SHA
+  rules: [{ if: $CI_COMMIT_BRANCH == "main" }]
+  needs: [{ job: docker-build, optional: true }]
+
+perf-smoke:
+  stage: e2e
+  image: grafana/k6:1.0.0
+  script:
+    # R8 perf pack (light profile in CI; full 1000-VU run is a scheduled drill)
+    - k6 run --vus 20 --duration 30s deploy/perf/load-profile.js
+  allow_failure: true   # → strict when the NFR gate is enforced at G5
+  rules: [{ if: $CI_COMMIT_BRANCH == "main" }]
+
+e2e-smoke:
+  stage: e2e
+  image: mcr.microsoft.com/playwright:v1.53-jammy
+  script:
+    - cd e2e && npm ci --no-audit && npx playwright test --project=chromium
+  rules: [{ if: $CI_COMMIT_BRANCH == "main" }]

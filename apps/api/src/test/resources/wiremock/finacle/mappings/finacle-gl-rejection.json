@@ -1,0 +1,12 @@
+{
+  "name": "finacle-gl-rejection",
+  "request": {
+    "method": "POST",
+    "urlPath": "/finconnector/gl",
+    "bodyPatterns": [{ "matchesJsonPath": "$.narration", "contains": "FORCE_FAIL" }]
+  },
+  "response": {
+    "status": 422,
+    "jsonBody": { "code": "FIN-422", "detail": "account closed" }
+  }
+}

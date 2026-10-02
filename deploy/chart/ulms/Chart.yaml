@@ -1,0 +1,9 @@
+apiVersion: v2
+name: ulms
+description: ULMS — Unisoft Loan Management System (Fineract CE core, modular monolith)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+maintainers:
+  - name: Unisoft Systems Limited
+    email: office@uslbd.com

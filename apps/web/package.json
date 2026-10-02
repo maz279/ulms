@@ -1,0 +1,35 @@
+{
+  "name": "@ulms/web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "gen:i18n": "node scripts/gen-i18n.mjs",
+    "mock:api": "node scripts/mockApi/standalone.ts",
+    "dev:mock": "npm run mock:api & npm run dev",
+    "test:unit": "vitest run"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^7.3.11",
+    "@mui/material": "^7.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.6.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^4.5.0",
+    "jsdom": "^30.1.1",
+    "typescript": "^5.8.0",
+    "vite": "^7.0.0",
+    "vitest": "^5.0.3"
+  }
+}

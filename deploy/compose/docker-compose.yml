@@ -1,0 +1,173 @@
+# ULMS local/dev stack (PLANNING/01 §3, PLANNING/02 §5, PLANNING/10 §1)
+# One command: docker compose up -d
+# Credentials: .env ONLY (gitignored) — see .env.example. Never inline values.
+
+name: ulms
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ulms
+      POSTGRES_USER: ulms
+      POSTGRES_PASSWORD: ${ULMS_DB_PASSWORD:?set in .env}
+      # Fineract tenants schema lives in the same cluster (04 §1)
+      FINERACT_DB_PASSWORD: ${FINERACT_DB_PASSWORD:?set in .env}
+    ports: ["5433:5432"]   # host 5432 taken by another project (CRMS); apps use the internal name
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../seed/00-finerract-db.sh:/docker-entrypoint-initdb.d/00-finerract-db.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ulms"]
+      interval: 5s
+      retries: 10
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:?set in .env}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set in .env}
+      KC_DB: dev-file
+      KC_HTTP_ENABLED: "true"
+      # Tokens carry issuer http://keycloak:8080/... which the api can validate
+      # on the compose network (host access stays via the mapped port below).
+      KC_HOSTNAME: http://keycloak:8080
+    volumes:
+      - ../seed/realm-ulms.json:/opt/keycloak/data/import/realm-ulms.json:ro
+    ports: ["8082:8080"]
+    depends_on: [postgres]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8080/realms/ulms >/dev/null"]
+      interval: 10s
+      retries: 30
+      start_period: 30s
+
+  fineract:
+    # Apache publishes no version tags on Docker Hub — only `latest` and
+    # commit-SHA tags. Default = immutable SHA tag (audit R1: `latest` was
+    # unpinned); override FINERACT_IMAGE in .env, pin the digest of whatever
+    # you move to before G-sign-off (ADR-002).
+    image: ${FINERACT_IMAGE:-apache/fineract:fd01236df6}
+    environment:
+      FINERACT_SERVER_PORT: 8083
+      # Tenant store (where the tenants table lives)
+      FINERACT_HIKARI_DRIVER_SOURCE_CLASS_NAME: org.postgresql.Driver
+      FINERACT_HIKARI_JDBC_URL: jdbc:postgresql://postgres:5432/fineract_tenants
+      FINERACT_HIKARI_USERNAME: fineract
+      FINERACT_HIKARI_PASSWORD: ${FINERACT_DB_PASSWORD:?set in .env}
+      FINERACT_HIKARI_MAXIMUM_POOL_SIZE: 20
+      # Default tenant DB (auto-registered in the tenants table on first boot)
+      FINERACT_DEFAULT_TENANTDB_HOSTNAME: postgres
+      FINERACT_DEFAULT_TENANTDB_PORT: 5432
+      FINERACT_DEFAULT_TENANTDB_UID: fineract
+      FINERACT_DEFAULT_TENANTDB_PWD: ${FINERACT_DB_PASSWORD}
+      FINERACT_DEFAULT_TENANTDB_IDENTIFIER: default
+      FINERACT_DEFAULT_TENANTDB_NAME: fineract_default
+      FINERACT_DEFAULT_TENANTDB_TIMEZONE: Asia/Dhaka
+      FINERACT_SECURITY_BASICAUTH_ENABLED: "true"
+    ports: ["8083:8083"]
+    depends_on:
+      postgres: { condition: service_healthy }
+    healthcheck:
+      # self-signed TLS in dev (FINERACT_INSECURE_TLS mirrors this on the api side)
+      test: ["CMD-SHELL", "curl -ksf https://localhost:8083/fineract-provider/actuator/health | grep -q '\"UP\"'"]
+      interval: 15s
+      retries: 30
+      start_period: 90s
+
+  minio:
+    # MinIO stopped publishing to Docker Hub (Oct 2025) and LocalStack now wants
+    # a license even for S3. SeaweedFS S3 gateway is the local dev drop-in
+    # (AWS SDK v2 compatible). Production uses MinIO from the bank mirror or a
+    # private registry (ADR-006 note).
+    image: chrislusf/seaweedfs:3.80
+    command: server -s3 -s3.port=8333 -master.volumeSizeLimitMB=1024
+    environment:
+      WEED_S3_ACCESS_KEY: ${MINIO_ROOT_USER}
+      WEED_S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+    ports: ["9002:8333"]   # host 9000 taken by another project (CRMS); api uses the internal name
+    volumes: [minio:/data]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:8333/status >/dev/null || exit 1"]
+      interval: 10s
+      retries: 20
+      start_period: 15s
+
+  api:
+    build:
+      context: ../../apps/api
+    image: ulms-api:p1                # compose builds+runs this tag (not an anonymous one)
+    environment:
+      ULMS_DB_URL: jdbc:postgresql://postgres:5432/ulms
+      ULMS_DB_USER: ulms
+      ULMS_DB_PASSWORD: ${ULMS_DB_PASSWORD}
+      ULMS_OIDC_ISSUER: http://keycloak:8080/realms/ulms
+      FINERACT_URL: https://fineract:8083/fineract-provider/api/v1
+      FINERACT_USER: ${FINERACT_USER}
+      FINERACT_PASSWORD: ${FINERACT_PASSWORD}
+      FINERACT_INSECURE_TLS: "true"       # dev/compose: Fineract CE self-signed TLS (06 note)
+      SPRING_PROFILES_ACTIVE: dev         # P5 F10: trust-all TLS is dev/test-profile-gated
+      ULMS_MINIO_ENDPOINT: http://minio:8333
+      ULMS_MINIO_BUCKET: ulms-documents
+      ULMS_MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      ULMS_MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      ULMS_RAILS_WEBHOOK_SECRET: ${ULMS_RAILS_WEBHOOK_SECRET}   # rail callbacks (05 §7); unset → verifier fails CLOSED
+    ports: ["8081:8081"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      keycloak: { condition: service_started }
+      fineract: { condition: service_started }
+      minio: { condition: service_started }
+    healthcheck:
+      # temurin-jre has bash + grep; poll the public actuator health endpoint
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/8081; printf \"GET /actuator/health HTTP/1.0\\r\\n\\r\\n\" >&3; grep -q \"\\\"UP\\\"\" <&3'"]
+      interval: 10s
+      retries: 30
+      start_period: 60s
+
+  web:
+    # staff app — production build served as static files (audit R1: the
+    # stack advertised web since P0; now it actually runs). For HMR dev keep
+    # using `npm run dev` on the host (mock or compose proxy mode).
+    build:
+      context: ../../apps/web
+      args:
+        VITE_USE_MOCK_API: "0"            # compose stack → real api proxy
+    image: ulms-web:p1
+    ports: ["4173:80"]   # realm redirectUris/webOrigins allow 5173+4173 (R2)
+    depends_on:
+      api: { condition: service_started }
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+    volumes:
+      - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - promdata:/prometheus
+    ports: ["9090:9090"]
+    depends_on:
+      api: { condition: service_started }
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:9090/-/ready >/dev/null"]
+      interval: 10s
+      retries: 20
+
+  grafana:
+    image: grafana/grafana:11.6.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?set in .env}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+    ports: ["3000:3000"]
+    depends_on: [prometheus]
+
+volumes:
+  pgdata:
+  minio:
+  promdata:
+  grafana-data:

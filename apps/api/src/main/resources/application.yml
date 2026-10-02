@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: ulms-api
+  datasource:
+    url: ${ULMS_DB_URL:jdbc:postgresql://localhost:5432/ulms}
+    username: ${ULMS_DB_USER:ulms}
+    password: ${ULMS_DB_PASSWORD}          # required — no default, no literals (06 §1)
+  flyway:
+    schemas: ulms
+    locations: classpath:db/migration
+  jpa:
+    open-in-view: false
+    hibernate.ddl-auto: validate           # Flyway owns the schema (04 §6)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ULMS_OIDC_ISSUER:http://localhost:8082/realms/ulms}
+  threads.virtual.enabled: true
+
+server:
+  port: 8081
+  error.include-stacktrace: never          # 05 §3: opaque 5xx
+
+management:
+  endpoints.web.exposure.include: health,prometheus,info
+  endpoint.health.probes.enabled: true
+
+ulms:
+  fineract:
+    base-url: ${FINERACT_URL:https://localhost:8443/fineract-provider/api/v1}
+    username: ${FINERACT_USER}             # from secret store only
+    password: ${FINERACT_PASSWORD}
+    connect-timeout-ms: 3000
+    read-timeout-ms: 10000
+    insecure-tls: ${FINERACT_INSECURE_TLS:false}   # dev/compose only (self-signed Fineract TLS)
+  minio:
+    endpoint: ${ULMS_MINIO_ENDPOINT:http://localhost:9000}
+    bucket: ${ULMS_MINIO_BUCKET:ulms-documents}
+    access-key: ${ULMS_MINIO_ACCESS_KEY}   # env only (06 §1)
+    secret-key: ${ULMS_MINIO_SECRET_KEY}
+  branch-scope-required: true              # 05 §5
+
+# R7: CIB ONLINE retry matrix (PLANNING/11 §1) — applies to the proxied
+# pullReport entry point. 429 (CIB-003) is ignore-exceptions: never retried,
+# requeued with backoff by the caller instead.
+resilience4j:
+  retry:
+    instances:
+      cib:
+        max-attempts: ${ULMS_CIB_RETRY_MAX:4}          # 1 attempt + 3 retries (CIB-001/002)
+        wait-duration: ${ULMS_CIB_RETRY_WAIT_MS:250ms}
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+        ignore-exceptions:
+          - com.uslbd.ulms.integration.cib.CibOnlineAdapter.CibRateLimitedException
+  circuit-breaker:
+    instances:
+      cib:                                    # R10 P-A — activated from the compose example (CIB-SPEC §8.2)
+        sliding-window-size: 20
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 60s

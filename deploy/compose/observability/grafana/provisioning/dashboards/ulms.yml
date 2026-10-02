@@ -1,0 +1,11 @@
+# ULMS Grafana provisioning — dashboards (audit R1; R8 enriches)
+apiVersion: 1
+providers:
+  - name: ulms
+    folder: ULMS
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 60
+    options:
+      path: /etc/grafana/provisioning/dashboards/json
+      foldersFromFilesStructure: false

@@ -1,0 +1,82 @@
+{{- /* ULMS alert rules (R8) — PrometheusRule CRD; kube-prometheus-stack picks
+   it up via the release rule selector. Bare rule-group files are rejected by
+   kubectl (no apiVersion/kind), hence the CRD wrapper. */}}
+{{- if .Values.observability.prometheus.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ .Release.Name }}-slo-rules
+  labels:
+    app: {{ .Release.Name }}
+    release: prometheus       # match the site's Prometheus ruleSelector label
+spec:
+  groups:
+    - name: ulms-api-slos
+      rules:
+        - alert: UlmsApiHighErrorRate
+          expr: |
+            sum(rate(http_server_requests_seconds_count{job="ulms-api", status=~"5.."}[5m]))
+              / sum(rate(http_server_requests_seconds_count{job="ulms-api"}[5m])) > 0.02
+          for: 5m
+          labels: { severity: critical, team: ulms }
+          annotations:
+            summary: "ULMS API 5xx error rate > 2%"
+            # {{`{{ ... }}`}} escapes Prometheus's own annotation templating out of Helm's Go templates
+            description: "5xx are {{`{{ $value | humanizePercentage }}`}} of requests over 5m — NFR target 99.9% availability."
+        - alert: UlmsApiLatencyP95Breached
+          expr: |
+            histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job="ulms-api"}[5m])) by (le)) > 0.5
+          for: 10m
+          labels: { severity: warning, team: ulms }
+          annotations:
+            summary: "ULMS API p95 latency > 500ms (NFR)"
+            description: "p95 = {{`{{ $value | humanizeDuration }}`}} over 10m. Check slow SQL + the postgres pool."
+        - alert: UlmsApiDown
+          expr: up{job="ulms-api"} == 0
+          for: 1m
+          labels: { severity: critical, team: ulms }
+          annotations:
+            summary: "ULMS API unreachable"
+        - alert: UlmsJvmHeapNearLimit
+          expr: sum(jvm_memory_used_bytes{job="ulms-api", area="heap"}) / sum(jvm_memory_max_bytes{job="ulms-api", area="heap"}) > 0.9
+          for: 10m
+          labels: { severity: warning, team: ulms }
+          annotations:
+            summary: "ULMS JVM heap > 90%"
+        - alert: UlmsDbPoolExhaustion
+          expr: hikaricp_connections_active{job="ulms-api"} / hikaricp_connections_max{job="ulms-api"} > 0.9
+          for: 5m
+          labels: { severity: warning, team: ulms }
+          annotations:
+            summary: "HikariCP pool > 90% in use"
+
+    - name: ulms-batch
+      rules:
+        - alert: UlmsEodBatchNotRun
+          expr: time() - max(increase(ulms_eod_runs_total[24h]) > 0 or vector(0)) > 90000
+          for: 1h
+          labels: { severity: critical, team: ulms-compliance }
+          annotations:
+            summary: "BRPD EOD batch has not completed in 24h (BRPD 15/2024 requires daily)"
+        - alert: UlmsOutboxBacklogGrowing
+          expr: ulms_outbox_pending > 100
+          for: 15m
+          labels: { severity: warning, team: ulms }
+          annotations:
+            summary: "Transactional outbox backlog > 100 events (ADR-004 relay stalled?)"
+        - alert: UlmsRailWebhookFailures
+          expr: rate(ulms_rail_webhook_rejected_total[15m]) > 0.1
+          for: 15m
+          labels: { severity: warning, team: ulms }
+          annotations:
+            summary: "Rail webhook rejections rising (bad signatures / stale timestamps)"
+
+    - name: ulms-business
+      rules:
+        - alert: UlmsSmaMigrationSpike
+          expr: increase(ulms_classification_migrations_total{to="SMA"}[24h]) > 20
+          for: 1h
+          labels: { severity: warning, team: ulms-risk }
+          annotations:
+            summary: "SMA migrations spiked (>20 in 24h) — collection push recommended"
+{{- end }}

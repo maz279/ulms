@@ -1,0 +1,61 @@
+# ULMS k3s namespaces + storage + pgBackRest (R8)
+# Applied once per cluster before the chart: kubectl apply -f k3s-base.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ulms
+  labels: { app.kubernetes.io/part-of: ulms }
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ulms-staging
+  labels: { app.kubernetes.io/part-of: ulms }
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels: { app.kubernetes.io/part-of: ulms }
+---
+# pgBackRest backup schedule (daily full 01:30 + 6h incrementals; 14d GFS retention)
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pgbackrest-full
+  namespace: ulms
+spec:
+  schedule: "30 1 * * *"                     # after the BRPD EOD batch (23:30) settles
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: pgbackrest
+              image: pgbackrest/pgbackrest:2.54
+              command: ["pgbackrest", "--stanza=ulms", "backup", "--type=full"]
+              env:
+                - name: PGBACKREST_PG1_HOST
+                  value: postgresql.ulms.svc
+                - name: PGBACKREST_REPO1_PATH
+                  value: /backups
+                - name: PGBACKREST_REPO1_TYPE
+                  value: posix
+                - name: PGBACKREST_PG1_USER
+                  valueFrom: { secretKeyRef: { name: ulms-pg-secrets, key: BACKUP_USER } }
+                - name: PGBACKREST_PG1_PASSWORD
+                  valueFrom: { secretKeyRef: { name: ulms-pg-secrets, key: BACKUP_PASSWORD } }
+              volumeMounts: [{ name: backups, mountPath: /backups }]
+          volumes:
+            - name: backups
+              persistentVolumeClaim: { claimName: ulms-backups }
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ulms-backups
+  namespace: ulms
+spec:
+  accessModes: [ReadWriteOnce]
+  resources: { requests: { storage: 500Gi } }
