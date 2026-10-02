@@ -40,7 +40,8 @@ services:
     ports: ["8082:8080"]
     depends_on: [postgres]
     healthcheck:
-      test: ["CMD-SHELL", "curl -fs http://localhost:8080/realms/ulms >/dev/null"]
+      # fixed KC_HOSTNAME makes internal HTTP reads 500; TCP-connect proves the listener
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/8080'"]
       interval: 10s
       retries: 30
       start_period: 30s
@@ -73,7 +74,7 @@ services:
       postgres: { condition: service_healthy }
     healthcheck:
       # self-signed TLS in dev (FINERACT_INSECURE_TLS mirrors this on the api side)
-      test: ["CMD-SHELL", "curl -ksf https://localhost:8083/fineract-provider/actuator/health | grep -q '\"UP\"'"]
+      test: ["CMD-SHELL", "wget --no-check-certificate -qO- https://localhost:8083/fineract-provider/actuator/health | grep -q '\"UP\"'"]
       interval: 15s
       retries: 30
       start_period: 90s
@@ -91,7 +92,7 @@ services:
     ports: ["9002:8333"]   # host 9000 taken by another project (CRMS); api uses the internal name
     volumes: [minio:/data]
     healthcheck:
-      test: ["CMD-SHELL", "curl -fs http://localhost:8333/status >/dev/null || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:9333/cluster/status >/dev/null 2>&1 || wget -qO- http://127.0.0.1:8333/ >/dev/null 2>&1 || exit 1"]
       interval: 10s
       retries: 20
       start_period: 15s
@@ -118,7 +119,10 @@ services:
       ULMS_MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
       ULMS_MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       ULMS_RAILS_WEBHOOK_SECRET: ${ULMS_RAILS_WEBHOOK_SECRET}   # rail callbacks (05 §7); unset → verifier fails CLOSED
-    ports: ["8081:8081"]
+      MANAGEMENT_SERVER_PORT: "9977"   # dedicated metrics port for prometheus
+      ULMS_METRICS_OPEN: "true"        # scrape port is network-restricted (P5 F6 stands on :8081)
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,prometheus,info
+    ports: ["8081:8081", "9977:9977"]
     depends_on:
       postgres: { condition: service_healthy }
       keycloak: { condition: service_started }
@@ -126,7 +130,7 @@ services:
       minio: { condition: service_started }
     healthcheck:
       # temurin-jre has bash + grep; poll the public actuator health endpoint
-      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/8081; printf \"GET /actuator/health HTTP/1.0\\r\\n\\r\\n\" >&3; grep -q \"\\\"UP\\\"\" <&3'"]
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/localhost/9977; printf \"GET /actuator/health HTTP/1.0\\r\\n\\r\\n\" >&3; grep -q \"\\\"UP\\\"\" <&3'"]
       interval: 10s
       retries: 30
       start_period: 60s

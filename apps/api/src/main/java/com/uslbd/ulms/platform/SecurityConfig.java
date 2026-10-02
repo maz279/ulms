@@ -37,6 +37,12 @@ public class SecurityConfig {
     static final String STAFF_ROLES =
             "hasAnyRole('branch-officer','branch-manager','credit-analyst','ho-credit','collections','compliance','admin')";
 
+    /** Q2.2: metrics scraping port switch — compose/k8s serve /actuator/prometheus
+     *  on a DEDICATED management port (network-restricted) and set this flag;
+     *  the default (false) keeps metrics admin-JWT-gated on the main port (P5 F6). */
+    @org.springframework.beans.factory.annotation.Value("${ulms.metrics-open:false}")
+    private boolean metricsOpen;
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         JwtAuthenticationConverter realmRoles = new JwtAuthenticationConverter();
@@ -46,7 +52,9 @@ public class SecurityConfig {
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
-                .requestMatchers("/actuator/prometheus").hasRole("admin")   // P5 F6: metrics are admin-only
+                .requestMatchers("/actuator/prometheus")
+                .access(new org.springframework.security.web.access.expression.WebExpressionAuthorizationManager(
+                        metricsOpen ? "permitAll" : "hasRole('admin')"))
                 .requestMatchers("/hooks/**").permitAll()   // rails cannot mint JWTs — HMAC IS the auth (05 §7)
                 // P5 F2: staff-data prefixes default-deny non-staff roles (incl. borrower)
                 .requestMatchers("/api/v1/customers/**", "/api/v1/applications/**",
