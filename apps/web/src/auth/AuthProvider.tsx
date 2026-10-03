@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import {
   AuthSession, resolveMode, issuer, loadSession, saveSession, openSession, tokenSession, markSignedOut, clearSignedOut, isSignedOut,
   pkcePair, stashPkce, readPkce, authorizeUrl, tokenExchange, refreshToken, redirectUri,
-  CLIENT_ID, postAuthEvent, sessionFromToken, devSession,
+  CLIENT_ID, postAuthEvent, sessionFromToken, devSession, passwordGrant,
 } from "./session";
 import { DEV_PERSONAS } from "./roles";
 
@@ -20,6 +20,7 @@ interface AuthCtx {
   login: () => void;                                   // oidc: redirect; others: no-op
   completeOidc: () => Promise<void>;                   // ?code callback handling
   loginAs: (personaId: string) => void;                // dev persona login/switch
+  loginWithPassword: (username: string, password: string, totp: string) => Promise<void>;
   logout: () => void;
   refresh: () => Promise<void>;
 }
@@ -92,6 +93,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     set(devSession({ officer: p.officer, roles: p.roles, id: p.id }), "LOGIN");
   }, []);
 
+  /** Single-page production login: direct grant against the pinned issuer
+   *  (no redirect to the IdP's hosted page). The `totp` word is validated
+   *  by Keycloak for TOTP-enrolled users and ignored otherwise. */
+  const loginWithPassword = React.useCallback(async (username: string, password: string, totp: string) => {
+    if (mode !== "oidc" || !iss) throw new Error("SSO not configured");
+    const tr = await passwordGrant(iss, CLIENT_ID, username, password, totp);
+    const s = sessionFromToken(tr.access_token, "oidc");
+    if (!s) throw new Error("identity provider returned an unusable token");
+    clearSignedOut();
+    set({ ...s, refreshToken: tr.refresh_token, idToken: tr.id_token,
+          expiresAt: Date.now() + tr.expires_in * 1000 }, "LOGIN");
+  }, [mode, iss]);
+
   const logout = React.useCallback(() => {
     const prev = session;
     set(null);
@@ -137,7 +151,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [mode, session, refresh]);
 
   return (
-    <Ctx.Provider value={{ session, initializing, error, login, completeOidc, loginAs, logout, refresh }}>
+    <Ctx.Provider value={{ session, initializing, error, login, completeOidc, loginAs, loginWithPassword, logout, refresh }}>
       {children}
     </Ctx.Provider>
   );

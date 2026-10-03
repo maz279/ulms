@@ -15,7 +15,7 @@ import { useAuth, DEV_PERSONAS } from "../auth/AuthProvider";
 import { issuer, resolveMode } from "../auth/session";
 
 export function LoginPage() {
-  const { session, login, completeOidc, loginAs, initializing, error } = useAuth();
+  const { session, login, completeOidc, loginAs, loginWithPassword, initializing, error } = useAuth();
   const nav = useNavigate();
   const mode = resolveMode();
   const iss = issuer();
@@ -25,6 +25,7 @@ export function LoginPage() {
   const [mfa, setMfa] = React.useState("");
   const [step, setStep] = React.useState<"creds" | "mfa">("creds");
   const [formErr, setFormErr] = React.useState<string | null>(null);
+  const [busy, setBusy] = React.useState(false);
 
   React.useEffect(() => { void completeOidc(); }, [completeOidc]);
 
@@ -43,10 +44,26 @@ export function LoginPage() {
     setStep("mfa");
   }
 
-  function submitMfa(e: React.FormEvent) {
+  async function submitMfa(e: React.FormEvent) {
     e.preventDefault();
     if (!mfa.trim()) {
       setFormErr("Enter the code from your authenticator app");
+      return;
+    }
+    if (mode === "oidc") {
+      // Production: one direct-grant call to the pinned issuer — credentials
+      // AND the MFA word are validated by Keycloak (TOTP-enrolled users;
+      // ignored for users not yet enrolled). No redirect to the IdP page.
+      setBusy(true); setFormErr(null);
+      try {
+        await loginWithPassword(user, pass, mfa);
+        nav("/home");
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        // credential problems belong on the creds step; OTP problems stay here
+        if (/credential|invalid user/i.test(msg)) { setStep("creds"); setPass(""); }
+        setFormErr(msg);
+      } finally { setBusy(false); }
       return;
     }
     // Mock stack: credentials and the MFA word are accepted as typed (the
@@ -112,31 +129,7 @@ export function LoginPage() {
             }}>{formErr ?? error}</div>
           )}
 
-          {mode === "oidc" && (
-            <>
-              <button type="button" onClick={login} disabled={initializing}
-                style={{
-                  width: "100%", padding: "12px 16px", border: 0, borderRadius: 8,
-                  background: "linear-gradient(135deg,#3949ab,#1a237e)", color: "#fff",
-                  fontWeight: 700, fontSize: 14.5, cursor: "pointer",
-                }}>
-                {initializing ? "Signing in…" : "Sign in with bank SSO (Keycloak)"}
-              </button>
-              <p style={{ fontSize: 12, color: "#777", margin: "14px 0 0", lineHeight: 1.5 }}>
-                OIDC authorization-code + PKCE · MFA (TOTP) enforced by the realm —
-                staff credentials are validated by the bank identity provider.
-              </p>
-            </>
-          )}
-
-          {mode === "token" && (
-            <>
-              <p style={{ fontSize: 13.5, margin: "0 0 6px" }}>CI static-token session active.</p>
-              <p style={{ fontSize: 12.5, color: "#777" }}>Roles come from VITE_ULMS_DEV_ROLES (or the token claims when it is a JWT).</p>
-            </>
-          )}
-
-          {mode === "open" && step === "creds" && (
+          {(mode === "oidc" || mode === "open") && step === "creds" && (
             <form onSubmit={submitCreds}>
               <label style={{ display: "block", fontSize: 12.5, fontWeight: 600, color: "#3949ab", margin: "0 0 6px" }}>Username</label>
               <input value={user} onChange={(e) => setUser(e.target.value)} autoComplete="username"
@@ -150,16 +143,47 @@ export function LoginPage() {
                 style={{ width: "100%", boxSizing: "border-box", padding: "11px 12px", borderRadius: 8,
                   border: "1px solid #d5d8e4", fontSize: 14, marginBottom: 18, outline: "none",
                   background: "#f8f9fc" }} />
-              <button type="submit"
+              <button type="submit" disabled={busy}
                 style={{
                   width: "100%", padding: "12px 16px", border: 0, borderRadius: 8,
                   background: "linear-gradient(135deg,#3949ab,#1a237e)", color: "#fff",
-                  fontWeight: 700, fontSize: 14.5, cursor: "pointer",
-                }}>Continue</button>
+                  fontWeight: 700, fontSize: 14.5, cursor: busy ? "wait" : "pointer",
+                  opacity: busy ? 0.7 : 1,
+                }}>{busy ? "Checking…" : "Continue"}</button>
             </form>
           )}
 
-          {mode === "open" && step === "mfa" && (
+          {mode === "token" && (
+            <>
+              <p style={{ fontSize: 13.5, margin: "0 0 6px" }}>CI static-token session active.</p>
+              <p style={{ fontSize: 12.5, color: "#777" }}>Roles come from VITE_ULMS_DEV_ROLES (or the token claims when it is a JWT).</p>
+            </>
+          )}
+
+          {mode === "oidc" && (
+            <div style={{ marginTop: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "0 0 10px" }}>
+                <div style={{ flex: 1, height: 1, background: "#e6e8f0" }} />
+                <span style={{ fontSize: 11, color: "#9aa0b5" }}>OTHER SIGN-IN OPTION</span>
+                <div style={{ flex: 1, height: 1, background: "#e6e8f0" }} />
+              </div>
+              <button type="button" onClick={login} disabled={initializing}
+                style={{
+                  width: "100%", padding: "10px 16px", borderRadius: 8,
+                  border: "1px solid #c5cae9", background: "#f8f9fc", color: "#3949ab",
+                  fontWeight: 600, fontSize: 13.5, cursor: "pointer",
+                }}>
+                {initializing ? "Redirecting…" : "Bank SSO (Keycloak) — PKCE redirect"}
+              </button>
+              <p style={{ fontSize: 11.5, color: "#9aa0b5", margin: "10px 0 0", lineHeight: 1.5 }}>
+                Username, password and the MFA code above are validated directly by the
+                bank identity provider — the SSO button is the fallback for smart-card /
+                federated accounts.
+              </p>
+            </div>
+          )}
+
+          {(mode === "open" || mode === "oidc") && step === "mfa" && (
             <form onSubmit={submitMfa}>
               <div style={{
                 display: "flex", alignItems: "center", gap: 10, background: "#eef0fa",
@@ -175,12 +199,13 @@ export function LoginPage() {
                 style={{ width: "100%", boxSizing: "border-box", padding: "11px 12px", borderRadius: 8,
                   border: "1px solid #d5d8e4", fontSize: 14, marginBottom: 18, outline: "none",
                   background: "#f8f9fc", letterSpacing: 1.5 }} />
-              <button type="submit"
+              <button type="submit" disabled={busy}
                 style={{
                   width: "100%", padding: "12px 16px", border: 0, borderRadius: 8,
                   background: "linear-gradient(135deg,#3949ab,#1a237e)", color: "#fff",
-                  fontWeight: 700, fontSize: 14.5, cursor: "pointer",
-                }}>Verify & sign in</button>
+                  fontWeight: 700, fontSize: 14.5, cursor: busy ? "wait" : "pointer",
+                  opacity: busy ? 0.7 : 1,
+                }}>{busy ? "Verifying…" : "Verify & sign in"}</button>
               <button type="button" onClick={() => { setStep("creds"); setMfa(""); setFormErr(null); }}
                 style={{ width: "100%", marginTop: 8, padding: "9px 16px", border: 0, background: "none",
                   color: "#5f6368", fontSize: 12.5, cursor: "pointer" }}>← Use a different account</button>

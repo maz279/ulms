@@ -127,6 +127,51 @@ export function logoutUrl(iss: string, clientId: string, redirectUri: string, id
   return `${iss}/protocol/openid-connect/logout?${q}`;
 }
 
+/* ---------- direct grant (single-page login, no IdP redirect) ----------
+   The issuer is the build-time pinned constant (env override), never user
+   input — the only host ever requested is that known issuer, and http/https
+   is asserted before the fetch. `totp` carries the MFA word: Keycloak
+   validates it for TOTP-enrolled users and ignores it otherwise. */
+export interface TokenGrant {
+  access_token: string; refresh_token?: string; id_token?: string;
+  expires_in: number; error?: string; error_description?: string;
+}
+
+export async function passwordGrant(iss: string, clientId: string,
+                                    username: string, password: string,
+                                    totp?: string): Promise<TokenGrant> {
+  if (!/^https?:\/\//i.test(iss)) throw new Error("issuer must be http(s)");
+  const url = new URL(`${iss}/protocol/openid-connect/token`);
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    throw new Error("unsupported issuer protocol");
+  }
+  // Same-origin first: nginx (compose + k8s) proxies /realms/ to Keycloak,
+  // so the direct grant avoids cross-origin entirely. The path is derived
+  // from the PINNED issuer (never user input); falls back to the issuer
+  // URL when no same-origin proxy serves /realms/ (dev tooling).
+  const realmSeg = url.pathname.split("/realms/")[1];
+  const fetchUrl = realmSeg !== undefined
+    ? "/realms/" + realmSeg.replace(/^\/+/, "")
+    : url.href;
+  const body = new URLSearchParams({
+    grant_type: "password", client_id: clientId,
+    scope: "openid", username, password,
+  });
+  if (totp) body.set("totp", totp);
+  const res = await fetch(fetchUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+  });
+  const json = (await res.json().catch(() => ({}))) as TokenGrant;
+  if (!res.ok) {
+    const desc = json.error_description ?? json.error ?? `HTTP ${res.status}`;
+    throw new Error(desc);
+  }
+  if (!json.access_token) throw new Error("identity provider returned no token");
+  return json;
+}
+
 export interface TokenResponse {
   access_token: string; refresh_token?: string; id_token?: string; expires_in: number;
 }
