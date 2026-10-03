@@ -83,7 +83,15 @@ with full audit + RATE_REPRICED events — already built and tested in P-E.
 - OpenAPI: 5 new path blocks, redocly "Woohoo" valid.
 - e2e: **36 pass / 2 skip / 0 fail, serial (retries off)** — includes the new
   Q3 OTP journey spec.
-- Full Java regression: background (evidence appended on completion).
+- Full Java regression (after the mid-run Docker Desktop crash + relaunch):
+  **164 tests / 0 failures / 0 skipped / 44 suites — BUILD SUCCESSFUL
+  (49m29s)**, the 13 Q3 tests included.
+- Closing blind-spot pass (same day):  proves the
+  Q3.2 capture fires on a REAL approval journey — an APPROVE at a ladder
+  node persists canvas-sha256 evidence (sig_algorithm/sig_hash/sig_value)
+  on the workflow_transition row. Compose stack re-verified up with the
+  OTP flip; V15↔entity column parity confirmed; the two secret-named
+  git files are the RB-06 rotation runbook docs, not credentials.
 
 ## V15 migration summary
 
