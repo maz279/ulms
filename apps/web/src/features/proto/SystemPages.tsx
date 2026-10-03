@@ -6,6 +6,7 @@
    pages.
    ============================================================ */
 import * as React from "react";
+import { ENV_LABEL } from "../../shell/envLabel";
 import { pick, useLang } from "../../i18n/bilingual";
 import { LMS_AREAS, LMS_MODULES } from "../../shell/navData";
 import { Head, Btn, TBtn, KpiRow, Card, Grid, useGo, type Col } from "../../shell/ui";
@@ -111,9 +112,9 @@ export function SettingsPage() {
             <div className="fb-kv"><span>Rollback</span><b>supported</b></div>
           </Card>
           <Card title="Environment">
-            <div className="fb-kv"><span>Build</span><b>v2.0.146-staging</b></div>
-            <div className="fb-kv"><span>Fineract</span><b>1.10 CE</b></div>
-            <div className="fb-kv"><span>Region</span><b>ap-south-1</b></div>
+            <div className="fb-kv"><span>Mode</span><b>{ENV_LABEL} build</b></div>
+            <div className="fb-kv"><span>Core</span><b>Apache Fineract CE</b></div>
+            <div className="fb-kv"><span>Deployment</span><b>bank on-prem (compose/k3s)</b></div>
           </Card>
         </aside>
       </div>

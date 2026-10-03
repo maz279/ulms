@@ -532,8 +532,8 @@ export const STRINGS: Record<string, BilingualString> = {
     "bn": "অটোসেভ চালু · ৩০ সেকেন্ড"
   },
   "shell.statusbar.env": {
-    "en": "STAGING",
-    "bn": "স্টেজিং"
+    "en": "PRODUCTION",
+    "bn": "প্রোডাকশন"
   },
   "shell.statusbar.company": {
     "en": "Dhaka North Zone",

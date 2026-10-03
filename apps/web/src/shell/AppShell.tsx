@@ -14,6 +14,7 @@ import { lmSearch, typeIcon } from "./search";
 import { ToastHost, toast, useGo, normalizeRoute } from "./ui";
 import { useAuth } from "../auth/AuthProvider";
 import { resolveMode } from "../auth/session";
+import { ENV_LABEL } from "./envLabel";
 import {
   AREA_ROLES, SYSTEM_LINK_ROLES, ROLE_LABEL, DEV_PERSONAS,
   type RealmRole,
@@ -348,7 +349,8 @@ export function AppShell() {
             <span>ABC Bank Bangladesh · Fineract core</span>
           </div>
         </div>
-        <span className="tb-portal">STAGING</span>
+        {/* environment identity — the real build mode, never a hardcoded stage */}
+        <span className="tb-portal" data-testid="env-chip">{ENV_LABEL}</span>
 
         <div className="tb-search">
           <span className="s-ico">⌕</span>
@@ -637,7 +639,7 @@ export function AppShell() {
 
       {/* 4. STATUS BAR */}
       <footer className="usl-statusbar" role="contentinfo">
-        <span className="sb-pill">{t("shell.statusbar.env")}</span><span className="sb-sep" />
+        <span className="sb-pill">{ENV_LABEL}</span><span className="sb-sep" />
         <span>Unisoft Systems · {t("shell.statusbar.company")} · FY 2026-27</span><span className="sb-sep" />
         <span>✓ {t("shell.statusbar.autosave")}</span><span className="sb-sep" />
         <span className="mono" id="sb-route">{routeLabel}</span>
