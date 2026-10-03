@@ -26,6 +26,11 @@ export function WorkspacePage() {
           <Btn label="Function register" variant="btn-2nd" onClick={() => go(`/freg/${mid}`)} />
           <Btn label="All module reports" variant="btn-2nd" onClick={() => go(`/reports/${mid}`)} />
         </>} />
+      {/* navData KPIs are PROTOTYPE reference numbers (from the validated UX
+          contract) — badged so demo figures never read as production truth */}
+      <div className="small" style={{ margin: "-6px 0 8px", opacity: 0.75 }}>
+        <span className="tag">PROTOTYPE REFERENCE KPIs</span>
+      </div>
       <KpiRow items={m.kpis.map((k: any) => ({ l: k.l, v: k.v, d: k.d, st: k.st }))} />
       <div className="dash-grid">
         <div className="w12" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(320px,1fr))", gap: 12 }}>

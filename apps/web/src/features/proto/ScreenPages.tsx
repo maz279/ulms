@@ -37,7 +37,17 @@ export function ScreenPage() {
     g: GridArchetype, f: RecordArchetype, x: XArchetype, c: ConsoleArchetype, d: DashArchetype, r: ReportArchetypeScreen,
   };
   const El = map[hit.scr.t] ?? GridArchetype;
-  return <El {...hit} />;
+  return (
+    <>
+      {/* Archetype screens render the validated prototype layout with
+          reference rows (genRows) — badged so demo figures never read as
+          production data. Live registers live on their dedicated pages. */}
+      <div className="small" style={{ padding: "4px 2px", opacity: 0.75 }}>
+        <span className="tag">PROTOTYPE REFERENCE LAYOUT</span>
+      </div>
+      <El {...hit} />
+    </>
+  );
 }
 function Redirector({ route, sid }: { route: string; sid: string }) {
   const go = useGo();
