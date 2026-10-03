@@ -74,9 +74,24 @@ spec:
   policyTypes: [Ingress]
   ingress:
     - from:
+        # same-namespace pods (api→api, web→api, api→postgresql) — Q2.4
+        # finding: namespaceSelector-only rules DENY intra-namespace traffic
+        - podSelector: {}
         {{- range .Values.networkPolicy.allowNamespaces }}
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: {{ . }}
         {{- end }}
 {{- end }}
+
+---
+# Q2.4: the web image's nginx proxies to hostname "api" (compose DNS name) —
+# expose the same name inside k8s so the stock image works unmodified
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  labels: { app: {{ .Release.Name }}-api }
+spec:
+  selector: { app: {{ .Release.Name }}-api }
+  ports: [{ port: 8081, targetPort: 8081 }]
