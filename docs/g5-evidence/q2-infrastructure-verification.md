@@ -82,6 +82,26 @@ activate 200 → read ACTIVE; customer create 201 **with real Fineract clientId=
 
 ---
 
+## Post-verification audit (2026-10-03) — 4 further defects found + fixed
+
+1. **RB-12 polluted the live compose DB** — the rehearsal ran against the live
+   stack Postgres and left 45,000 synthetic loans + 450,000 payments behind.
+   Fixed: rows truncated (verified 0/0); the drill now carries a cleanup step
+   (`KEEP_DATA=1` to retain a production-shape book deliberately).
+2. **CI health-smoke path was broken** — `.gitlab-ci.yml` probed
+   `/api/v1/actuator/health` (nonexistent route). Fixed: `/actuator/health`
+   through the web ingress, which nginx now proxies to the api management
+   port; verified `curl :4173/actuator/health → {"status":"UP"}`.
+3. **Health topology was split-brained after the metrics-port move** — compose
+   served actuator only on 9977 while the chart probed 8081. Fixed: the chart
+   now sets `MANAGEMENT_SERVER_PORT=9977` + `ULMS_METRICS_OPEN` and exposes a
+   named `mgmt` container/service port; probes target `mgmt`; k3s redeployed
+   and verified healthy on 9977 in-cluster.
+4. **A drill-evidence file under `build/` was committed** — removed from the
+   index and `build/` gitignored.
+
+Also cleaned: stale exited testcontainer removed (zero strays remain).
+
 ## Defect ledger (all committed)
 
 compose: issuer split, metrics port + gate, image-accurate healthchecks ×3,

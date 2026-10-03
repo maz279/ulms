@@ -105,4 +105,13 @@ MISSING=$($PSQL_CMD -tAc "
 [ "$MISSING" -eq 0 ] || { echo "FAIL: ${MISSING}/100 source refs missing in target"; exit 1; }
 echo "PASS: ${QA_ROWS}-row reverse QA clean"
 
+# 4) CLEANUP — the rehearsal must not leave synthetic rows behind (audit:
+#    first live run left 45k loans/450k payments in the compose DB). Default
+#    KEEP_DATA=0 truncates back to empty; set KEEP_DATA=1 to keep the
+#    production-shape book for perf/EOD rehearsal against this database.
+if [ "${KEEP_DATA:-0}" != "1" ]; then
+  $PSQL_CMD -v ON_ERROR_STOP=1 -c "TRUNCATE ${SCHEMA}.payment, ${SCHEMA}.loan RESTART IDENTITY CASCADE;" >/dev/null
+  echo "cleanup: rehearsal rows truncated (KEEP_DATA=1 to retain)"
+fi
+
 echo "== RB-12 REHEARSAL GREEN — evidence: append summary to docs/g5-evidence/ =="

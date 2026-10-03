@@ -23,7 +23,7 @@ metadata:
   name: {{ .Release.Name }}-api
 spec:
   selector: { app: {{ .Release.Name }}-api }
-  ports: [{ port: 8081, targetPort: 8081 }]
+  ports: [{ port: 8081, targetPort: 8081, name: http }, { port: 9977, targetPort: 9977, name: mgmt }]
 ---
 apiVersion: v1
 kind: Service

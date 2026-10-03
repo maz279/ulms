@@ -85,7 +85,7 @@ deploy-dev:
         --set api.tag=$CI_COMMIT_SHA --set web.tag=$CI_COMMIT_SHA
         --set ingress.host=ulms-dev.bank.local
     # post-deploy smoke (health + one authenticated read) — evidence for G5
-    - wget -qO- http://ulms-dev.bank.local/api/v1/actuator/health | grep -q '"UP"'
+    - wget -qO- http://ulms-dev.bank.local/actuator/health | grep -q '"UP"'
   rules: [{ if: $CI_COMMIT_BRANCH == "main" }]
 
 mobile-tests:

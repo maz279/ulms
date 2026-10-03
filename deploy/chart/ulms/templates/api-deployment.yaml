@@ -14,8 +14,12 @@ spec:
       containers:
         - name: api
           image: "{{ .Values.global.imageRegistry }}{{ if .Values.global.imageRegistry }}/{{ end }}{{ .Values.api.image }}:{{ .Values.api.tag | default .Chart.AppVersion }}"
-          ports: [{ containerPort: 8081, name: http }]
+          ports: [{ containerPort: 8081, name: http }, { containerPort: 9977, name: mgmt }]
           env:
+            - name: MANAGEMENT_SERVER_PORT
+              value: "9977"   # dedicated actuator port (health+metrics) — probes and Prometheus use it; main-port metrics gate stays admin-only
+            - name: ULMS_METRICS_OPEN
+              value: "true"   # scrape port is network-restricted via NetworkPolicy (P5 F6 holds on :8081)
             - name: ULMS_DB_URL
               value: {{ .Values.api.env.ULMS_DB_URL | quote }}
             - name: ULMS_DB_USER
@@ -49,11 +53,11 @@ spec:
               valueFrom: { secretKeyRef: { name: {{ .Values.api.existingSecret }}, key: ULMS_CIB_KEYSTORE_PASSWORD } }
             {{- end }}
           readinessProbe:
-            httpGet: { path: {{ .Values.api.probes.path }}, port: http }
+            httpGet: { path: {{ .Values.api.probes.path }}, port: mgmt }
             initialDelaySeconds: {{ .Values.api.probes.initialDelaySeconds }}
             periodSeconds: {{ .Values.api.probes.periodSeconds }}
           livenessProbe:
-            httpGet: { path: {{ .Values.api.probes.path }}, port: http }
+            httpGet: { path: {{ .Values.api.probes.path }}, port: mgmt }
             initialDelaySeconds: {{ .Values.api.probes.initialDelaySeconds | add 30 }}
             periodSeconds: 20
           resources: {{- toYaml .Values.api.resources | nindent 12 }}
