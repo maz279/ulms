@@ -40,6 +40,10 @@ ulms:
     access-key: ${ULMS_MINIO_ACCESS_KEY}   # env only (06 §1)
     secret-key: ${ULMS_MINIO_SECRET_KEY}
   branch-scope-required: true              # 05 §5
+  portal:
+    # Q3.1 UAT flip — payment-confirmation OTP enforcement (login OTP is
+    # always available; this gates /portal/me/payments/initiate)
+    otp-required: ${ULMS_PORTAL_OTP_REQUIRED:false}
 
 # R7: CIB ONLINE retry matrix (PLANNING/11 §1) — applies to the proxied
 # pullReport entry point. 429 (CIB-003) is ignore-exceptions: never retried,

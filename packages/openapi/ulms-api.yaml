@@ -1130,6 +1130,45 @@ paths:
         "200": {description: updated loan}
         "409": {description: top-up applies to ACTIVE loans only}
         "422": {description: amountMinor must be positive}
+  /customers/{idOrCif}/goaml/submit:
+    post:
+      tags: [customers]
+      summary: "Submit the customer's goAML XML to the BFIU portal (Q3.3) — values-only flip; 409 with guidance until ULMS_GOAML_URL/TOKEN are set"
+      parameters: [{name: idOrCif, in: path, required: true, schema: {type: string}}]
+      responses:
+        "202": {description: accepted with bfiu_ack}
+        "409": {description: submission not configured — export via goaml.xml remains available}
+        "502": {description: BFIU portal rejected the POST}
+  /goaml/submissions:
+    get:
+      tags: [customers]
+      summary: "goAML submission log per CIF (Q3.3)"
+      parameters: [{name: cif, in: query, required: true, schema: {type: string}}]
+      responses: {"200": {description: list envelope}}
+  /compliance/basel/parallel/snapshot:
+    post:
+      tags: [compliance]
+      summary: "Snapshot ULMS Basel metrics for a period (Q3.7 parallel-run; idempotent upsert)"
+      parameters: [{name: period, in: query, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: "{ period, metricsSnapshotted }"}
+        "422": {description: "period must be a valid YYYY-MM"}
+  /compliance/basel/parallel/bank-value:
+    post:
+      tags: [compliance]
+      summary: "Record the bank's current-return value + variance note against a ULMS snapshot (Q3.7)"
+      parameters: [{name: period, in: query, required: true, schema: {type: string}},
+                   {name: metric, in: query, required: true, schema: {type: string}}]
+      requestBody: {required: true, content: {application/json: {schema: {type: object}}}}
+      responses:
+        "200": {description: updated row}
+        "404": {description: no ULMS snapshot for the metric — snapshot first}
+  /compliance/basel/parallel/report:
+    get:
+      tags: [compliance]
+      summary: "Side-by-side parallel-run comparison report (markdown) — two quarters of rows are the go-live evidence"
+      parameters: [{name: period, in: query, required: false, schema: {type: string}}]
+      responses: {"200": {description: markdown report}}
   /portal/otp:
     post:
       tags: [portal]

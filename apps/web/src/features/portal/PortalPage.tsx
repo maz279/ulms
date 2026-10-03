@@ -23,9 +23,13 @@ export function PortalPage() {
   const [railUrl, setRailUrl] = React.useState<string | null>(null);
   const [err, setErr] = React.useState<string | null>(null);
   const [msg, setMsg] = React.useState<string | null>(null);
-  // R10 P-D: OTP login (request → verify → sign in)
+  // R10 P-D: OTP login (request → verify → sign in). Q3.1: production builds
+  // (VITE_USE_MOCK_API=0) hard-require OTP — the pilot bypass button only
+  // exists in mock mode.
   const [otpSent, setOtpSent] = React.useState(false);
   const [otpCode, setOtpCode] = React.useState('');
+  const [otpToken, setOtpToken] = React.useState<string | null>(null);
+  const otpMandatory = import.meta.env.VITE_USE_MOCK_API === "0";
   const [applyProduct, setApplyProduct] = React.useState('retail-personal');
   const [applyAmt, setApplyAmt] = React.useState('');
   const [docType, setDocType] = React.useState('');
@@ -58,6 +62,7 @@ export function PortalPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.detail ?? `OTP verify failed (${res.status})`);
+      if (data.otpToken) setOtpToken(String(data.otpToken));   // payment-confirmation token
       await login();
     } catch (e) { setErr(e instanceof Error ? e.message : String(e)); }
   }
@@ -118,9 +123,15 @@ export function PortalPage() {
   async function onPay() {
     if (!selected || !amount) return;
     setErr(null);
+    if (otpMandatory && !otpToken) {
+      setErr('Payment confirmation code required — request an OTP above');
+      return;
+    }
     try {
-      const res = await fetch("/api/v1/portal/me/payments/initiate", {
-        method: "POST", headers: authHeaders(),
+      const qs = otpToken
+        ? `?otpToken=${encodeURIComponent(otpToken)}&mobile=${encodeURIComponent(mobile)}` : '';
+      const res = await fetch(`/api/v1/portal/me/payments/initiate${qs}`, {
+        method: 'POST', headers: authHeaders(),
         body: JSON.stringify({ loanId: selected.loanId,
           amountMinor: Math.round(parseFloat(amount) * 100), rail }),
       });
@@ -153,7 +164,7 @@ export function PortalPage() {
               <Button variant="contained" onClick={verifyOtp}>Verify & sign in</Button>
             </>
           )}
-          <Button variant="text" onClick={login}>Sign in without OTP (pilot)</Button>
+          {!otpMandatory && <Button variant="text" onClick={login}>Sign in without OTP (pilot)</Button>}
           {msg && <Alert severity="info">{msg}</Alert>}
           {err && <Alert severity="error">{err}</Alert>}
         </Paper>

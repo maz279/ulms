@@ -33,16 +33,19 @@ public class WorkflowService {
     private final WorkflowTransitionRepository transitions;
     private final ObjectMapper json = new ObjectMapper();
     private final org.springframework.context.ApplicationEventPublisher events;
+    private final SignatureCapturePort signatures;   // Q3.2: approval-signature evidence
 
     public WorkflowService(WorkflowDefinitionRepository definitions,
                            WorkflowInstanceRepository instances,
                            WorkflowTaskRepository tasks,
                            WorkflowTaskQueryRepository taskQueries,
                            WorkflowTransitionRepository transitions,
-                           org.springframework.context.ApplicationEventPublisher events) {
+                           org.springframework.context.ApplicationEventPublisher events,
+                           SignatureCapturePort signatures) {
         this.definitions = definitions; this.instances = instances;
         this.tasks = tasks; this.taskQueries = taskQueries; this.transitions = transitions;
         this.events = events;
+        this.signatures = signatures;
     }
 
     /** Resolve the ladder start level for an amount (BDT minor units) from approval_band. */
@@ -102,7 +105,20 @@ public class WorkflowService {
         }
 
         Node node = node(def, task.getNode());
-        transitions.save(WorkflowTransition.of(taskId, actor, action.name(), remark));
+
+        // Q3.2 (WF-SPEC §7): approvals on the ladder capture signature evidence
+        // bound to this exact act() — payload = taskId|action|actor|now-bucket
+        WorkflowTransition transition = WorkflowTransition.of(taskId, actor, action.name(), remark);
+        if (action == Action.APPROVE) {
+            java.util.Optional<Integer> level = SlaService.levelOf(node.id());
+            if (level.isPresent()) {
+                String payloadHash = CanvasSignatureAdapter.ALGORITHM_CANVAS.equals("canvas-sha256")
+                        ? sha256Hex(taskId + "|" + action + "|" + actor + "|" + node.id())
+                        : null;
+                transition.attachSignature(signatures.capture(actor, payloadHash, level.get()));
+            }
+        }
+        transitions.save(transition);
 
         switch (action) {
             case APPROVE -> {
@@ -213,6 +229,15 @@ public class WorkflowService {
             throw new IllegalStateException("Bad workflow graph", e);
         }
         return Optional.empty();
+    }
+
+    private static String sha256Hex(String s) {
+        try {
+            return java.util.HexFormat.of().formatHex(java.security.MessageDigest
+                    .getInstance("SHA-256").digest(s.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public enum Action { APPROVE, REJECT, RETURN, ESCALATE }

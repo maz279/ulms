@@ -25,9 +25,13 @@ class AmlController {
     private final AmlService aml;
     private final CustomerService customers;
     private final MonitoringService monitoring;   // R10 P-C surfaces
+    private final GoamlSubmissionService goaml;  // Q3.3 live submission
+    private final GoamlSubmissionRepository goamlRows;
 
-    AmlController(AmlService aml, CustomerService customers, MonitoringService monitoring) {
-        this.aml = aml; this.customers = customers; this.monitoring = monitoring;
+    AmlController(AmlService aml, CustomerService customers, MonitoringService monitoring,
+                  GoamlSubmissionService goaml, GoamlSubmissionRepository goamlRows) {
+        this.aml = aml; this.customers = customers;
+        this.monitoring = monitoring; this.goaml = goaml; this.goamlRows = goamlRows;
     }
 
     @GetMapping("/api/v1/customers/{idOrCif}/guarantors")
@@ -90,6 +94,23 @@ class AmlController {
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/xml"))
                 .body(aml.goamlExport(resolve(idOrCif).getId(), AuthPrincipal.actorOf(auth)));
+    }
+
+    // ── Q3.3: goAML live submission (values-only flip) ─────────────────────
+
+    @PostMapping("/api/v1/customers/{idOrCif}/goaml/submit")
+    @PreAuthorize("hasAnyRole('compliance','admin')")
+    ResponseEntity<GoamlSubmissionService.SubmissionResult> submitGoaml(
+            @PathVariable String idOrCif, Authentication auth) {
+        String xml = aml.goamlExport(resolve(idOrCif).getId(), AuthPrincipal.actorOf(auth));
+        return ResponseEntity.accepted().body(
+                goaml.submit(resolve(idOrCif).getCifNo(), xml, AuthPrincipal.actorOf(auth)));
+    }
+
+    @GetMapping("/api/v1/goaml/submissions")
+    @PreAuthorize("hasAnyRole('compliance','admin')")
+    ApiList<GoamlSubmission> goamlSubmissions(@RequestParam String cif) {
+        return ApiList.of(goamlRows.findAllByCifNoOrderBySubmittedAtDesc(cif));
     }
 
     private Customer resolve(String idOrCif) {

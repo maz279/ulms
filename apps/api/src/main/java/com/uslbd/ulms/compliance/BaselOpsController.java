@@ -18,9 +18,11 @@ class BaselOpsController {
 
     private final BaselService basel;
     private final RegconOpsService regconOps;
+    private final BaselParallelRunService parallel;   // Q3.7 harness
 
-    BaselOpsController(BaselService basel, RegconOpsService regconOps) {
-        this.basel = basel; this.regconOps = regconOps;
+    BaselOpsController(BaselService basel, RegconOpsService regconOps,
+                       BaselParallelRunService parallel) {
+        this.basel = basel; this.regconOps = regconOps; this.parallel = parallel;
     }
 
     /** RWA summary + CAR inputs + single-borrower breaches (SCH-BR feed). */
@@ -32,6 +34,32 @@ class BaselOpsController {
         m.put("rwaBySegment", basel.rwaBySegment());
         m.put("leverageRatioBp", basel.leverageRatioBp());
         return m;
+    }
+
+    // ── Q3.7: Basel parallel-run harness ─────────────────────────────────────
+
+    @PostMapping("/basel/parallel/snapshot")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('compliance','admin')")
+    java.util.Map<String, Object> snapshot(@RequestParam String period,
+                                           org.springframework.security.core.Authentication auth) {
+        int n = parallel.snapshotUmlsValues(period, com.uslbd.ulms.platform.AuthPrincipal.actorOf(auth));
+        return java.util.Map.of("period", period, "metricsSnapshotted", n);
+    }
+
+    @PostMapping("/basel/parallel/bank-value")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('compliance','admin')")
+    BaselParallelRun bankValue(@RequestParam String period, @RequestParam String metric,
+                               @RequestBody java.util.Map<String, String> body,
+                               org.springframework.security.core.Authentication auth) {
+        return parallel.recordBankValue(period, metric, body.get("bankValue"),
+                body.get("varianceNote"), com.uslbd.ulms.platform.AuthPrincipal.actorOf(auth));
+    }
+
+    @GetMapping(value = "/basel/parallel/report", produces = "text/markdown")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('compliance','admin')")
+    String report(@org.springframework.web.bind.annotation.RequestParam(
+            required = false) String period) {
+        return parallel.report(period);
     }
 
     /** Operator trigger for the regcon transmission + reconciliation pass. */

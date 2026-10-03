@@ -119,6 +119,7 @@ services:
       ULMS_MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
       ULMS_MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
       ULMS_RAILS_WEBHOOK_SECRET: ${ULMS_RAILS_WEBHOOK_SECRET}   # rail callbacks (05 §7); unset → verifier fails CLOSED
+      ULMS_PORTAL_OTP_REQUIRED: "true"   # Q3.1 UAT flip: payment confirmation OTP enforced
       MANAGEMENT_SERVER_PORT: "9977"   # dedicated metrics port for prometheus
       ULMS_METRICS_OPEN: "true"        # scrape port is network-restricted (P5 F6 stands on :8081)
       MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,prometheus,info
@@ -142,7 +143,7 @@ services:
     build:
       context: ../../apps/web
       args:
-        VITE_USE_MOCK_API: "0"            # compose stack → real api proxy
+        VITE_USE_MOCK_API: "0"            # compose stack → real api proxy (also hard-requires portal OTP)
     image: ulms-web:p1
     ports: ["4173:80"]   # realm redirectUris/webOrigins allow 5173+4173 (R2)
     depends_on:

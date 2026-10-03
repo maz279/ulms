@@ -868,6 +868,9 @@ if (seg[0] === "applications" && seg[1] && !seg[2] && method === "PATCH") {
   if (p === "/portal/me/payments/initiate" && method === "POST") {
     const l = loanBy(String(body?.loanId ?? ""));
     if (!l) return err(404, "ULMS-NOT-FOUND", "loan not found");
+    // Q3.1: the REAL backend enforces the payment-confirmation OTP when
+    // ulms.portal.otp-required=true (compose default since the Q3 flip); the
+    // mock stays lenient — its dev role is journey rehearsal, not the gate
     const rail = String(body?.rail ?? "BKASH");
     return ok({
       id: `int-${Date.now()}`, rail,
