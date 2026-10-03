@@ -30,11 +30,11 @@ export function TodayScreen() {
             <Text style={s.loanNo}>{item.loanNo}</Text>
             <Text style={s.meta}>DPD {item.dpd} · {item.classification} · {item.priority}</Text>
             <View style={s.row}>
-              <Pressable style={s.btn} onPress={() => void enqueue({ kind: "action-log", loanId: item.loanId,
+              <Pressable style={s.btn} onPress={() => void enqueue({ id: String(Date.now()) + "-a", kind: "action-log", loanId: item.loanId,
                 payload: { outcome: "CONTACTED", notes: "field call" }, evidence: [] })}>
                 <Text style={s.btnText}>{t(lang, "collections.logCall")}</Text>
               </Pressable>
-              <Pressable style={s.btnPrimary} onPress={() => void enqueue({ kind: "ptp-create", loanId: item.loanId,
+              <Pressable style={s.btnPrimary} onPress={() => void enqueue({ id: String(Date.now()) + "-p", kind: "ptp-create", loanId: item.loanId,
                 payload: { promisedAmountMinor: 100000, promisedOn: "2026-10-10", confidence: "MEDIUM" }, evidence: [] })}>
                 <Text style={s.btnText}>{t(lang, "collections.ptp")}</Text>
               </Pressable>

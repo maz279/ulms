@@ -5,7 +5,7 @@
    The base URL is env-configured (ENV ONLY — no literals):
      EXPO_PUBLIC_API_BASE  e.g. https://ulms-dev.bank.local
    ============================================================ */
-import type { QueuedOperation } from "./engine";
+import type { QueuedOperation } from "../sync/engine";
 
 const BASE = (process.env.EXPO_PUBLIC_API_BASE ?? "http://localhost:8081").replace(/\/$/, "");
 
@@ -46,7 +46,7 @@ export async function fetchFieldTasks(token: string | null): Promise<FieldTaskVi
 export function apiTransport(token: string | null) {
   return async (op: QueuedOperation): Promise<{ ok: true } | { ok: false; retryable: boolean; error: string }> => {
     try {
-      let res: Response;
+      let res: Response | undefined;
       switch (op.kind) {
         case "task-complete":
           res = await authFetch(token)(`${BASE}/api/v1/collections/field-tasks/${op.taskId}/complete`, {
@@ -69,6 +69,7 @@ export function apiTransport(token: string | null) {
           });
           break;
       }
+      if (!res) return { ok: false, retryable: false, error: `unknown op kind ${op.kind}` };
       if (res.ok) return { ok: true };
       // 4xx = contract problem (fix the form) — not retryable; 5xx/网络 = retryable
       const retryable = res.status >= 500 || res.status === 0;

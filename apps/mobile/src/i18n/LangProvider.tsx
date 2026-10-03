@@ -1,6 +1,6 @@
 /* Lang context — persists the choice; default EN until bank review clears BN. */
 import * as React from "react";
-import * as AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { type Lang } from "./strings";
 
 const Ctx = React.createContext<Lang>("en");

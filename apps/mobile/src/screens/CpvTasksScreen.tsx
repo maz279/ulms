@@ -41,6 +41,7 @@ export function CpvTasksScreen() {
           disabled={errors.length > 0}
           onPress={() => {
             void enqueue({
+              id: String(Date.now()) + "-tc",
               kind: "task-complete", loanId: selected.loanId, taskId: selected.id,
               payload: { ...form },
               evidence: [

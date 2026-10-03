@@ -2,7 +2,7 @@
    assumes: caller-serialized to AsyncStorage. PURE facade so the engine
    stays testable in plain Node. */
 import type { QueuedOperation } from "../sync/engine";
-import * as AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const KEY = "ulms.sync.queue";
 

@@ -13,7 +13,11 @@ echo "== RB-12 migration rehearsal: ${LOANS} loans =="
 
 # 1) synthetic migration batch — production shape (one INSERT per loan with
 #    household-accurate columns; payments derive from amortization)
-psql "$ULMS_DB_URL" -v ON_ERROR_STOP=1 <<SQL
+# Q2.5: default to the in-container socket when run inside the PG container
+# (docker exec) — host port mapping 5433 is not visible from within
+PSQL_CMD=${ULMS_DB_URL:+psql "$ULMS_DB_URL"}
+PSQL_CMD=${ULMS_DB_URL:-psql -U ulms -d ulms}
+$PSQL_CMD -v ON_ERROR_STOP=1 <<SQL
 BEGIN;
 SELECT set_config('search_path', '${SCHEMA}', true);
 
@@ -45,12 +49,15 @@ UPDATE loan SET outstanding_minor = 0, stage = 'CLOSED'
 WHERE substr(loan_no, 5, 1)::int % 10 = 7;
 
 -- payments: ~500k rows from the amortization shape (10 EMI rows per open loan)
-INSERT INTO payment (id, loan_id, amount_minor, external_ref, rail, utr, fineract_txn_id, paid_at)
+-- posted_by NOT NULL since V8 — synthetic migration operator identity
+INSERT INTO payment (id, loan_id, amount_minor, external_ref, rail, utr,
+                     fineract_txn_id, paid_at, posted_by)
 SELECT gen_random_uuid(), l.id,
        round(l.principal_minor / 48.0),
        'MIG-' || l.loan_no || '-' || n, 'COUNTER', NULL,
        800000 + (row_number() OVER ())::bigint,
-       l.disbursed_at + (n * interval '1 month')
+       l.disbursed_at + (n * interval '1 month'),
+       'migration:rb12'
 FROM loan l CROSS JOIN generate_series(1, 10) AS n
 WHERE l.outstanding_minor > 0;
 
@@ -58,11 +65,11 @@ COMMIT;
 SQL
 
 # 2) zero-sum reconciliation — migrated book vs source control totals
-CTRL_PRINCIPAL=$(psql "$ULMS_DB_URL" -tAc "SELECT sum(principal_minor) FROM ${SCHEMA}.loan")
-CTRL_OUTSTANDING=$(psql "$ULMS_DB_URL" -tAc "SELECT sum(outstanding_minor) FROM ${SCHEMA}.loan")
-CTRL_PAYMENTS=$(psql "$ULMS_DB_URL" -tAc "SELECT coalesce(sum(amount_minor),0) FROM ${SCHEMA}.payment")
-LOAN_COUNT=$(psql "$ULMS_DB_URL" -tAc "SELECT count(*) FROM ${SCHEMA}.loan")
-PAYMENT_COUNT=$(psql "$ULMS_DB_URL" -tAc "SELECT count(*) FROM ${SCHEMA}.payment")
+CTRL_PRINCIPAL=$($PSQL_CMD -tAc "SELECT sum(principal_minor) FROM ${SCHEMA}.loan")
+CTRL_OUTSTANDING=$($PSQL_CMD -tAc "SELECT sum(outstanding_minor) FROM ${SCHEMA}.loan")
+CTRL_PAYMENTS=$($PSQL_CMD -tAc "SELECT coalesce(sum(amount_minor),0) FROM ${SCHEMA}.payment")
+LOAN_COUNT=$($PSQL_CMD -tAc "SELECT count(*) FROM ${SCHEMA}.loan")
+PAYMENT_COUNT=$($PSQL_CMD -tAc "SELECT count(*) FROM ${SCHEMA}.payment")
 
 echo "loans=${LOAN_COUNT} principal=${CTRL_PRINCIPAL} outstanding=${CTRL_OUTSTANDING} payments=${CTRL_PAYMENTS} rows=${PAYMENT_COUNT}"
 [ "$LOAN_COUNT" -eq "$LOANS" ] || { echo "FAIL: loan count"; exit 1; }
@@ -77,7 +84,7 @@ echo "PASS: zero-sum reconciliation (payments ≤ principal − outstanding)"
 
 # 3) 100-row QA — both directions
 echo "-- QA forward: 100 random loans present with sane columns"
-BAD=$(psql "$ULMS_DB_URL" -tAc "
+BAD=$($PSQL_CMD -tAc "
   SELECT count(*) FROM (
     SELECT * FROM ${SCHEMA}.loan ORDER BY random() LIMIT ${QA_ROWS}
   ) q
@@ -88,7 +95,7 @@ BAD=$(psql "$ULMS_DB_URL" -tAc "
 echo "PASS: ${QA_ROWS}-row forward QA clean"
 
 echo "-- QA reverse: 100 sample source refs exist in target"
-MISSING=$(psql "$ULMS_DB_URL" -tAc "
+MISSING=$($PSQL_CMD -tAc "
   SELECT count(*) FROM (
     SELECT 'LN-M' || lpad(i::text, 6, '0') AS ref
     FROM generate_series(1, ${LOANS}) s(i)

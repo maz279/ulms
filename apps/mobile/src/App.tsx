@@ -6,17 +6,16 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { loadSession, beginLogin, exchangeCode } from "./auth/auth";
+import { loadSession } from "./auth/auth";
 import { TodayScreen } from "./screens/TodayScreen";
 import { CpvTasksScreen } from "./screens/CpvTasksScreen";
 import { SyncScreen } from "./screens/SyncScreen";
-import { LangProvider, useLang } from "./i18n/LangProvider";
+import { LangProvider } from "./i18n/LangProvider";
 
 const Tab = createBottomTabNavigator();
 
 function LoginGate({ children }: { children: React.ReactNode }) {
   const [session, setSession] = React.useState<unknown | null>(undefined);   // undefined = loading
-  const [pending, setPending] = React.useState<{ verifier: string; state: string } | null>(null);
   React.useEffect(() => { void loadSession().then(setSession); }, []);
   if (session === undefined) return null;                                    // splash
   if (!session) {
