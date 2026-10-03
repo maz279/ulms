@@ -164,7 +164,7 @@ export function LoginPage() {
             <div style={{ marginTop: 16 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "0 0 10px" }}>
                 <div style={{ flex: 1, height: 1, background: "#e6e8f0" }} />
-                <span style={{ fontSize: 11, color: "#9aa0b5" }}>OTHER SIGN-IN OPTION</span>
+                <span style={{ fontSize: 11, color: "#5c6280" }}>OTHER SIGN-IN OPTION</span>
                 <div style={{ flex: 1, height: 1, background: "#e6e8f0" }} />
               </div>
               <button type="button" onClick={login} disabled={initializing}
@@ -175,7 +175,7 @@ export function LoginPage() {
                 }}>
                 {initializing ? "Redirecting…" : "Bank SSO (Keycloak) — PKCE redirect"}
               </button>
-              <p style={{ fontSize: 11.5, color: "#9aa0b5", margin: "10px 0 0", lineHeight: 1.5 }}>
+              <p style={{ fontSize: 11.5, color: "#5c6280", margin: "10px 0 0", lineHeight: 1.5 }}>
                 Username, password and the MFA code above are validated directly by the
                 bank identity provider — the SSO button is the fallback for smart-card /
                 federated accounts.
@@ -216,7 +216,7 @@ export function LoginPage() {
             <>
               <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "18px 0 10px" }}>
                 <div style={{ flex: 1, height: 1, background: "#e6e8f0" }} />
-                <span style={{ fontSize: 11, color: "#9aa0b5" }}>DEV QUICK ROLE ACCESS</span>
+                <span style={{ fontSize: 11, color: "#5c6280" }}>DEV QUICK ROLE ACCESS</span>
                 <div style={{ flex: 1, height: 1, background: "#e6e8f0" }} />
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -231,7 +231,7 @@ export function LoginPage() {
                   </button>
                 ))}
               </div>
-              <p style={{ fontSize: 11, color: "#9aa0b5", margin: "10px 0 0" }}>
+              <p style={{ fontSize: 11, color: "#5c6280", margin: "10px 0 0" }}>
                 Mock stack (no Keycloak) — the quick chips grant a role session directly
                 for testing. Never available when VITE_USE_MOCK_API=0.
               </p>

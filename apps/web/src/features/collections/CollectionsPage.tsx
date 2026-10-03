@@ -12,6 +12,7 @@ import { worklist, recordAction, createPtp, assignFieldTask, dunningQueue,
          type WatchlistEntryView, type AuctionEntryView }
   from "../../api/collections";
 import { formatTk } from "../../api/money";
+import { indexLiveRecords } from "../../shell/search";
 import { PageHeader } from "../../shell/PageHeader";
 import { useAuth } from "../../auth/AuthProvider";
 import { COLLECTIONS_WRITE } from "../../auth/roles";
@@ -36,10 +37,16 @@ export function CollectionsPage() {
 
   const reload = React.useCallback(async () => {
     try {
-      setRows(await worklist());
+      const list = await worklist();
+      setRows(list);
       setDunning(await dunningQueue().catch(() => []));
       setWatch(await listWatchlist("OPEN").catch(() => []));
       setAuctions(await listAuctions().catch(() => []));
+      // Q1.6 Tell-ME live indexing: delinquent loans enter the corpus
+      indexLiveRecords(list.slice(0, 100).map((r) => ({
+        id: r.loanNo, title: "Loan · collections",
+        sub: `${r.classification} · DPD ${r.dpd}`, route: `/loans/${r.loanId}`,
+      })));
     } catch (e) { setErr(String(e)); }
   }, []);
   React.useEffect(() => {

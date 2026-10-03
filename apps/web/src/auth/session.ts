@@ -53,6 +53,42 @@ export function issuer(): string | null {
   return null;
 }
 
+/* ---------- auth URL allowlist (security remediation, flagged medium) ----------
+   Every outbound auth redirect/exchange must stay on an ALLOWLISTED origin —
+   the pinned issuer's own origin, plus optional extras from
+   VITE_OIDC_ALLOWED_ORIGINS (comma-separated, for secondary IdPs). This
+   closes the env-config → URL → navigation taint: even a misconfigured or
+   tampered issuer cannot steer the browser (or a fetch) at an attacker host. */
+export function trustedAuthOrigins(): string[] {
+  const origins: string[] = [];
+  const iss = issuer();
+  if (iss) {
+    try { origins.push(new URL(iss).origin); } catch { /* invalid config — no origin granted */ }
+  }
+  const extra = (import.meta.env.VITE_OIDC_ALLOWED_ORIGINS as string | undefined) ?? "";
+  for (const o of extra.split(",").map((s) => s.trim()).filter(Boolean)) {
+    try { origins.push(new URL(o).origin); } catch { /* skip malformed entry */ }
+  }
+  return [...new Set(origins)];
+}
+
+/** Validate an issuer/endpoint URL before any navigation or fetch: http(s)
+ *  only, and its origin must be allowlisted. With NO issuer configured the
+ *  OIDC flow is unreachable anyway (mode ≠ oidc), so the protocol check
+ *  alone governs; the moment an issuer IS pinned, only its origin (plus
+ *  explicit extras) may ever be navigated/fetched — fail closed. */
+export function assertTrustedAuthUrl(raw: string | URL): URL {
+  const url = raw instanceof URL ? raw : new URL(String(raw));
+  if (url.protocol !== "https:" && url.protocol !== "http:") {
+    throw new Error("auth endpoint must be http(s)");
+  }
+  const allowed = trustedAuthOrigins();
+  if (allowed.length > 0 && !allowed.includes(url.origin)) {
+    throw new Error(`auth endpoint origin not allowlisted (${url.origin})`);
+  }
+  return url;
+}
+
 export function resolveMode(): AuthMode {
   if (import.meta.env.VITE_ULMS_TOKEN) return "token";
   return issuer() ? "oidc" : "open";
@@ -114,17 +150,19 @@ export function base64url(bytes: Uint8Array): string {
 }
 
 export function authorizeUrl(iss: string, clientId: string, redirectUri: string, challenge: string, state: string): string {
+  const base = assertTrustedAuthUrl(iss);   // allowlist gate before navigation
   const q = new URLSearchParams({
     client_id: clientId, redirect_uri: redirectUri, response_type: "code",
     scope: "openid", code_challenge: challenge, code_challenge_method: "S256", state,
   });
-  return `${iss}/protocol/openid-connect/auth?${q}`;
+  return `${base.origin}${base.pathname.replace(/\/+$/, "")}/protocol/openid-connect/auth?${q}`;
 }
 
 export function logoutUrl(iss: string, clientId: string, redirectUri: string, idToken?: string): string {
+  const base = assertTrustedAuthUrl(iss);
   const q = new URLSearchParams({ client_id: clientId, post_logout_redirect_uri: redirectUri });
   if (idToken) q.set("id_token_hint", idToken);
-  return `${iss}/protocol/openid-connect/logout?${q}`;
+  return `${base.origin}${base.pathname.replace(/\/+$/, "")}/protocol/openid-connect/logout?${q}`;
 }
 
 /* ---------- direct grant (single-page login, no IdP redirect) ----------
@@ -140,11 +178,7 @@ export interface TokenGrant {
 export async function passwordGrant(iss: string, clientId: string,
                                     username: string, password: string,
                                     totp?: string): Promise<TokenGrant> {
-  if (!/^https?:\/\//i.test(iss)) throw new Error("issuer must be http(s)");
-  const url = new URL(`${iss}/protocol/openid-connect/token`);
-  if (url.protocol !== "http:" && url.protocol !== "https:") {
-    throw new Error("unsupported issuer protocol");
-  }
+  const url = assertTrustedAuthUrl(`${iss}/protocol/openid-connect/token`);
   // Same-origin first: nginx (compose + k8s) proxies /realms/ to Keycloak,
   // so the direct grant avoids cross-origin entirely. The path is derived
   // from the PINNED issuer (never user input); falls back to the issuer
@@ -177,7 +211,8 @@ export interface TokenResponse {
 }
 
 export async function tokenExchange(iss: string, clientId: string, redirectUri: string, code: string, verifier: string): Promise<TokenResponse> {
-  const res = await fetch(`${iss}/protocol/openid-connect/token`, {
+  const url = assertTrustedAuthUrl(`${iss}/protocol/openid-connect/token`);
+  const res = await fetch(url.href, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -190,7 +225,8 @@ export async function tokenExchange(iss: string, clientId: string, redirectUri: 
 }
 
 export async function refreshToken(iss: string, clientId: string, refreshTokenValue: string): Promise<TokenResponse> {
-  const res = await fetch(`${iss}/protocol/openid-connect/token`, {
+  const url = assertTrustedAuthUrl(`${iss}/protocol/openid-connect/token`);
+  const res = await fetch(url.href, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({

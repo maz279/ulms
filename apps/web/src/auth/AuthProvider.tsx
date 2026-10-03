@@ -68,7 +68,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const code = url.searchParams.get("code");
     const state = url.searchParams.get("state");
     const errorParam = url.searchParams.get("error");
-    if (errorParam) { setError(`Keycloak: ${errorParam}`); return; }
+    if (errorParam) {
+      // reflected query param — sanitize before display (security remediation)
+      setError(`Keycloak: ${errorParam.replace(/[^\w .:@-]/g, "").slice(0, 80)}`);
+      return;
+    }
     if (!code) return;                                   // plain visit to /login
     const stashed = readPkce();
     stashPkce(null);

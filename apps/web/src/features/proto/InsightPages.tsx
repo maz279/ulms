@@ -13,6 +13,7 @@ import { listLoans, type LoanView } from "../../api/servicing";
 import { listApplications, type ApplicationView } from "../../api/applications";
 import { listCustomers } from "../../api/customers";
 import { getBoard, type BoardData } from "../../api/compliance";
+import { indexLiveRecords } from "../../shell/search";
 import { F } from "../../shell/demoData";   // formatters only — no data
 import * as React from "react";
 
@@ -44,6 +45,13 @@ export function HomePage() {
       (customers as { data: { id: string; branchCode: string }[] }).data
         .forEach((c) => branchByCustomer.set(c.id, c.branchCode));
       setStats({ loans, applications, board, branchByCustomer });
+      // Q1.6 Tell-ME live indexing: the home load sees every loan — push
+      // the whole live book into the search corpus (idempotent by loan no)
+      indexLiveRecords((loans as { id: string; loanNo: string; classification: string;
+        dpd: number; stage: string }[]).slice(0, 300).map((l) => ({
+        id: l.loanNo, title: `Loan · ${l.stage}`,
+        sub: `${l.classification} · DPD ${l.dpd}`, route: `/loans/${l.id}`,
+      })));
     }).catch((e) => alive && setErr(String(e)));
     return () => { alive = false; };
   }, []);

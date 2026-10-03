@@ -30,7 +30,9 @@ export const tokens = {
   line: "#E1E5F2",
   ink900: "#0B0E1A",
   ink700: "#424242",
-  ink500: "#757575",
+  // WCAG AA (Q1.6 axe gate): #757575 measured 4.4:1 on the #F7F8FC table-head
+  // fill — one step darker clears 4.5:1 on every surface it renders on
+  ink500: "#676D7A",
   status: {
     ok: "#107C10",
     warn: "#F7630C",
@@ -49,7 +51,12 @@ export const ulmsTheme = createTheme({
     background: { default: tokens.canvas, paper: tokens.surface },
     text: { primary: tokens.ink900, secondary: tokens.ink500 },
     success: { main: tokens.status.ok },
-    warning: { main: tokens.status.warn },
+    // brand indigo instead of MUI's default #0288D1 (white on it ≈ 3.3:1 —
+    // the SANCTION stage chips failed the Q1.6 axe gate on the default)
+    info: { main: tokens.status.info },
+    // WCAG AA (Q1.6 axe gate): white on #F7630C measures ~2.8:1 — filled
+    // warning chips (stage badges across every list) get dark contrast text
+    warning: { main: tokens.status.warn, contrastText: "rgba(0, 0, 0, 0.87)" },
     error: { main: tokens.status.err },
     divider: tokens.line,
   },

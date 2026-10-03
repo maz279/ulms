@@ -5,6 +5,7 @@ import {
   TextField, MenuItem, Button, Snackbar, Alert, Chip, Box,
 } from "@mui/material";
 import { createCustomer, listCustomers, type CustomerView } from "../../api/customers";
+import { indexLiveRecords } from "../../shell/search";
 import { pick } from "../../i18n/bilingual";
 import { PageHeader } from "../../shell/PageHeader";
 import { Kpi, KpiRow, StatusChip, statusTone } from "../../shell/Kpi";
@@ -27,6 +28,13 @@ export function CustomerPage() {
     try {
       const page = await listCustomers();
       setRows(page.data);
+      // Q1.6 Tell-ME live indexing: customers enter the search corpus as
+      // they load (idempotent upsert by CIF)
+      indexLiveRecords(page.data.slice(0, 200).map((c) => ({
+        id: c.cifNo, title: `Customer · ${c.nameEn}`,
+        sub: `${c.segment ?? ""} · ${c.branchCode ?? ""}`.replace(/^ · | · $/g, ""),
+        route: `/cust/${c.cifNo}`, ico: "👤",
+      })));
     } catch (e) {
       setError(String(e instanceof Error ? e.message : e));
     }

@@ -9,6 +9,7 @@ import { listApplications, currentTask, actOnTask, getLadder, cpvApplication,
          type ApplicationView, type ApprovalTask, type LadderRung,
          type ApprovalConditionView, type WorkflowAction } from "../../api/applications";
 import { listCustomers, type CustomerView } from "../../api/customers";
+import { indexLiveRecords } from "../../shell/search";
 import { formatTk } from "../../api/money";
 import { DocumentPanel } from "./DocumentPanel";
 import { AssessmentPanel } from "./AssessmentPanel";
@@ -34,6 +35,13 @@ export function PipelinePage() {
     try {
       const [a, l, c] = await Promise.all([listApplications(), getLadder(), listCustomers()]);
       setApps(a); setLadder(l); setCustomers(c.data);
+      // Q1.6 Tell-ME live indexing: in-flight applications enter the corpus
+      const nameOf = new Map(c.data.map((x) => [x.id, x.nameEn]));
+      indexLiveRecords(a.filter((x) => !["DISBURSED", "REJECTED"].includes(x.stage))
+        .slice(0, 100).map((x) => ({
+          id: x.appNo, title: `Application · ${nameOf.get(x.customerId) ?? x.customerId}`,
+          sub: x.stage, route: "/pipeline", ico: "▤",
+        })));
     } catch (e) { setErr(String(e instanceof Error ? e.message : e)); }
   }, []);
   React.useEffect(() => { void refresh(); }, [refresh]);
