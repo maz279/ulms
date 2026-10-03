@@ -57,6 +57,13 @@ export interface Loan {
 export interface AppWorkflowTask {
   taskId: string; appId: string; node: string; role: string;
   phase: "ACTION" | "CHECK"; status: "OPEN" | "DONE"; slaDeadline: string | null;
+  assigneeUser?: string | null;
+}
+export interface ApprovalConditionRow {
+  id: string; appId: string; node: string; conditionText: string;
+  status: "PENDING" | "SATISFIED" | "WAIVED";
+  createdBy: string; createdAt: string;
+  resolvedBy: string | null; resolvedAt: string | null;
 }
 export interface Application {
   id: string; appNo: string; customerId: string; productCode: string;
@@ -150,6 +157,9 @@ export const db = {
   loans: [] as Loan[],
   applications: [] as Application[],
   tasks: [] as AppWorkflowTask[],
+  conditions: [] as ApprovalConditionRow[],
+  watchlist: [] as any[],
+  auctions: [] as any[],
   payments: [] as Payment[],
   ptps: [] as Ptp[],
   fieldTasks: [] as FieldTask[],
@@ -178,7 +188,7 @@ export const db = {
   strReports: [] as any[],
   portalDocs: [] as any[],
   audit: [] as AuditEntry[],
-  seq: { cif: 100887, app: 13, task: 3, pay: 5, ptp: 3, ft: 1, act: 1, disb: 1, cib: 1, doc: 1, kyc: 6, ret: 12 },
+  seq: { cif: 100887, app: 13, task: 3, pay: 5, ptp: 3, ft: 1, act: 1, disb: 1, cib: 1, doc: 1, kyc: 6, ret: 12, cond: 1, wl: 1, auc: 1, rec: 1 },
 };
 
 export const LADDER = [
@@ -350,7 +360,7 @@ function seed() {
 }
 function resetDb() {
   const fresh = {
-    customers: [], loans: [], applications: [], tasks: [], payments: [], ptps: [],
+    customers: [], loans: [], applications: [], tasks: [], conditions: [], watchlist: [], auctions: [], payments: [], ptps: [],
     fieldTasks: [], collActions: [], kycChecks: [], screeningHits: [], disbursements: [],
     cibPulls: [], documents: [], eodRuns: [], provisionJvs: [], returns: [], reportDefs: [],
     loanFees: [], legalCases: [], audit: [],
@@ -359,7 +369,7 @@ function resetDb() {
     strReports: [], portalDocs: [],
   };
   Object.assign(db, fresh);
-  db.seq = { cif: 100887, app: 13, task: 3, pay: 5, ptp: 3, ft: 1, act: 1, disb: 1, cib: 1, doc: 1, kyc: 6, ret: 12 };
+  db.seq = { cif: 100887, app: 13, task: 3, pay: 5, ptp: 3, ft: 1, act: 1, disb: 1, cib: 1, doc: 1, kyc: 6, ret: 12, cond: 1, wl: 1, auc: 1, rec: 1 };
   seed();
   seedR3R4R5();
 }

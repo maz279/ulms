@@ -3,7 +3,12 @@
   "request": {
     "method": "POST",
     "urlPath": "/nid/verify",
-    "bodyPatterns": [{ "matchesJsonPath": "$.nid", "matches": "^[0-9]{10,17}$" }]
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": "$.nid",
+        "matches": "^[0-9]{10,17}$"
+      }
+    ]
   },
   "response": {
     "status": 200,
@@ -11,6 +16,9 @@
       "status": "MATCH",
       "referenceId": "NIDW-{{randomValue length=12 type='ALPHANUMERIC'}}",
       "matchedNameEn": "Md. Rafiqul Islam"
+    },
+    "headers": {
+      "Content-Type": "application/json"
     }
   }
 }

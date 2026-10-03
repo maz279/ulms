@@ -10,6 +10,9 @@
       "status": "SENT",
       "reference": "SMS-{{randomValue length=14 type='NUMERIC'}}"
     },
-    "fixedDelayMilliseconds": 50
+    "fixedDelayMilliseconds": 50,
+    "headers": {
+      "Content-Type": "application/json"
+    }
   }
 }

@@ -9,6 +9,9 @@
     "jsonBody": {
       "reference": "FIN-GL-{{randomValue length=12 type='NUMERIC'}}",
       "status": "POSTED"
+    },
+    "headers": {
+      "Content-Type": "application/json"
     }
   }
 }

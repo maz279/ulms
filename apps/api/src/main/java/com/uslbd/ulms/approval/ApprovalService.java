@@ -42,27 +42,65 @@ public class ApprovalService {
 
     @Transactional
     public ActResult act(UUID taskId, WorkflowService.Action action, String actor, String remark) {
-        return act(taskId, action, actor, Set.of(), remark);
+        return act(taskId, action, actor, Set.of(), remark, null);
+    }
+
+    /**
+     * Full act (Q1.3): DELEGATE carries the delegate user in {@code delegateTo};
+     * every other action ignores it. Two gates stack before the engine:
+     * the ladder ROLE gate (realm roles cover the task's level, admin bypasses)
+     * and the ASSIGNEE gate (a delegated/claimed task answers only to its
+     * assignee — or admin), so delegation actually transfers responsibility.
+     */
+    @Transactional
+    public ActResult act(UUID taskId, WorkflowService.Action action, String actor,
+                         Set<String> realmRoles, String remark) {
+        return act(taskId, action, actor, realmRoles, remark, null);
     }
 
     @Transactional
     public ActResult act(UUID taskId, WorkflowService.Action action, String actor,
-                         Set<String> realmRoles, String remark) {
+                         Set<String> realmRoles, String remark, String delegateTo) {
         if (!realmRoles.isEmpty()) {
             var task = workflow.task(taskId)
                     .orElseThrow(() -> new NoSuchElementException("Task not open: " + taskId));
-            boolean allowed = realmRoles.contains("admin")
+            boolean admin = realmRoles.contains("admin");
+            boolean allowed = admin
                     || realmRoles.stream().map(ROLE_TO_LADDER::get).anyMatch(task.getAssigneeRole()::equals);
             if (!allowed) {
                 throw new org.springframework.security.access.AccessDeniedException(
                         "Role not authorized for " + task.getAssigneeRole() + " task");
             }
+            if (task.getAssigneeUser() != null && !admin
+                    && !actor.equals(task.getAssigneeUser())) {
+                throw new org.springframework.security.access.AccessDeniedException(
+                        "Task is assigned to " + task.getAssigneeUser());
+            }
         }
-        WorkflowService.Outcome out = workflow.act(taskId, action, actor, remark);
+        WorkflowService.Outcome out = workflow.act(taskId, action, actor, remark, delegateTo);
         audit.record(actor, "APPROVAL_" + action.name(), "workflow_task", taskId,
                 "{\"event\":\"" + out.event() + "\"}", UUID.randomUUID());
         return new ActResult(out.instance().getStatus(), out.event().name(),
                 out.nextTask() == null ? null : out.nextTask().getId());
+    }
+
+    /** Conditions precedent on an application's workflow (Q1.3). */
+    @Transactional(readOnly = true)
+    public java.util.List<com.uslbd.ulms.platform.workflow.ApprovalCondition>
+            conditions(UUID applicationId) {
+        return workflow.conditions("application", applicationId);
+    }
+
+    /** SATISFIED (evidence) or WAIVED (override) — admin or any ladder level. */
+    @Transactional
+    public com.uslbd.ulms.platform.workflow.ApprovalCondition resolveCondition(
+            UUID conditionId, String status, String actor, String remark) {
+        var resolved = workflow.resolveCondition(conditionId, status, actor);
+        audit.record(actor, "CONDITION_" + status, "workflow_task", resolved.getTaskId(),
+                "{\"condition\":\"" + resolved.getId() + "\",\"remark\":\""
+                        + (remark == null ? "" : remark.replace("\"", "'")) + "\"}",
+                UUID.randomUUID());
+        return resolved;
     }
 
     public record ActResult(String instanceStatus, String event, UUID nextTaskId) {}

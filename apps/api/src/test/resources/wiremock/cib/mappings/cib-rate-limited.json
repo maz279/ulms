@@ -6,6 +6,12 @@
   },
   "response": {
     "status": 429,
-    "jsonBody": { "code": "CIB-003", "detail": "rate limit — 100 req/min" }
+    "jsonBody": {
+      "code": "CIB-003",
+      "detail": "rate limit — 100 req/min"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
   }
 }

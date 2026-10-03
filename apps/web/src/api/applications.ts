@@ -24,6 +24,21 @@ export interface ActResult {
   instanceStatus: string; event: string; nextTaskId: string | null;
 }
 
+/** Workflow action (03 mod-approval + Q1.3): the two depth actions are
+ *  DELEGATE (needs delegateTo) and APPROVE_WITH_CONDITIONS (one condition
+ *  per remark line — rows gate disbursement until SATISFIED/WAIVED). */
+export type WorkflowAction =
+  | "APPROVE" | "REJECT" | "RETURN" | "ESCALATE"
+  | "DELEGATE" | "APPROVE_WITH_CONDITIONS";
+
+/** Condition precedent recorded by an APPROVE_WITH_CONDITIONS decision. */
+export interface ApprovalConditionView {
+  id: string; node: string; conditionText: string;
+  status: "PENDING" | "SATISFIED" | "WAIVED";
+  createdBy: string; createdAt: string;
+  resolvedBy: string | null; resolvedAt: string | null;
+}
+
 export async function draftApplication(body: {
   customerId: string; productCode: string; amountMinor: number;
   tenorMonths: number; rateType: "FIXED" | "FLOATING"; branchCode: string;
@@ -100,15 +115,38 @@ export async function currentTask(appId: string): Promise<ApprovalTask | null> {
 }
 
 export async function actOnTask(
-  taskId: string, action: "APPROVE" | "REJECT" | "RETURN", actor: string, remark?: string,
+  taskId: string, action: WorkflowAction, actor: string, remark?: string,
+  opts?: { delegateTo?: string },
 ): Promise<ActResult> {
   const res = await fetch(`/api/v1/approvals/${taskId}/act`, {
     method: "POST", headers: authHeaders(),
-    body: JSON.stringify({ action, actor, remark }),
+    body: JSON.stringify({ action, actor, remark, delegateTo: opts?.delegateTo }),
   });
   if (!res.ok) {
     const p = await res.json().catch(() => ({}));
     throw new Error(p.detail ?? `Act failed (${res.status})`);
+  }
+  return res.json();
+}
+
+/** Conditions precedent on an application's workflow (Q1.3). */
+export async function listConditions(appId: string): Promise<ApprovalConditionView[]> {
+  const res = await fetch(`/api/v1/approvals/conditions/${appId}`, { headers: authHeaders() });
+  if (!res.ok) throw new Error(`Conditions failed (${res.status})`);
+  return (await res.json()).data ?? [];
+}
+
+/** SATISFIED (evidence on file) or WAIVED (documented override). */
+export async function resolveCondition(
+  id: string, status: "SATISFIED" | "WAIVED", remark?: string,
+): Promise<ApprovalConditionView> {
+  const res = await fetch(`/api/v1/approvals/conditions/${id}/resolve`, {
+    method: "POST", headers: authHeaders(),
+    body: JSON.stringify({ status, remark }),
+  });
+  if (!res.ok) {
+    const p = await res.json().catch(() => ({}));
+    throw new Error(p.detail ?? `Resolve failed (${res.status})`);
   }
   return res.json();
 }

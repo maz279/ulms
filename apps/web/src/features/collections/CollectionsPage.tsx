@@ -6,7 +6,10 @@ import {
   MenuItem, Alert, Snackbar,
 } from "@mui/material";
 import { worklist, recordAction, createPtp, assignFieldTask, dunningQueue,
-         dunningRun, resolveDunning, type WorklistRow, type QueuedDunning }
+         dunningRun, resolveDunning, listWatchlist, addToWatchlist,
+         clearWatchlistEntry, listAuctions,
+         type WorklistRow, type QueuedDunning,
+         type WatchlistEntryView, type AuctionEntryView }
   from "../../api/collections";
 import { formatTk } from "../../api/money";
 import { PageHeader } from "../../shell/PageHeader";
@@ -21,6 +24,8 @@ export function CollectionsPage() {
   const nav = useNavigate();
   const [rows, setRows] = React.useState<WorklistRow[]>([]);
   const [dunning, setDunning] = React.useState<QueuedDunning[]>([]);
+  const [watch, setWatch] = React.useState<WatchlistEntryView[]>([]);
+  const [auctions, setAuctions] = React.useState<AuctionEntryView[]>([]);
   const [ptpFor, setPtpFor] = React.useState<WorklistRow | null>(null);
   const [form, setForm] = React.useState({
     amountLakh: "1", promisedOn: "", confidence: "HIGH",
@@ -33,6 +38,8 @@ export function CollectionsPage() {
     try {
       setRows(await worklist());
       setDunning(await dunningQueue().catch(() => []));
+      setWatch(await listWatchlist("OPEN").catch(() => []));
+      setAuctions(await listAuctions().catch(() => []));
     } catch (e) { setErr(String(e)); }
   }, []);
   React.useEffect(() => {
@@ -90,6 +97,24 @@ export function CollectionsPage() {
     } catch (e) { setErr(String(e)); }
   }
 
+  // Q1.4 early-warning watchlist: quick-add from the worklist (officers can
+  // refine the reason/note via the API), terminal clear with evidence
+  async function onWatch(loanId: string) {
+    try {
+      await addToWatchlist(loanId, "DPD_RISING", "added from workbench");
+      setMsg("Loan watchlisted (7-day review)");
+      await reload();
+    } catch (e) { setErr(e instanceof Error ? e.message : String(e)); }
+  }
+
+  async function onWatchClear(id: string, loanNo: string) {
+    try {
+      await clearWatchlistEntry(id, `cleared from workbench — ${loanNo}`);
+      setMsg("Watchlist entry cleared");
+      await reload();
+    } catch (e) { setErr(e instanceof Error ? e.message : String(e)); }
+  }
+
   const prioColor = (p: string) => p === "P1" ? "error" : p === "P2" ? "warning" : "default";
 
   const p1 = rows.filter((r) => r.priority === "P1").length;
@@ -134,6 +159,26 @@ export function CollectionsPage() {
           ))}
         </Paper>
       )}
+      {watch.length > 0 && (
+        <Paper variant="outlined" sx={{ p: 1.5 }}>
+          <Typography variant="subtitle2">
+            Early-warning watchlist — {watch.length} open (nightly scan auto-adds STD-2)
+          </Typography>
+          {watch.slice(0, 8).map((w) => (
+            <Box key={w.id} sx={{ display: "flex", gap: 1, alignItems: "center", mt: 0.5 }}>
+              <Chip size="small" color={w.reasonCode === "AUTO_STD2" ? "error" : "warning"}
+                label={w.reasonCode} />
+              <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{w.loanNo}</Typography>
+              <Typography variant="caption">
+                review by {w.reviewBy?.slice(0, 10)}{w.note ? ` · ${w.note}` : ""}
+              </Typography>
+              <Button size="small" disabled={!canWrite} onClick={() => onWatchClear(w.id, w.loanNo)}>
+                Clear
+              </Button>
+            </Box>
+          ))}
+        </Paper>
+      )}
       <Paper variant="outlined">
         <Table size="small">
           <TableHead><TableRow>
@@ -171,6 +216,9 @@ export function CollectionsPage() {
                     <Button size="small" variant="outlined" disabled={!canWrite}
                       title={canWrite ? undefined : "Requires collections or admin role (06 §1)"}
                       onClick={() => onFieldTask(r.loanId)}>Field</Button>
+                    <Button size="small" disabled={!canWrite}
+                      title={canWrite ? "Early-warning watchlist (Q1.4)" : undefined}
+                      onClick={() => onWatch(r.loanId)}>Watch</Button>
                   </Box>
                 </TableCell>
               </TableRow>
@@ -224,6 +272,26 @@ export function CollectionsPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {auctions.length > 0 && (
+        <Paper variant="outlined" sx={{ p: 1.5 }}>
+          <Typography variant="subtitle2">
+            Collateral auction ledger — {auctions.length} entry (proceeds post as recovery, 5% incentive)
+          </Typography>
+          {auctions.slice(0, 8).map((a) => (
+            <Box key={a.id} sx={{ display: "flex", gap: 1, alignItems: "center", mt: 0.5 }}>
+              <Chip size="small"
+                color={a.status === "SOLD" ? "success" : a.status === "CANCELLED" ? "default" : "info"}
+                label={a.status} />
+              <Typography variant="caption" sx={{ fontFamily: "monospace" }}>{a.loanNo}</Typography>
+              <Typography variant="caption">
+                {a.venue} · {a.scheduledFor?.slice(0, 10)}
+                {a.proceedsMinor != null ? ` · sold ${formatTk(a.proceedsMinor)}` : ` · reserve ${formatTk(a.reserveMinor)}`}
+              </Typography>
+            </Box>
+          ))}
+        </Paper>
+      )}
 
       <Snackbar open={!!msg} autoHideDuration={4000} onClose={() => setMsg(null)}>
         <Alert severity="success" onClose={() => setMsg(null)}>{msg}</Alert>

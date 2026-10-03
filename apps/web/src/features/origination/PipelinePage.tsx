@@ -2,9 +2,12 @@ import * as React from "react";
 import {
   Typography, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button,
   Box, Chip, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions,
+  TextField, List, ListItem, ListItemText,
 } from "@mui/material";
 import { listApplications, currentTask, actOnTask, getLadder, cpvApplication,
-         type ApplicationView, type ApprovalTask, type LadderRung } from "../../api/applications";
+         listConditions, resolveCondition,
+         type ApplicationView, type ApprovalTask, type LadderRung,
+         type ApprovalConditionView, type WorkflowAction } from "../../api/applications";
 import { listCustomers, type CustomerView } from "../../api/customers";
 import { formatTk } from "../../api/money";
 import { DocumentPanel } from "./DocumentPanel";
@@ -22,6 +25,10 @@ export function PipelinePage() {
   const [task, setTask] = React.useState<ApprovalTask | null>(null);
   const [msg, setMsg] = React.useState<string | null>(null);
   const [err, setErr] = React.useState<string | null>(null);
+  // Q1.3 conditional approval / delegation inputs + conditions panel
+  const [conditions, setConditions] = React.useState<ApprovalConditionView[]>([]);
+  const [condText, setCondText] = React.useState("");
+  const [delegateTo, setDelegateTo] = React.useState("");
 
   const refresh = React.useCallback(async () => {
     try {
@@ -31,17 +38,50 @@ export function PipelinePage() {
   }, []);
   React.useEffect(() => { void refresh(); }, [refresh]);
 
+  const reloadConditions = React.useCallback(async (appId: string) => {
+    setConditions(await listConditions(appId).catch(() => []));
+  }, []);
+
   async function openDetail(app: ApplicationView) {
     setSelected(app);
     setTask(await currentTask(app.id).catch(() => null));
+    setCondText(""); setDelegateTo("");
+    await reloadConditions(app.id);
   }
 
-  async function act(action: "APPROVE" | "REJECT" | "RETURN") {
+  async function act(action: WorkflowAction, remark?: string, opts?: { delegateTo?: string }) {
     if (!task) return;
     try {
-      const out = await actOnTask(task.taskId, action, "user:approver");
+      const out = await actOnTask(task.taskId, action, "user:approver", remark, opts);
       setMsg(`${action} done — ${out.event}`);
       await closeAndRefresh();
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  /** APPROVE_WITH_CONDITIONS: one condition per line — validates before the wire. */
+  async function approveWithConditions() {
+    const lines = condText.split("\n").map((l) => l.trim()).filter(Boolean);
+    if (lines.length === 0) {
+      setErr("Enter at least one condition (one per line)");
+      return;
+    }
+    await act("APPROVE_WITH_CONDITIONS", lines.join("\n"));
+  }
+
+  async function delegate() {
+    const target = delegateTo.trim();
+    if (!target) { setErr("Enter the delegate's user id"); return; }
+    await act("DELEGATE", undefined, { delegateTo: target });
+  }
+
+  async function resolve(id: string, status: "SATISFIED" | "WAIVED") {
+    if (!selected) return;
+    try {
+      await resolveCondition(id, status, status === "WAIVED" ? "documented override" : "evidence on file");
+      setMsg(`Condition ${status.toLowerCase()}`);
+      await reloadConditions(selected.id);
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e));
     }
@@ -158,6 +198,44 @@ export function PipelinePage() {
                   <Typography variant="caption">{r.roleNameEn}</Typography>
                 </Box>
               ))}
+              <TextField fullWidth size="small" label="Delegate to (user id)"
+                value={delegateTo} onChange={(e) => setDelegateTo(e.target.value)}
+                helperText="Hands this open task to a peer — the SLA clock keeps running" />
+              <TextField fullWidth size="small" multiline minRows={2}
+                label="Conditions precedent (one per line)"
+                value={condText} onChange={(e) => setCondText(e.target.value)}
+                helperText="Approve with conditions — disbursement stays gated until every line is satisfied or waived" />
+            </>
+          )}
+
+          {conditions.length > 0 && (
+            <>
+              <Typography variant="subtitle2">
+                Conditions precedent ({conditions.filter((c) => c.status === "PENDING").length} pending)
+              </Typography>
+              <List dense>
+                {conditions.map((c) => (
+                  <ListItem key={c.id} disableGutters
+                    secondaryAction={c.status === "PENDING" ? (
+                      <Box sx={{ display: "flex", gap: 0.5 }}>
+                        <Button size="small" color="success" onClick={() => resolve(c.id, "SATISFIED")}>
+                          Satisfied
+                        </Button>
+                        <Button size="small" onClick={() => resolve(c.id, "WAIVED")}>Waive</Button>
+                      </Box>
+                    ) : undefined}>
+                    <ListItemText
+                      primary={<>
+                        <Chip size="small" sx={{ mr: 1 }}
+                          color={c.status === "PENDING" ? "warning" : c.status === "WAIVED" ? "default" : "success"}
+                          label={c.status} />
+                        {c.conditionText}
+                      </>}
+                      secondary={`${c.node} · raised by ${c.createdBy}`
+                        + (c.resolvedBy ? ` · ${c.status.toLowerCase()} by ${c.resolvedBy}` : "")} />
+                  </ListItem>
+                ))}
+              </List>
             </>
           )}
 
@@ -172,6 +250,10 @@ export function PipelinePage() {
           {task && <>
             <Button color="error" onClick={() => act("REJECT")}>Reject</Button>
             <Button onClick={() => act("RETURN")}>Return</Button>
+            <Button size="small" onClick={delegate} disabled={!delegateTo.trim()}>Delegate</Button>
+            <Button size="small" onClick={approveWithConditions} disabled={!condText.trim()}>
+              Approve w/ conditions
+            </Button>
             <Button variant="contained" onClick={() => act("APPROVE")}>Approve</Button>
           </>}
           {!task && <Button onClick={() => setSelected(null)}>Close</Button>}

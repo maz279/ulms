@@ -112,3 +112,93 @@ export async function waiveInterest(loanId: string, amountMinor: number): Promis
     method: "POST", headers: authHeaders(), body: JSON.stringify({ amountMinor }),
   }));
 }
+
+// ── Q1.4 early-warning watchlist (PLAN-03 mod-collections) ────────────────
+
+export interface WatchlistEntryView {
+  id: string; loanId: string; cifNo: string; loanNo: string;
+  reasonCode: string; note: string | null; status: "OPEN" | "CLEARED";
+  reviewBy: string; addedBy: string; addedAt: string;
+  clearedBy: string | null; clearedAt: string | null; clearNote: string | null;
+}
+
+export const WATCHLIST_REASONS = [
+  "DPD_RISING", "CHEQUE_BOUNCE", "CIB_ALERT", "FIELD_INTEL", "BANKING_INACTIVITY", "AUTO_STD2",
+] as const;
+
+export async function listWatchlist(status?: "OPEN" | "CLEARED" | "ALL"): Promise<WatchlistEntryView[]> {
+  const qs = status ? `?status=${status}` : "";
+  return jw<{ data?: WatchlistEntryView[] }>(
+      await fetch(`/api/v1/collections/watchlist${qs}`, { headers: authHeaders() }))
+    .then((r) => r.data ?? []);
+}
+
+export async function addToWatchlist(loanId: string, reasonCode: string,
+                                     note?: string, reviewWithinDays?: number): Promise<WatchlistEntryView> {
+  return jw(await fetch("/api/v1/collections/watchlist", {
+    method: "POST", headers: authHeaders(),
+    body: JSON.stringify({ loanId, reasonCode, note, reviewWithinDays }),
+  }));
+}
+
+export async function clearWatchlistEntry(id: string, note: string): Promise<WatchlistEntryView> {
+  return jw(await fetch(`/api/v1/collections/watchlist/${id}/clear`, {
+    method: "POST", headers: authHeaders(), body: JSON.stringify({ note }),
+  }));
+}
+
+// ── Q1.5 collateral auction ledger (ULS-01 §6.3) ─────────────────────────
+
+export interface AuctionEntryView {
+  id: string; loanId: string; cifNo: string; loanNo: string;
+  collateralRef: string | null; venue: string;
+  scheduledFor: string; heldOn: string | null;
+  status: "SCHEDULED" | "HELD" | "SOLD" | "UNSOLD" | "CANCELLED";
+  reserveMinor: number; proceedsMinor: number | null; buyer: string | null;
+  recoveryId: string | null; createdBy: string; createdAt: string;
+}
+
+export async function listAuctions(status?: string, loanId?: string): Promise<AuctionEntryView[]> {
+  const qs = new URLSearchParams();
+  if (status) qs.set("status", status);
+  if (loanId) qs.set("loanId", loanId);
+  const suffix = qs.size ? `?${qs}` : "";
+  return jw<{ data?: AuctionEntryView[] }>(
+      await fetch(`/api/v1/collections/auctions${suffix}`, { headers: authHeaders() }))
+    .then((r) => r.data ?? []);
+}
+
+export async function scheduleAuction(loanId: string, body: {
+  collateralRef?: string; venue: string; scheduledFor: string; reserveMinor: number;
+}): Promise<AuctionEntryView> {
+  return jw(await fetch("/api/v1/collections/auctions", {
+    method: "POST", headers: authHeaders(),
+    body: JSON.stringify({ loanId, ...body }),
+  }));
+}
+
+export async function auctionHeld(id: string): Promise<AuctionEntryView> {
+  return jw(await fetch(`/api/v1/collections/auctions/${id}/held`, {
+    method: "POST", headers: authHeaders(),
+  }));
+}
+
+export async function auctionSold(id: string, proceedsMinor: number,
+                                  buyer: string): Promise<AuctionEntryView> {
+  return jw(await fetch(`/api/v1/collections/auctions/${id}/sold`, {
+    method: "POST", headers: authHeaders(),
+    body: JSON.stringify({ proceedsMinor, buyer }),
+  }));
+}
+
+export async function auctionUnsold(id: string): Promise<AuctionEntryView> {
+  return jw(await fetch(`/api/v1/collections/auctions/${id}/unsold`, {
+    method: "POST", headers: authHeaders(),
+  }));
+}
+
+export async function auctionCancel(id: string): Promise<AuctionEntryView> {
+  return jw(await fetch(`/api/v1/collections/auctions/${id}/cancel`, {
+    method: "POST", headers: authHeaders(),
+  }));
+}

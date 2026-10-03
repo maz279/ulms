@@ -41,7 +41,7 @@ class ApprovalController {
         if (AuthPrincipal.rolesOf(auth).contains("admin")) ladderRoles.add("admin");
         var items = workflow.openTasksForRoles(ladderRoles).stream()
                 .map(t -> new InboxItem(t.getId(), t.getNode(), t.getAssigneeRole(),
-                        t.getPhase(), t.getSlaDeadline(),
+                        t.getPhase(), t.getAssigneeUser(), t.getSlaDeadline(),
                         workflow.instanceOfTask(t.getId())
                                 .map(i -> i.getAggregateId().toString()).orElse(null)))
                 .toList();
@@ -59,22 +59,63 @@ class ApprovalController {
     }
 
     /**
-     * Act on a task: approve | reject | return | escalate (03). The actor is the
-     * JWT subject (client-sent actor ignored — 06 §1) and the caller's realm
-     * roles must cover the task's ladder level (ApprovalService gate).
+     * Act on a task: approve | reject | return | escalate | delegate |
+     * approve_with_conditions (03 + Q1.3). The actor is the JWT subject
+     * (client-sent actor ignored — 06 §1) and the caller's realm roles must
+     * cover the task's ladder level (ApprovalService gate). DELEGATE requires
+     * {@code delegateTo}; APPROVE_WITH_CONDITIONS takes one condition per
+     * remark line.
      */
     @PostMapping("/{taskId}/act")
     @PreAuthorize("hasAnyRole('branch-officer','branch-manager','regional-manager',"
             + "'divisional-head','ho-credit','credit-committee','md','admin')")
     ApprovalService.ActResult act(@PathVariable UUID taskId, @RequestBody ActRequest body,
                                    Authentication auth) {
-        var action = com.uslbd.ulms.platform.workflow.WorkflowService.Action.valueOf(body.action());
-        return service.act(taskId, action, AuthPrincipal.actorOf(auth),
-                AuthPrincipal.rolesOf(auth), body.remark());
+        com.uslbd.ulms.platform.workflow.WorkflowService.Action parsed;
+        try {
+            parsed = com.uslbd.ulms.platform.workflow.WorkflowService.Action
+                    .valueOf(body.action().trim().toUpperCase().replace('-', '_'));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Unknown action: " + body.action());
+        }
+        if (parsed == com.uslbd.ulms.platform.workflow.WorkflowService.Action.DELEGATE
+                && (body.delegateTo() == null || body.delegateTo().isBlank())) {
+            throw new IllegalArgumentException("delegateTo is required for DELEGATE");
+        }
+        return service.act(taskId, parsed, AuthPrincipal.actorOf(auth),
+                AuthPrincipal.rolesOf(auth), body.remark(), body.delegateTo());
     }
 
-    record ActRequest(String action, String actor, String remark) {}
-    record InboxItem(UUID taskId, String node, String role, String phase,
+    /** Conditions precedent recorded on an application's approvals (Q1.3). */
+    @GetMapping("/conditions/{applicationId}")
+    @PreAuthorize("hasAnyRole('branch-officer','branch-manager','regional-manager',"
+            + "'divisional-head','ho-credit','credit-committee','md','admin')")
+    ApiList<ConditionDto> conditions(@PathVariable UUID applicationId) {
+        return ApiList.of(service.conditions(applicationId).stream()
+                .map(c -> new ConditionDto(c.getId(), c.getNode(), c.getConditionText(),
+                        c.getStatus(), c.getCreatedBy(), c.getCreatedAt(),
+                        c.getResolvedBy(), c.getResolvedAt()))
+                .toList());
+    }
+
+    /** Resolve a condition: SATISFIED (evidence on file) or WAIVED (override). */
+    @PostMapping("/conditions/{conditionId}/resolve")
+    @PreAuthorize("hasAnyRole('branch-officer','branch-manager','regional-manager',"
+            + "'divisional-head','ho-credit','credit-committee','md','admin')")
+    ConditionDto resolve(@PathVariable UUID conditionId, @RequestBody ResolveRequest body,
+                         Authentication auth) {
+        var c = service.resolveCondition(conditionId, body.status(),
+                AuthPrincipal.actorOf(auth), body.remark());
+        return new ConditionDto(c.getId(), c.getNode(), c.getConditionText(), c.getStatus(),
+                c.getCreatedBy(), c.getCreatedAt(), c.getResolvedBy(), c.getResolvedAt());
+    }
+
+    record ActRequest(String action, String actor, String remark, String delegateTo) {}
+    record ResolveRequest(String status, String remark) {}
+    record ConditionDto(UUID id, String node, String conditionText, String status,
+                        String createdBy, java.time.Instant createdAt,
+                        String resolvedBy, java.time.Instant resolvedAt) {}
+    record InboxItem(UUID taskId, String node, String role, String phase, String assigneeUser,
                      java.time.Instant slaDeadline, String applicationId) {}
     record CurrentTask(UUID taskId, String node, String role, String phase,
                        String status, java.time.Instant slaDeadline) {}

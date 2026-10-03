@@ -10,6 +10,9 @@
       "idToken": "test-id-token-{{randomValue length=16 type='ALPHANUMERIC'}}",
       "token_type": "Bearer",
       "expires_in": 3600
+    },
+    "headers": {
+      "Content-Type": "application/json"
     }
   }
 }

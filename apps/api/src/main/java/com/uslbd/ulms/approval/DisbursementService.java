@@ -32,15 +32,18 @@ public class DisbursementService {
     private final LoanRepository loans;
     private final EodBatchService compliance;
     private final AuditService audit;
+    private final com.uslbd.ulms.platform.workflow.WorkflowService workflow;
 
     DisbursementService(DisbursementRepository disbursements,
                         DualAuthorizationRepository authorizations,
                         DisbursementFactsProvider origination,
                         FineractLoanPort fineractLoans, LoanRepository loans,
-                        EodBatchService compliance, AuditService audit) {
+                        EodBatchService compliance, AuditService audit,
+                        com.uslbd.ulms.platform.workflow.WorkflowService workflow) {
         this.disbursements = disbursements; this.authorizations = authorizations;
         this.origination = origination; this.fineractLoans = fineractLoans;
         this.loans = loans; this.compliance = compliance; this.audit = audit;
+        this.workflow = workflow;
     }
 
     /** Prepare from a SANCTIONED application (one active disbursement per app). */
@@ -50,6 +53,13 @@ public class DisbursementService {
         if (!"SANCTION".equals(facts.stage())) {
             throw new IllegalStateException(
                     "Disbursement requires stage SANCTION (stage=" + facts.stage() + ")");
+        }
+        // Q1.3: conditions precedent from APPROVE_WITH_CONDITIONS decisions
+        // gate the money — every PENDING row must be SATISFIED or WAIVED first
+        long outstanding = workflow.outstandingConditions("application", applicationId);
+        if (outstanding > 0) {
+            throw new IllegalStateException("Conditions precedent outstanding (" + outstanding
+                    + ") — resolve before disbursement");
         }
         if (disbursements.findByApplicationId(applicationId).isPresent()) {
             throw new IllegalStateException("Disbursement already prepared for " + facts.appNo());

@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface WriteOffRepository extends JpaRepository<WriteOff, UUID> {
     Optional<WriteOff> findByLoanIdAndStateNot(UUID loanId, WriteOff.State state);
     List<WriteOff> findAllByOrderByProposedAtDesc();
+    // Q1.5 auction gate: EXECUTED write-offs only
+    List<WriteOff> findAllByLoanIdOrderByProposedAtDesc(UUID loanId);
 }

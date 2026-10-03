@@ -307,7 +307,33 @@ if (seg[0] === "applications" && seg[1] && !seg[2] && method === "PATCH") {
     const action = String(body?.action ?? "APPROVE").toUpperCase();
     const nextLevel = LADDER.find((l) => l.level === +(t.node.slice(1)) + 1);
     const stillInBand = nextLevel && nextLevel.minMinor <= a.amountMinor;
-    if (action === "APPROVE") {
+    // Q1.3 DELEGATE: hand the open task to a named peer — SLA clock keeps
+    // running, node/phase unchanged, only the delegate may act afterwards
+    if (action === "DELEGATE") {
+      const target = String(body?.delegateTo ?? "").trim();
+      if (!target) return err(400, "ULMS-REQ-0001", "delegateTo is required for DELEGATE");
+      if (target === String(body?.actor ?? actor)) return err(400, "ULMS-REQ-0001", "cannot delegate to yourself");
+      t.assigneeUser = target;
+      audit(String(body?.actor ?? actor), "DELEGATE", a.appNo, `${t.node} handed to ${target}`);
+      return ok({ instanceStatus: "RUNNING", event: "DELEGATED", nextTaskId: t.taskId });
+    }
+    // Q1.3 APPROVE_WITH_CONDITIONS: record one condition per remark line,
+    // then advance exactly like APPROVE — rows gate disbursement until
+    // every one is SATISFIED or WAIVED
+    if (action === "APPROVE_WITH_CONDITIONS") {
+      const lines = String(body?.remark ?? "").split(/\r?\n/).map((l: string) => l.trim()).filter(Boolean);
+      if (lines.length === 0) return err(400, "ULMS-REQ-0001", "at least one condition line is required");
+      for (const line of lines) {
+        db.conditions.push({
+          id: `cond-${db.seq.cond++}`, appId: a.id, node: t.node, conditionText: line,
+          status: "PENDING", createdBy: String(body?.actor ?? actor),
+          createdAt: new Date().toISOString(), resolvedBy: null, resolvedAt: null,
+        });
+      }
+      audit(String(body?.actor ?? actor), "APPROVE_WITH_CONDITIONS", a.appNo,
+        `${lines.length} condition(s) recorded at ${t.node}`);
+    }
+    if (action === "APPROVE" || action === "APPROVE_WITH_CONDITIONS") {
       if (stillInBand) {
         t.status = "DONE";
         db.tasks.push({ taskId: `t-${db.seq.task++}`, appId: a.id, node: `L${nextLevel.level}`, role: nextLevel.roleKey, phase: "ACTION", status: "OPEN", slaDeadline: new Date(Date.now() + 48 * 3600e3).toISOString() });
@@ -328,6 +354,26 @@ if (seg[0] === "applications" && seg[1] && !seg[2] && method === "PATCH") {
     a.workflowNode = null;
     audit(String(body?.actor ?? actor), action, a.appNo, String(body?.remark ?? ""));
     return ok({ instanceStatus: action === "REJECT" ? "TERMINATED" : "RUNNING", event: action, nextTaskId: null });
+  }
+
+  // ---- approvals: conditions precedent (Q1.3) ----
+  if (seg[0] === "approvals" && seg[1] === "conditions" && seg[2] && method === "GET") {
+    const rows = db.conditions.filter((c) => c.appId === seg[2]);
+    return ok({ data: rows });
+  }
+  if (seg[0] === "approvals" && seg[1] === "conditions" && seg[3] === "resolve" && method === "POST") {
+    const c = db.conditions.find((x) => x.id === seg[2]);
+    if (!c) return err(404, "ULMS-NOT-FOUND", "condition not found");
+    const status = String(body?.status ?? "");
+    if (status !== "SATISFIED" && status !== "WAIVED") {
+      return err(400, "ULMS-REQ-0001", "status must be SATISFIED or WAIVED");
+    }
+    if (c.status !== "PENDING") return err(409, "ULMS-STATE-0002", `already ${c.status}`);
+    c.status = status;
+    c.resolvedBy = actor;
+    c.resolvedAt = new Date().toISOString();
+    audit(actor, `CONDITION_${status}`, c.id.slice(0, 12), String(body?.remark ?? ""));
+    return ok(c);
   }
 
   // ---- assessments ----
@@ -381,6 +427,12 @@ if (seg[0] === "applications" && seg[1] && !seg[2] && method === "PATCH") {
     const a = db.applications.find((x) => x.id === seg[1]);
     if (!a) return err(404, "ULMS-NOT-FOUND", "application not found");
     if (a.stage !== "SANCTION") return err(409, "ULMS-STATE-0002", `prepare requires SANCTION (now ${a.stage})`);
+    // Q1.3: conditions precedent gate the money
+    const pendingConds = db.conditions.filter((c) => c.appId === a.id && c.status === "PENDING");
+    if (pendingConds.length > 0) {
+      return err(409, "ULMS-COND-0001",
+        `Conditions precedent outstanding (${pendingConds.length}) — resolve before disbursement`);
+    }
     const d = {
       id: `ds-${db.seq.disb++}`, applicationId: a.id, amountMinor: a.amountMinor,
       state: "PREPARED", preparedBy: actor, authorizedBy: null, fineractTxnId: null,
@@ -742,6 +794,121 @@ if (seg[0] === "applications" && seg[1] && !seg[2] && method === "PATCH") {
   }
 
   // ---- collections ----
+  // Q1.4 watchlist (one OPEN row per loan; nightly STD-2 auto-flag = seed time)
+  if (p === "/collections/watchlist" && method === "GET") {
+    const status = (q("status") ?? "OPEN").toUpperCase();
+    const rows = status === "ALL" ? db.watchlist
+      : db.watchlist.filter((w) => w.status === status);
+    return ok({ data: rows });
+  }
+  if (p === "/collections/watchlist" && method === "POST") {
+    const REASONS = ["DPD_RISING", "CHEQUE_BOUNCE", "CIB_ALERT", "FIELD_INTEL", "BANKING_INACTIVITY", "AUTO_STD2"];
+    const reason = String(body?.reasonCode ?? "");
+    if (!REASONS.includes(reason)) return err(422, "ULMS-REQ-0001", `reasonCode must be one of ${REASONS.join("|")}`);
+    const loan = db.loans.find((l) => l.id === body?.loanId);
+    if (!loan) return err(404, "ULMS-NOT-FOUND", "loan not found");
+    if (db.watchlist.some((w) => w.loanId === loan.id && w.status === "OPEN")) {
+      return err(409, "ULMS-STATE-0002", "loan already on the watchlist");
+    }
+    const w = {
+      id: `wl-${db.seq.wl++}`, loanId: loan.id,
+      cifNo: db.customers.find((c) => c.id === loan.customerId)?.cifNo ?? "?",
+      loanNo: loan.loanNo,
+      reasonCode: reason, note: body?.note ?? null, status: "OPEN" as const,
+      reviewBy: new Date(Date.now() + (Number(body?.reviewWithinDays ?? 7)) * 86400e3).toISOString(),
+      addedBy: actor, addedAt: new Date().toISOString(),
+      clearedBy: null, clearedAt: null, clearNote: null,
+    };
+    db.watchlist.push(w);
+    audit(actor, "WATCHLIST_ADD", loan.loanNo, reason);
+    return ok(w);
+  }
+  if (seg[0] === "collections" && seg[1] === "watchlist" && seg[3] === "clear" && method === "POST") {
+    const w = db.watchlist.find((x) => x.id === seg[2]);
+    if (!w) return err(404, "ULMS-NOT-FOUND", "entry not found");
+    if (w.status !== "OPEN") return err(409, "ULMS-STATE-0002", `already ${w.status}`);
+    w.status = "CLEARED"; w.clearedBy = actor; w.clearedAt = new Date().toISOString();
+    w.clearNote = body?.note ?? null;
+    audit(actor, "WATCHLIST_CLEAR", w.loanNo, String(body?.note ?? ""));
+    return ok(w);
+  }
+  // Q1.5 auction ledger — sold cuts a recovery row (5% incentive) like the real service
+  if (p === "/collections/auctions" && method === "GET") {
+    const status = q("status")?.toUpperCase();
+    const loanId = q("loanId");
+    const rows = db.auctions.filter((a) =>
+      (!status || a.status === status) && (!loanId || a.loanId === loanId));
+    return ok({ data: rows });
+  }
+  if (p === "/collections/auctions" && method === "POST") {
+    const loan = db.loans.find((l) => l.id === body?.loanId);
+    if (!loan) return err(404, "ULMS-NOT-FOUND", "loan not found");
+    const writtenOff = db.writeOffs.some((w: any) => w.loanId === loan.id && w.state === "EXECUTED");
+    if (!writtenOff) return err(422, "ULMS-STATE-0001", "auctions track written-off loans only");
+    const when = body?.scheduledFor ? new Date(body.scheduledFor) : null;
+    if (!when || isNaN(when.getTime()) || when.getTime() < Date.now()) {
+      return err(422, "ULMS-REQ-0001", "scheduledFor must be in the future");
+    }
+    if (!body?.venue || !Number(body?.reserveMinor)) {
+      return err(422, "ULMS-REQ-0001", "venue and positive reserveMinor are required");
+    }
+    const a = {
+      id: `auc-${db.seq.auc++}`, loanId: loan.id,
+      cifNo: db.customers.find((c) => c.id === loan.customerId)?.cifNo ?? "?",
+      loanNo: loan.loanNo,
+      collateralRef: body?.collateralRef ?? null, venue: String(body.venue),
+      scheduledFor: when.toISOString(), heldOn: null, status: "SCHEDULED" as any,
+      reserveMinor: Number(body.reserveMinor), proceedsMinor: null as number | null,
+      buyer: null as string | null, recoveryId: null as string | null,
+      createdBy: actor, createdAt: new Date().toISOString(),
+    };
+    db.auctions.push(a);
+    audit(actor, "AUCTION_SCHEDULED", loan.loanNo, String(body.venue));
+    return ok(a);
+  }
+  for (const [verb, target] of [["held", "HELD"], ["unsold", "UNSOLD"], ["cancel", "CANCELLED"]] as const) {
+    if (seg[0] === "collections" && seg[1] === "auctions" && seg[3] === verb && method === "POST") {
+      const a = db.auctions.find((x) => x.id === seg[2]);
+      if (!a) return err(404, "ULMS-NOT-FOUND", "auction not found");
+      // mirror the backend state machine: held needs SCHEDULED; unsold needs
+      // SCHEDULED/HELD; only a SOLD auction can never be cancelled
+      const okFrom = verb === "held" ? ["SCHEDULED"]
+        : verb === "unsold" ? ["SCHEDULED", "HELD"]
+        : ["SCHEDULED", "HELD", "UNSOLD", "CANCELLED"];
+      if (verb === "cancel" && a.status === "SOLD") {
+        return err(409, "ULMS-STATE-0002", "a sold auction cannot be cancelled");
+      }
+      if (!okFrom.includes(a.status)) {
+        return err(409, "ULMS-STATE-0002", `${verb} not allowed from ${a.status}`);
+      }
+      a.status = target;
+      a.heldOn = a.heldOn ?? new Date().toISOString();
+      audit(actor, `AUCTION_${verb.toUpperCase()}`, a.loanNo, "");
+      return ok(a);
+    }
+  }
+  if (seg[0] === "collections" && seg[1] === "auctions" && seg[3] === "sold" && method === "POST") {
+    const a = db.auctions.find((x) => x.id === seg[2]);
+    if (!a) return err(404, "ULMS-NOT-FOUND", "auction not found");
+    if (a.status !== "SCHEDULED" && a.status !== "HELD") {
+      return err(409, "ULMS-STATE-0002", `sold requires SCHEDULED/HELD (now ${a.status})`);
+    }
+    const proceeds = Number(body?.proceedsMinor ?? 0);
+    if (!proceeds || proceeds <= 0) return err(422, "ULMS-REQ-0001", "proceedsMinor must be positive");
+    if (!body?.buyer) return err(422, "ULMS-REQ-0001", "buyer is required");
+    const recovery = {
+      id: `rec-${db.seq.rec++}`, loanId: a.loanId, loanNo: a.loanNo, cifNo: a.cifNo,
+      amountMinor: proceeds, mode: "AUCTION",
+      incentiveMinor: Math.round(proceeds * 0.05),
+      receivedBy: actor, receivedAt: new Date().toISOString(),
+    };
+    db.recoveries.push(recovery as any);
+    a.status = "SOLD"; a.proceedsMinor = proceeds; a.buyer = String(body.buyer);
+    a.recoveryId = recovery.id;
+    a.heldOn = a.heldOn ?? new Date().toISOString();
+    audit(actor, "AUCTION_SOLD", a.loanNo, `${proceeds} minor · incentive ${recovery.incentiveMinor}`);
+    return ok(a);
+  }
   if (p === "/collections/worklist" && method === "GET") {
     const rows = db.loans.filter((l) => l.dpd > 0 && !l.closed).map(worklistRow)
       .sort((a, b) => (a.priority === b.priority ? b.dpd - a.dpd : a.priority.localeCompare(b.priority)));

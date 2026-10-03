@@ -12,4 +12,6 @@ public interface LoanRepository extends JpaRepository<Loan, UUID> {
     Optional<Loan> findByLoanNo(String loanNo);
     boolean existsByLoanNo(String loanNo);
     long countByLoanNoStartingWith(String prefix);
+    // Q1.4 watchlist nightly scan: loans by BRPD classification (STD-2 = 31-60 DPD)
+    List<Loan> findAllByClassification(String classification);
 }

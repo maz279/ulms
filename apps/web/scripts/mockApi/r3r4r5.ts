@@ -87,11 +87,17 @@ export function seedR3R4R5(): void {
     { type: "APPROVED", channel: "SMS", lang: "en", body: "Dear {name}, your loan of BDT {amount} is approved. Sanction letter follows." },
     { type: "APPROVED", channel: "SMS", lang: "bn", body: "প্রিয় {name}, আপনার ঋণ অনুমোদিত হয়েছে।" },
     { type: "DISBURSED", channel: "SMS", lang: "en", body: "Dear {name}, BDT {amount} disbursed. Welcome to ABC Bank." },
+    { type: "DISBURSED", channel: "SMS", lang: "bn", body: "প্রিয় {name}, টাকা {amount} ব্যয় করা হয়েছে। ABC ব্যাংকে স্বাগতম।" },
     { type: "EMI_REMINDER", channel: "SMS", lang: "en", body: "Dear {name}, EMI reminder: pay before the 5th to keep your account standard." },
+    { type: "EMI_REMINDER", channel: "SMS", lang: "bn", body: "প্রিয় {name}, কিস্তি স্মরণ: হিসাব স্বাভাবিক রাখতে মাসের ৫ তারিখের মধ্যে পরিশোধ করুন।" },
     { type: "OVERDUE", channel: "SMS", lang: "en", body: "Dear {name}, your account is overdue. Please pay to avoid classification impact." },
+    { type: "OVERDUE", channel: "SMS", lang: "bn", body: "প্রিয় {name}, আপনার হিসাব অনাদায়ী। শ্রেণিবিন্যাসে প্রভাব এড়াতে দ্রুত পরিশোধ করুন।" },
     { type: "CLASSIFICATION_CHANGED", channel: "SMS", lang: "en", body: "Dear {name}, account status changed per BRPD rules. Contact your branch." },
+    { type: "CLASSIFICATION_CHANGED", channel: "SMS", lang: "bn", body: "প্রিয় {name}, বাংলাদেশ ব্যাংক বিধি অনুযায়ী হিসাবের শ্রেণি পরিবর্তিত হয়েছে। শাখায় যোগাযোগ করুন।" },
     { type: "PAYMENT_POSTED", channel: "SMS", lang: "en", body: "Dear {name}, payment of BDT {amount} received. Thank you." },
+    { type: "PAYMENT_POSTED", channel: "SMS", lang: "bn", body: "প্রিয় {name}, টাকা {amount} গৃহীত হয়েছে। ধন্যবাদ।" },
     { type: "RECOVERY_RECEIVED", channel: "SMS", lang: "en", body: "Dear {name}, recovery of BDT {amount} recorded on your settled account." },
+    { type: "RECOVERY_RECEIVED", channel: "SMS", lang: "bn", body: "প্রিয় {name}, নিষ্পত্তি হিসাবে টাকা {amount} আদায় নথিভুক্ত হয়েছে।" },
   ];
   (db as any).notifDeliveries = [];
   (db as any).strReports = [];

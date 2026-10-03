@@ -34,6 +34,9 @@ public class WorkflowTask {
     }
 
     void claim(String user) { this.assigneeUser = user; this.status = "CLAIMED"; }
+    /** Q1.3 DELEGATE: move responsibility, keep the task OPEN and the SLA clock
+     *  running — delegation never resets the deadline (WF-SPEC §5). */
+    void reassign(String user) { this.assigneeUser = user; }
     void close(String status) { this.status = status; this.closedAt = Instant.now(); }
     void reopen() { this.status = "OPEN"; this.assigneeUser = null; this.closedAt = null; }
 

@@ -81,6 +81,8 @@ public class CibOnlineAdapter implements CibPort {
      */
     @Override
     @Retry(name = "cib", fallbackMethod = "pullFallback")
+    @io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker(
+            name = "cib", fallbackMethod = "pullFallback")
     public String pullReport(String cifNo, String periodYYYYMM) {
         return cache.get(cifNo + "|" + periodYYYYMM);
     }

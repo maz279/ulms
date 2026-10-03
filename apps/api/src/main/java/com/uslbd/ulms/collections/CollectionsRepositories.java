@@ -28,3 +28,14 @@ interface LegalCaseRepository extends JpaRepository<LegalCase, UUID> {
     List<LegalCase> findAllByLoanIdOrderByCreatedAtDesc(UUID loanId);
     long countByLoanId(UUID loanId);
 }
+
+interface WatchlistRepository extends JpaRepository<WatchlistEntry, UUID> {
+    List<WatchlistEntry> findAllByStatusOrderByReviewByAsc(String status);
+    List<WatchlistEntry> findAllByLoanIdOrderByAddedAtDesc(UUID loanId);
+    Optional<WatchlistEntry> findByLoanIdAndStatus(UUID loanId, String status);
+}
+
+interface AuctionRepository extends JpaRepository<AuctionEntry, UUID> {
+    List<AuctionEntry> findAllByLoanIdOrderByScheduledForDesc(UUID loanId);
+    List<AuctionEntry> findAllByStatusOrderByScheduledForAsc(String status);
+}

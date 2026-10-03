@@ -7,6 +7,13 @@
   "response": {
     "status": 200,
     "fixedDelayMilliseconds": 35000,
-    "jsonBody": { "cifNo": "CIF-SLOW", "status": "OK", "facilities": [] }
+    "jsonBody": {
+      "cifNo": "CIF-SLOW",
+      "status": "OK",
+      "facilities": []
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
   }
 }
