@@ -10,6 +10,8 @@ secrets/
 *.keystore
 *.jks
 
+build/
+
 # java / gradle
 apps/api/build/
 apps/api/.gradle/
@@ -43,3 +45,4 @@ deploy/compose/volumes/
 # Windows redirect accidents + local tooling state (audit R1)
 nul
 .mimosa/
+build/
