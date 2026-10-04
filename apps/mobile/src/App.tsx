@@ -7,6 +7,7 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { loadSession } from "./auth/auth";
+import { LoginScreen } from "./auth/LoginScreen";
 import { TodayScreen } from "./screens/TodayScreen";
 import { CpvTasksScreen } from "./screens/CpvTasksScreen";
 import { SyncScreen } from "./screens/SyncScreen";
@@ -19,10 +20,14 @@ const Tab = createBottomTabNavigator();
 
 function LoginGate({ children }: { children: React.ReactNode }) {
   const [session, setSession] = React.useState<unknown | null>(undefined);   // undefined = loading
+  const reload = React.useCallback(() => {
+    setSession(undefined);
+    void loadSession().then(setSession);
+  }, []);
   React.useEffect(() => { void loadSession().then(setSession); }, []);
   if (session === undefined) return null;                                    // splash
   if (!session) {
-    return null;   // login UI rendered by the native auth session hook (see app/LoginScreen.tsx)
+    return <LoginScreen onSignedIn={reload} />;
   }
   return <>{children}</>;
 }

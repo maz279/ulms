@@ -68,7 +68,7 @@ class CollectionsController {
     @PreAuthorize("hasAnyRole('collections','branch-manager','admin')")
     FieldTaskView assign(@RequestBody FieldTaskRequest body) {
         return FieldTaskView.of(service.assignFieldTask(body.loanId(), body.assignedTo(),
-                body.dueOn(), AuthPrincipal.actorOf()));
+                body.dueOn(), AuthPrincipal.actorOf(), body.lat(), body.lng()));
     }
 
     @PostMapping("/field-tasks/{taskId}/complete")
@@ -186,6 +186,6 @@ class CollectionsController {
     record OutcomeRequest(boolean kept) {}
     record FieldTaskRequest(@jakarta.validation.constraints.NotNull UUID loanId,
                             @jakarta.validation.constraints.NotBlank String assignedTo,
-                            @jakarta.validation.constraints.NotNull LocalDate dueOn) {}
+                            @jakarta.validation.constraints.NotNull LocalDate dueOn, Double lat, Double lng) {}
     record EvidenceRequest(String evidence) {}
 }

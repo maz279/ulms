@@ -5,6 +5,7 @@
  */
 import * as React from "react";
 import { View, Text, Pressable, TextInput, StyleSheet, Alert } from "react-native";
+import * as Location from "expo-location";
 import { useLang } from "../i18n/LangProvider";
 import { t } from "../i18n/strings";
 import { enqueue } from "../queue/store";
@@ -13,6 +14,18 @@ export function SosScreen() {
   const lang = useLang();
   const [note, setNote] = React.useState("");
   const [armed, setArmed] = React.useState(false);   // two-step: arm → send
+
+  async function currentGeo(): Promise<{ lat: number; lng: number } | null> {
+    try {
+      const perm = await Location.requestForegroundPermissionsAsync();
+      if (!perm.granted) return null;
+      const pos = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced, mayShowUserSettingsDialog: false });
+      return { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    } catch {
+      return null;   // SOS must never block on GPS — fire without geo
+    }
+  }
 
   function fire(geo: { lat: number; lng: number } | null) {
     void enqueue({
@@ -45,7 +58,7 @@ export function SosScreen() {
         </Pressable>
       ) : (
         <View style={{ flexDirection: "row", gap: 12 }}>
-          <Pressable style={s.sendBtn} onPress={() => fire(null)}>
+          <Pressable style={s.sendBtn} onPress={() => { void currentGeo().then(fire); }}>
             <Text style={s.armText}>{t(lang, "sos.send")}</Text>
           </Pressable>
           <Pressable style={s.cancelBtn} onPress={() => setArmed(false)}>

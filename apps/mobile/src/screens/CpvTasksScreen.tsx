@@ -6,23 +6,28 @@ import * as React from "react";
 import { View, Text, FlatList, Pressable, TextInput, Switch, StyleSheet, Alert } from "react-native";
 import { useLang } from "../i18n/LangProvider";
 import { t } from "../i18n/strings";
-import { fetchFieldTasks, type FieldTaskView } from "../api/client";
+import { fetchFieldTasksDelta, type FieldTaskView } from "../api/client";
 import { enqueue } from "../queue/store";
 import { validateFieldForm, type FieldForm, type Evidence } from "../sync/engine";
 import SignatureCanvas from "react-native-signature-canvas";
+import { Audio } from "expo-av";
 
 export function CpvTasksScreen() {
   const lang = useLang();
   const [tasks, setTasks] = React.useState<FieldTaskView[]>([]);
   const [selected, setSelected] = React.useState<FieldTaskView | null>(null);
   const [signature, setSignature] = React.useState<string | null>(null);   // dataURL ref
+  const [voiceSec, setVoiceSec] = React.useState<number | null>(null);     // UR-MOB-002: ≤5min note
+  const recRef = React.useRef<Audio.Recording | null>(null);
   const [form, setForm] = React.useState<FieldForm>({
     verificationType: "RESIDENCE", personMet: false,
     gps: { lat: 23.7936, lng: 90.4043, accuracyM: 6 },   // expo-location fills live
     photos: 1, notes: "", outcome: "VERIFIED",
   });
   React.useEffect(() => {
-    void fetchFieldTasks(null).then(setTasks).catch(() => setTasks([]));
+    // PLANNING/08 A5: the app pulls its OWN /field delta (bundle version
+    // feeds the offline cache; full bundle on first load)
+    void fetchFieldTasksDelta(null).then((b) => setTasks(b.data)).catch(() => setTasks([]));
   }, []);
 
   if (selected) {
@@ -38,6 +43,37 @@ export function CpvTasksScreen() {
         <Text style={s.hint}>{t(lang, "cpv.photos")}: {form.photos}</Text>
         <TextInput style={s.input} multiline placeholder={t(lang, "cpv.notes")}
           value={form.notes} onChangeText={(v) => setForm({ ...form, notes: v })} />
+        <Pressable style={s.btn}
+          onPress={async () => {
+            if (recRef.current) {
+              await recRef.current.stopAndUnloadAsync();
+              recRef.current = null;
+              return;
+            }
+            try {
+              const perm = await Audio.requestPermissionsAsync();
+              if (!perm.granted) return;
+              await Audio.setAudioModeAsync({ allowsRecordingIOS: true,
+                playsInSilentModeIOS: true });
+              const { recording } = await Audio.Recording.createAsync(
+                Audio.RecordingOptionsPresets.HighQuality);
+              recRef.current = recording;
+              const started = Date.now();
+              // UR-MOB-002: hard 5-minute cap — auto-stop and record the duration
+              const tick = setInterval(() => {
+                const sec = Math.round((Date.now() - started) / 1000);
+                setVoiceSec(sec);
+                if (sec >= 300 && recRef.current) {
+                  clearInterval(tick);
+                  void recRef.current.stopAndUnloadAsync().then(() => { recRef.current = null; });
+                }
+              }, 1000);
+              recording.setOnRecordingStatusUpdate(null);
+              void recording;   // keep ref for stop
+            } catch { /* mic unavailable — skip voice */ }
+          }}>
+          <Text style={s.btnText2}>{voiceSec == null ? t(lang, "cpv.voiceRec") : `${t(lang, "cpv.voiceStop")} (${voiceSec}s / 300s)`}</Text>
+        </Pressable>
         <Text style={s.hint}>{t(lang, "cpv.signature")}{signature ? ` — ${t(lang, "cpv.signed")}` : ""}</Text>
         <View style={{ height: 120, borderWidth: 1, borderColor: "#c9cede", borderRadius: 8 }}>
           <SignatureCanvas
@@ -68,6 +104,10 @@ export function CpvTasksScreen() {
               evidence.push({ kind: "note", ref: form.notes.slice(0, 200),
                 capturedAt: at, sha256: fnv1a(form.notes) });
             }
+            if (voiceSec != null) {
+              evidence.push({ kind: "voice", ref: `voice:${selected.id}:${voiceSec}s`,
+                capturedAt: at, sha256: fnv1a(`voice:${selected.id}:${voiceSec}`) });
+            }
             void enqueue({
               id: `visit-${selected.id}-${Date.now()}`,
               kind: "visit", loanId: selected.loanId, taskId: selected.id,
@@ -77,6 +117,7 @@ export function CpvTasksScreen() {
             Alert.alert("Queued", "Visit queued — syncs when online (idempotent)");
             setSelected(null);
             setSignature(null);
+            setVoiceSec(null);
           }}>
           <Text style={s.btnText}>{t(lang, "cpv.submit")}</Text>
         </Pressable>
@@ -103,6 +144,9 @@ export function CpvTasksScreen() {
 }
 
 const s = StyleSheet.create({
+  btn: { borderWidth: 1, borderColor: "#3F51B5", borderRadius: 8,
+         paddingVertical: 8, paddingHorizontal: 12, alignItems: "center" },
+  btnText2: { color: "#3F51B5", fontSize: 13, fontWeight: "600" },
   page: { flex: 1, padding: 16, paddingTop: 48 },
   h1: { fontSize: 20, fontWeight: "700", marginBottom: 12 },
   card: { borderWidth: 1, borderColor: "#e0e0e6", borderRadius: 10, padding: 12, marginBottom: 8 },

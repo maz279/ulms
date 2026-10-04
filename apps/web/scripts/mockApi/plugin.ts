@@ -1026,6 +1026,9 @@ if (seg[0] === "applications" && seg[1] && !seg[2] && method === "PATCH") {
     const from = q("from") ?? "2000-01-01", to = q("to") ?? "2999-12-31";
     return ok({ data: db.ptps.filter((x) => x.promisedOn >= from && x.promisedOn <= to).map(ptpView) });
   }
+  if (p === "/collections/field-tasks" && method === "GET") {
+    return ok({ data: db.fieldTasks });
+  }
   if (p === "/collections/field-tasks" && method === "POST") {
     const l = loanBy(body?.loanId);
     if (!l) return err(404, "ULMS-NOT-FOUND", "loan not found");

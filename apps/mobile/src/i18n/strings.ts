@@ -50,6 +50,8 @@ export const STRINGS: Record<string, { en: string; bn?: string }> = {
   "sos.finePrint": { en: "SOS is never silently dropped — the queue retries with backoff", bn: "এসওএস কখনো নীরবে বাদ যায় না" },
   "cpv.signature": { en: "Borrower signature", bn: "গ্রহীতার স্বাক্ষর" },
   "cpv.signed": { en: "Signature captured", bn: "স্বাক্ষর গৃহীত" },
+  "cpv.voiceRec": { en: "Record voice note (≤5 min)", bn: "ভয়েস নোট রেকর্ড (≤৫ মিনিট)" },
+  "cpv.voiceStop": { en: "Stop recording", bn: "রেকর্ড বন্ধ" },
   "ptp.amountLakh": { en: "Promised (৳ Lakh)", bn: "প্রতিশ্রুত (৳ লাখ)" },
   "ptp.date": { en: "Promise date", bn: "প্রতিশ্রুতির তারিখ" },
   "ptp.save": { en: "Record promise (queued)", bn: "প্রতিশ্রুতি লিপিবদ্ধ (কিউ)" },

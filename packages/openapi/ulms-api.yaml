@@ -2018,6 +2018,9 @@ components:
         dueOn: {type: string, format: date}
         status: {type: string, enum: [OPEN, DONE]}
         notes: {type: string, nullable: true, description: "append-only JSON-lines evidence log"}
+        lat: {type: number, nullable: true, description: "borrower pin for the field map (PLANNING/08 A4)"}
+        lng: {type: number, nullable: true}
+        loanNo: {type: string, nullable: true, description: "map label join"}
     SosAlert:
       type: object
       properties:

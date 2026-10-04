@@ -87,8 +87,11 @@ class FieldGatewayTest {
         collections.assignFieldTask(loan.getId(), "user:field-officer",
                 LocalDate.now().plusDays(2), "user:manager");
 
+        var task = collections.assignFieldTask(loan.getId(), "user:field-officer",
+                LocalDate.now().plusDays(2), "user:manager", 23.7936, 90.4043);   // pin (A4)
         var bundle = gateway.tasksFor("user:field-officer", null);
-        assertThat((java.util.List<?>) bundle.get("data")).isNotEmpty();
+        assertThat((java.util.List<?>) bundle.get("data"))
+                .anySatisfy(x -> assertThat(((FieldTask) x).getLat()).isEqualTo(23.7936));
         assertThat((String) bundle.get("bundleVersion")).isNotEqualTo("empty");
 
         // delta with a future `since` yields nothing new

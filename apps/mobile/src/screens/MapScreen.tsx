@@ -7,7 +7,7 @@ import * as React from "react";
 import { View, Text, FlatList, StyleSheet, Pressable, type ViewStyle } from "react-native";
 import { useLang } from "../i18n/LangProvider";
 import { t } from "../i18n/strings";
-import { fetchFieldTasks, type FieldTaskView } from "../api/client";
+import { fetchFieldTasksDelta, type FieldTaskView } from "../api/client";
 
 const BD = { minLat: 20.5, maxLat: 26.7, minLng: 88.0, maxLng: 92.7 };   // Bangladesh bbox
 
@@ -15,7 +15,7 @@ export function MapScreen() {
   const lang = useLang();
   const [tasks, setTasks] = React.useState<FieldTaskView[]>([]);
   React.useEffect(() => {
-    void fetchFieldTasks(null).then(setTasks).catch(() => setTasks([]));
+    void fetchFieldTasksDelta(null).then((b) => setTasks(b.data)).catch(() => setTasks([]));
   }, []);
 
   const pinned = tasks.filter((x) => x.lat != null && x.lng != null && x.status === "OPEN");
