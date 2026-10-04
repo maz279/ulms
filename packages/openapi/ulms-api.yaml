@@ -278,6 +278,14 @@ paths:
       responses:
         "200": {description: 360 view, content: {application/json: {schema: {$ref: "#/components/schemas/Customer360"}}}}
         "404": {$ref: "#/components/responses/Problem"}
+  /customers/{idOrCif}/goaml.xml:
+    get:
+      tags: [assessments]
+      summary: "goAML XML render for the customer's STR history (Q3.3 export path — submission itself is POST /customers/{id}/goaml/submit)"
+      parameters: [{name: idOrCif, in: path, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: "goAML 3.x XML document", content: {application/xml: {schema: {type: string}}}}
+        "403": {$ref: "#/components/responses/Problem"}
   /customers/{idOrCif}/ctrs:
     get:
       tags: [assessments]
@@ -1082,6 +1090,15 @@ paths:
             schema: {type: object, required: [loanId, amountMinor, rail], properties: {loanId: {type: string, format: uuid}, amountMinor: {type: integer}, rail: {type: string, enum: [BKASH, NAGAD, ROCKET, BEFTN, CARD], description: allowlist (P5 F5)}}}
       responses:
         "200": {description: intent, content: {application/json: {schema: {$ref: "#/components/schemas/PaymentIntent"}}}}
+  /certificates/tax/{year}/pdf:
+    get:
+      tags: [servicing]
+      summary: "Bilingual tax certificate as PDF (openhtmltopdf render, R10 P-E)"
+      parameters:
+        - {name: year, in: path, required: true, schema: {type: integer}}
+        - {name: cif, in: query, required: true, schema: {type: string}}
+      responses:
+        "200": {description: "PDF document", content: {application/pdf: {schema: {type: string, format: binary}}}}
   /certificates/tax/{year}:
     get:
       tags: [loans]
