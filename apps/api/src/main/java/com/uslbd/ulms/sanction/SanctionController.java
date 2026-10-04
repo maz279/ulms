@@ -32,6 +32,14 @@ class SanctionController {
                 .body(service.resend(id, com.uslbd.ulms.platform.AuthPrincipal.actorOf(auth)));
     }
 
+    /** Letters register (R3 parity: the mock + OpenAPI spec shipped this list
+     *  from day one — newest first, optional per-application filter). */
+    @GetMapping
+    com.uslbd.ulms.platform.ApiList<SanctionLetter> list(
+            @RequestParam(required = false) UUID applicationId) {
+        return com.uslbd.ulms.platform.ApiList.of(service.list(applicationId));
+    }
+
     @GetMapping("/{id}")
     SanctionLetter get(@PathVariable UUID id) { return service.get(id); }
 

@@ -205,6 +205,14 @@ class PortalController {
         return new IntentView(i.getId(), i.getRail(), i.getRailUrl(), i.getStatus());
     }
 
+    /** Own statement as JSON (spec parity: the OpenAPI contract documents
+     *  both shapes; same own-CIF gate and paging as the CSV download). */
+    @GetMapping("/me/loans/{loanId}/statement")
+    Object myStatementJson(@PathVariable UUID loanId, @RequestParam String mobile) {
+        assertOwnsLoan(mobile, loanId);                        // 08 B3: strictly own-CIF
+        return servicing.statement(loanId, 1, 100, AuthPrincipal.actorOf());
+    }
+
     /** Own statement as CSV download (08 B1 "statements & tax certificates download"). */
     @GetMapping("/me/loans/{loanId}/statement.csv")
     org.springframework.http.ResponseEntity<String> myStatement(@PathVariable UUID loanId,

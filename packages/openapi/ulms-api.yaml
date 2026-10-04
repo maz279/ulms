@@ -278,6 +278,22 @@ paths:
       responses:
         "200": {description: 360 view, content: {application/json: {schema: {$ref: "#/components/schemas/Customer360"}}}}
         "404": {$ref: "#/components/responses/Problem"}
+  /customers/{idOrCif}/ctrs:
+    get:
+      tags: [assessments]
+      summary: Currency-transaction reports for a customer (AML depth, compliance/admin)
+      parameters: [{name: idOrCif, in: path, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object, properties: {id: {type: string, format: uuid}, cifNo: {type: string}, amountMinor: {type: integer}, reportedAt: {type: string, format: date-time}}}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+        "403": {$ref: "#/components/responses/Problem"}
+  /customers/{idOrCif}/monitoring-alerts:
+    get:
+      tags: [assessments]
+      summary: Transaction-monitoring alerts for a customer (AML depth, compliance/admin)
+      parameters: [{name: idOrCif, in: path, required: true, schema: {type: string}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object, properties: {id: {type: string, format: uuid}, cifNo: {type: string}, scenario: {type: string}, raisedAt: {type: string, format: date-time}, status: {type: string}}}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+        "403": {$ref: "#/components/responses/Problem"}
   /customers/{id}/kyc-refresh:
     post:
       tags: [customers]
@@ -713,6 +729,13 @@ paths:
       summary: Bucket worklist (03) — DPD>0 loans; priority P1 (broken PTP) / P2 (DPD>90) / P3; DPD desc
       responses:
         "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/WorklistRow"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /collections/{loanId}/actions:
+    get:
+      tags: [collections]
+      summary: Collections action history for a loan (03) — the officer's contact trail
+      parameters: [{name: loanId, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: list envelope, content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {type: object, properties: {actionType: {type: string}, outcome: {type: string}, notes: {type: string, nullable: true}, actedAt: {type: string}, actedBy: {type: string}}}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
   /collections/{loanId}/actions/{actionType}:
     post:
       tags: [collections]

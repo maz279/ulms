@@ -104,6 +104,16 @@ public class SanctionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "letter not found"));
     }
 
+    /** The letters register (03 mod-approval): newest first, optionally per
+     *  application — backs GET /sanctions (mock + spec have shipped this
+     *  list since R3; the Java side caught up here). */
+    @Transactional(readOnly = true)
+    public java.util.List<SanctionLetter> list(java.util.UUID applicationId) {
+        return applicationId == null
+                ? letters.findAllByOrderByIssuedAtDesc()
+                : letters.findByApplicationIdOrderByIssuedAtDesc(applicationId);
+    }
+
     private String bodyEn(String name, String appNo, String amountTk, int tenor, String ratePct) {
         return "SANCTION LETTER — ABC Bank Bangladesh.\nDear " + name + ",\n"
                 + "Your application " + appNo + " for BDT " + amountTk + " over " + tenor
