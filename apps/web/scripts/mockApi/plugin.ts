@@ -1088,7 +1088,8 @@ if (seg[0] === "applications" && seg[1] && !seg[2] && method === "PATCH") {
     const loans = db.loans.filter((l) => l.customerId === cust.id && !l.closed).map((l) => {
       const emi = l.emiMinor ?? emiMonthly(l.principalMinor, l.tenorMonths, l.interestRateBp / 10000);
       return { loanId: l.id, loanNo: l.loanNo, outstandingMinor: l.outstandingMinor,
-        emiMinor: emi, nextDueOn: "2026-10-05", classification: l.classification };
+        emiMinor: emi, nextDueOn: "2026-10-05", classification: l.classification,
+        dpd: l.dpd, productCode: l.productCode };
     });
     return ok({ cifNo: cust.cifNo, nameEn: cust.nameEn, loans });
   }
@@ -1097,6 +1098,7 @@ if (seg[0] === "applications" && seg[1] && !seg[2] && method === "PATCH") {
     if (!cust) return err(404, "ULMS-NOT-FOUND", "unknown cif");
     return ok({ data: db.applications.filter((a) => a.customerId === cust.id).map((a) => ({
       appNo: a.appNo, stage: a.stage, amountMinor: a.amountMinor, createdAt: a.createdAt,
+      productCode: a.productCode,
     })) });
   }
   if (p === "/portal/me/payments" && method === "GET") {
