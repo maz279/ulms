@@ -39,3 +39,12 @@ interface AuctionRepository extends JpaRepository<AuctionEntry, UUID> {
     List<AuctionEntry> findAllByLoanIdOrderByScheduledForDesc(UUID loanId);
     List<AuctionEntry> findAllByStatusOrderByScheduledForAsc(String status);
 }
+
+interface FieldVisitRepository extends JpaRepository<FieldVisit, UUID> {
+    java.util.Optional<FieldVisit> findByClientUuid(String clientUuid);
+    List<FieldVisit> findAllByOfficerOrderByAppliedAtDesc(String officer);
+}
+
+interface SosAlertRepository extends JpaRepository<SosAlert, UUID> {
+    List<SosAlert> findAllByStatusOrderByCreatedAtDesc(String status);
+}

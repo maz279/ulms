@@ -28,6 +28,7 @@ export interface WorklistItem {
 export interface FieldTaskView {
   id: string; loanId: string; assignedTo: string; dueOn: string;
   status: "OPEN" | "DONE"; evidence: unknown[] | null;
+  lat?: number | null; lng?: number | null; loanNo?: string;
 }
 
 export async function fetchWorklist(token: string | null): Promise<WorklistItem[]> {
@@ -40,6 +41,16 @@ export async function fetchFieldTasks(token: string | null): Promise<FieldTaskVi
   const res = await authFetch(token)(`${BASE}/api/v1/collections/field-tasks`);
   if (!res.ok) throw new Error(`field-tasks ${res.status}`);
   return (await res.json()).data ?? [];
+}
+
+/** Field delta pull (PLANNING/08 A3): tasks changed since the last bundle. */
+export async function fetchFieldTasksDelta(
+  token: string | null, since?: string,
+): Promise<{ data: FieldTaskView[]; bundleVersion: string }> {
+  const q = since ? `?since=${encodeURIComponent(since)}` : "";
+  const res = await authFetch(token)(`${BASE}/api/v1/field/tasks${q}`);
+  if (!res.ok) throw new Error(`field/tasks ${res.status}`);
+  return res.json();
 }
 
 /** Drain transport for the sync engine — maps queued ops to API calls. */
@@ -55,6 +66,22 @@ export function apiTransport(token: string | null) {
           break;
         case "action-log":
           res = await authFetch(token)(`${BASE}/api/v1/collections/${op.loanId}/actions/CALL`, {
+            method: "POST", body: JSON.stringify(op.payload),
+          });
+          break;
+        case "visit":
+          // idempotent intake — the op id IS the clientUuid (PLANNING/08 A5)
+          res = await authFetch(token)(`${BASE}/api/v1/field/visits`, {
+            method: "POST",
+            body: JSON.stringify({
+              clientUuid: op.id, taskId: op.taskId ?? null, loanId: op.loanId,
+              outcome: (op.payload as { outcome?: string }).outcome ?? "VERIFIED",
+              evidence: op.evidence,
+            }),
+          });
+          break;
+        case "sos":
+          res = await authFetch(token)(`${BASE}/api/v1/field/sos`, {
             method: "POST", body: JSON.stringify(op.payload),
           });
           break;

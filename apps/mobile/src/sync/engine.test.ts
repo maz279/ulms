@@ -111,3 +111,35 @@ describe("field form validation (R6)", () => {
     expect(photoQualityOk(640, 480)).toBe(false);       // long edge 640 < 1024
   });
 });
+
+describe("field-gateway ops (PLANNING/08 A5)", () => {
+  it("visit ops drain through the engine and carry their idempotency id", async () => {
+    const seen: string[] = [];
+    const transport: Transport = async (o) => {
+      seen.push(`${o.kind}:${o.id}`);
+      return { ok: true };
+    };
+    const visit = op({ id: "visit-t1-1", kind: "visit",
+      evidence: [
+        { kind: "gps", ref: "gps:1,2", capturedAt: "2026-10-04T08:00:00Z", sha256: "g1" },
+        { kind: "signature", ref: "sig:t-1", capturedAt: "2026-10-04T08:01:00Z", sha256: "s1" },
+      ] });
+    const { queue, result } = await syncQueue([visit], transport);
+    expect(result.synced).toBe(1);
+    expect(queue[0].state).toBe("synced");
+    expect(seen).toEqual(["visit:visit-t1-1"]);   // the op id doubles as clientUuid
+  });
+
+  it("sos ops retry on offline (never silently dropped) and sync when reachable", async () => {
+    const sos = op({ id: "sos-1", kind: "sos", taskId: undefined,
+      payload: { note: "aggressive borrower", lat: 23.79, lng: 90.4 }, evidence: [] });
+    const first = await syncQueue([sos], retryable);
+    expect(first.queue[0].state).toBe("pending");
+    expect(first.queue[0].attempts).toBe(1);
+    // fast-forward past the backoff window, then drain again
+    first.queue[0].nextAttemptAt = Date.now() - 1;
+    const second = await syncQueue(first.queue, ok);
+    expect(second.queue[0].state).toBe("synced");
+    expect(second.result.synced).toBe(1);
+  });
+});

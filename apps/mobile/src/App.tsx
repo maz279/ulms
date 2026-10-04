@@ -10,6 +10,9 @@ import { loadSession } from "./auth/auth";
 import { TodayScreen } from "./screens/TodayScreen";
 import { CpvTasksScreen } from "./screens/CpvTasksScreen";
 import { SyncScreen } from "./screens/SyncScreen";
+import { MapScreen } from "./screens/MapScreen";
+import { ProofGalleryScreen } from "./screens/ProofGalleryScreen";
+import { SosScreen } from "./screens/SosScreen";
 import { LangProvider } from "./i18n/LangProvider";
 
 const Tab = createBottomTabNavigator();
@@ -32,6 +35,9 @@ export default function App() {
           <Tab.Navigator screenOptions={{ headerShown: false }}>
             <Tab.Screen name="today" component={TodayScreen} />
             <Tab.Screen name="cpv" component={CpvTasksScreen} />
+            <Tab.Screen name="map" component={MapScreen} />
+            <Tab.Screen name="proof" component={ProofGalleryScreen} />
+            <Tab.Screen name="sos" component={SosScreen} />
             <Tab.Screen name="sync" component={SyncScreen} />
           </Tab.Navigator>
         </LoginGate>

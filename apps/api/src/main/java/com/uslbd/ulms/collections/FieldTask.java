@@ -24,6 +24,9 @@ public class FieldTask {
     @Column(name = "created_by", nullable = false, length = 64) private String createdBy;
     @Column(name = "created_at", nullable = false) private Instant createdAt = Instant.now();
     @Column(name = "done_at") private Instant doneAt;
+    /** Borrower pin for the field map (PLANNING/08 A4) — null when geocoding unavailable. */
+    @Column private Double lat;
+    @Column private Double lng;
 
     protected FieldTask() {}
 
@@ -48,6 +51,8 @@ public class FieldTask {
         return true;
     }
 
+    void setPin(Double lat, Double lng) { this.lat = lat; this.lng = lng; }
+
     void appendEvidence(String note) {
         String line = "{\"at\":\"" + Instant.now() + "\",\"note\":\""
                 + (note == null ? "" : note.replace("\"", "'")) + "\"}";
@@ -63,4 +68,6 @@ public class FieldTask {
     public String getCreatedBy() { return createdBy; }
     public Instant getCreatedAt() { return createdAt; }
     public Instant getDoneAt() { return doneAt; }
+    public Double getLat() { return lat; }
+    public Double getLng() { return lng; }
 }

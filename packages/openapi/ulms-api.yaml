@@ -837,6 +837,69 @@ paths:
             schema: {type: object, required: [outcome], properties: {outcome: {type: string}, notes: {type: string}}}
       responses:
         "200": {description: action, content: {application/json: {schema: {$ref: "#/components/schemas/DunningStep"}}}}
+  /field/tasks:
+    get:
+      tags: [collections]
+      summary: "Mobile field app delta pull (PLANNING/08 A5): the officer's tasks changed since ?since= (null = full bundle); response carries data + bundleVersion for the offline cache"
+      parameters:
+        - {name: since, in: query, required: false, schema: {type: string, format: date-time}, description: "ISO instant; omit for the full offline bundle"}
+      responses:
+        "200":
+          description: "delta bundle"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: {type: array, items: {$ref: "#/components/schemas/FieldTaskView"}}
+                  bundleVersion: {type: string}
+  /field/visits:
+    post:
+      tags: [collections]
+      summary: "Idempotent visit intake — clientUuid is the mobile op id (offline replay safe); task transition is server-wins, evidence append-only; replay answers 200 with applied=false, first apply 201"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [clientUuid], properties: {clientUuid: {type: string}, taskId: {type: string, format: uuid, nullable: true}, loanId: {type: string, format: uuid, nullable: true}, outcome: {type: string, enum: [VERIFIED, DISCREPANCY, NOT_MET]}, evidence: {type: object, nullable: true, description: "photos (sha-referenced), GPS, notes, signature digest"}}}
+      responses:
+        "201": {description: "first apply", content: {application/json: {schema: {type: object, properties: {id: {type: string, format: uuid}, clientUuid: {type: string}, applied: {type: boolean}, outcome: {type: string}, replayed: {type: boolean}}}}}}
+        "200": {description: "suppressed replay (applied=false)"}
+  /field/ptp:
+    post:
+      tags: [collections]
+      summary: "PTP captured in the field (03 mod-collections rules unchanged)"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, required: [loanId, promisedAmountMinor, promisedOn], properties: {loanId: {type: string, format: uuid}, promisedAmountMinor: {type: integer}, promisedOn: {type: string, format: date}, confidence: {type: string, enum: [HIGH, MEDIUM, LOW]}, contactName: {type: string, nullable: true}, contactRelation: {type: string, nullable: true}, contactPhone: {type: string, nullable: true}, remark: {type: string, nullable: true}}}
+      responses:
+        "200": {description: "ptp", content: {application/json: {schema: {$ref: "#/components/schemas/Ptp"}}}}
+  /field/sos:
+    post:
+      tags: [collections]
+      summary: "One-tap SOS — durable alert + SOS_RAISED outbox event (branch security workflow + SMS); officer location attached when GPS is available"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: {type: object, properties: {loanId: {type: string, format: uuid, nullable: true}, lat: {type: number, nullable: true}, lng: {type: number, nullable: true}, note: {type: string, nullable: true}}}
+      responses:
+        "201": {description: "alert", content: {application/json: {schema: {$ref: "#/components/schemas/SosAlert"}}}}
+    get:
+      tags: [collections]
+      summary: "Security desk feed — open SOS alerts, newest first"
+      responses:
+        "200": {description: "list envelope", content: {application/json: {schema: {type: object, properties: {data: {type: array, items: {$ref: "#/components/schemas/SosAlert"}}, meta: {$ref: "#/components/schemas/Meta"}}}}}}
+  /field/sos/{id}/ack:
+    post:
+      tags: [collections]
+      summary: "Acknowledge an open alert (single-shot)"
+      parameters: [{name: id, in: path, required: true, schema: {type: string, format: uuid}}]
+      responses:
+        "200": {description: "acknowledged alert", content: {application/json: {schema: {$ref: "#/components/schemas/SosAlert"}}}}
+        "409": {$ref: "#/components/responses/Problem"}
   /collections/watchlist:
     get:
       tags: [collections]
@@ -1929,6 +1992,26 @@ components:
         actor: {type: string}
         actedAt: {type: string, format: date-time}
         dueOn: {type: string, format: date, nullable: true, description: null once acted}
+    FieldTaskView:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        loanId: {type: string, format: uuid}
+        assignedTo: {type: string}
+        dueOn: {type: string, format: date}
+        status: {type: string, enum: [OPEN, DONE]}
+        notes: {type: string, nullable: true, description: "append-only JSON-lines evidence log"}
+    SosAlert:
+      type: object
+      properties:
+        id: {type: string, format: uuid}
+        officer: {type: string}
+        loanId: {type: string, format: uuid, nullable: true}
+        lat: {type: number, nullable: true}
+        lng: {type: number, nullable: true}
+        note: {type: string, nullable: true}
+        status: {type: string, enum: [OPEN, ACKNOWLEDGED]}
+        createdAt: {type: string, format: date-time}
     WatchlistEntry:
       type: object
       properties:

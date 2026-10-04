@@ -23,7 +23,8 @@ export interface Evidence {
 
 export interface QueuedOperation {
   readonly id: string;
-  readonly kind: "task-complete" | "action-log" | "ptp-create" | "evidence-append";
+  readonly kind: "task-complete" | "action-log" | "ptp-create" | "evidence-append"
+    | "visit" | "sos";   // PLANNING/08 A5 field-gateway ops (visit is idempotent by op id)
   readonly loanId: string;
   readonly taskId?: string;
   readonly payload: Record<string, unknown>;

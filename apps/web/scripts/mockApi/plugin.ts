@@ -793,6 +793,70 @@ if (seg[0] === "applications" && seg[1] && !seg[2] && method === "PATCH") {
     return created({ id: `rs-${Date.now()}`, status: "APPROVED", newTenorMonths: l.tenorMonths });
   }
 
+  // ---- mobile field gateway (PLANNING/08 A5) ----
+  if (p === "/field/tasks" && method === "GET") {
+    const since = q("since");
+    const officer = actor;   // dev modes: the persona header stands in for the JWT sub
+    const mine = db.fieldTasks.filter((t) => t.assignedTo === officer || t.assignedTo === "field-team");
+    const data = since ? mine.filter((t) => new Date((t as any).updatedAt ?? t.dueOn) > new Date(since)) : mine;
+    const version = mine.length ? new Date().toISOString() : "empty";
+    return ok({ data, bundleVersion: version });
+  }
+  if (p === "/field/visits" && method === "POST") {
+    const clientUuid = String(body?.clientUuid ?? "").trim();
+    if (!clientUuid) return err(400, "ULMS-REQ-0001", "clientUuid is required (idempotency key)");
+    const prior = db.fieldVisits.find((v) => v.clientUuid === clientUuid);
+    if (prior) return ok({ id: prior.id, clientUuid, applied: false, outcome: prior.outcome, replayed: true });
+    const task = body?.taskId ? db.fieldTasks.find((t) => t.id === body.taskId) : undefined;
+    if (body?.taskId && !task) return err(404, "ULMS-NOT-FOUND", "task not found");
+    let applied = true;
+    if (task && task.status !== "DONE") {
+      task.status = "DONE";
+      task.evidence = JSON.stringify(body?.evidence ?? {});
+    } else if (task) {
+      applied = false;   // server-wins: replay on an already-DONE task
+    }
+    const v = { id: `fv-${db.seq.fv++}`, clientUuid, taskId: task?.id ?? null,
+      loanId: body?.loanId ?? null, officer: actor,
+      outcome: String(body?.outcome ?? "VERIFIED"), evidence: body?.evidence ?? {},
+      applied, appliedAt: new Date().toISOString() };
+    db.fieldVisits.push(v);
+    return created({ id: v.id, clientUuid, applied, outcome: v.outcome, replayed: false });
+  }
+  if (p === "/field/ptp" && method === "POST") {
+    const l = loanBy(body?.loanId);
+    if (!l) return err(404, "ULMS-NOT-FOUND", "loan not found");
+    const ptp = { id: `pp-${db.seq.ptp++}`, loanId: l.id,
+      promisedAmountMinor: Number(body?.promisedAmountMinor ?? 0),
+      promisedOn: String(body?.promisedOn ?? new Date().toISOString().slice(0, 10)),
+      confidence: String(body?.confidence ?? "MEDIUM"), contactName: body?.contactName ?? null,
+      contactRelation: body?.contactRelation ?? null, contactPhone: body?.contactPhone ?? null,
+      kept: "PENDING", dpdAtPromise: l.dpd, classAtPromise: l.classification };
+    db.ptps.push(ptp as any);
+    audit(actor, "PTP_CREATED", l.loanNo, `field capture ${ptp.promisedAmountMinor}`);
+    return created(ptp);
+  }
+  if (p === "/field/sos" && method === "POST") {
+    const a = { id: `sos-${db.seq.sos++}`, officer: actor, loanId: body?.loanId ?? null,
+      lat: body?.lat ?? null, lng: body?.lng ?? null, note: body?.note ?? null,
+      status: "OPEN" as const, createdAt: new Date().toISOString() };
+    db.sosAlerts.push(a);
+    outboxEmit("SOS_RAISED", "sos_alert", a.id, { officer: actor, geo: a.lat != null ? `${a.lat},${a.lng}` : "unavailable" });
+    audit(actor, "SOS_RAISED", a.id.slice(0, 10), String(body?.note ?? ""));
+    return created(a);
+  }
+  if (p === "/field/sos" && method === "GET") {
+    return ok({ data: db.sosAlerts.filter((x) => x.status === "OPEN") });
+  }
+  if (seg[0] === "field" && seg[1] === "sos" && seg[3] === "ack" && method === "POST") {
+    const a = db.sosAlerts.find((x) => x.id === seg[2]);
+    if (!a) return err(404, "ULMS-NOT-FOUND", "alert not found");
+    if (a.status !== "OPEN") return err(409, "ULMS-STATE-0002", `already ${a.status}`);
+    a.status = "ACKNOWLEDGED";
+    audit(actor, "SOS_ACKNOWLEDGED", a.id.slice(0, 10), "");
+    return ok(a);
+  }
+
   // ---- collections ----
   // Q1.4 watchlist (one OPEN row per loan; nightly STD-2 auto-flag = seed time)
   if (p === "/collections/watchlist" && method === "GET") {
@@ -965,8 +1029,13 @@ if (seg[0] === "applications" && seg[1] && !seg[2] && method === "PATCH") {
   if (p === "/collections/field-tasks" && method === "POST") {
     const l = loanBy(body?.loanId);
     if (!l) return err(404, "ULMS-NOT-FOUND", "loan not found");
+    // borrower pin for the field map (PLANNING/08 A4) — Dhaka-area scatter
+    // when the caller has no geocode yet; loanNo joins for the map label
+    const seed = l.id.charCodeAt(0) + (l.id.charCodeAt(1) ?? 0);
     const t = { id: `ft-${db.seq.ft++}`, loanId: l.id, assignedTo: String(body?.assignedTo ?? "field-team"),
-      dueOn: String(body?.dueOn ?? new Date().toISOString().slice(0, 10)), status: "OPEN" as const, evidence: null };
+      dueOn: String(body?.dueOn ?? new Date().toISOString().slice(0, 10)), status: "OPEN" as const, evidence: null,
+      lat: body?.lat ?? 23.7 + (seed % 60) / 100, lng: body?.lng ?? 90.37 + (seed % 47) / 100,
+      loanNo: l.loanNo };
     db.fieldTasks.push(t);
     return created(t);
   }

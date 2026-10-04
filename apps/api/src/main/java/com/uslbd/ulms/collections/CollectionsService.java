@@ -127,7 +127,15 @@ public class CollectionsService {
     @Transactional
     public FieldTask assignFieldTask(UUID loanId, String assignedTo, LocalDate dueOn,
                                      String actor) {
-        var t = tasks.save(FieldTask.of(UUID.randomUUID(), loanId, assignedTo, dueOn, actor));
+        return assignFieldTask(loanId, assignedTo, dueOn, actor, null, null);
+    }
+
+    /** With the borrower pin for the field map (PLANNING/08 A4). */
+    public FieldTask assignFieldTask(UUID loanId, String assignedTo, LocalDate dueOn,
+                                     String actor, Double lat, Double lng) {
+        var t = FieldTask.of(UUID.randomUUID(), loanId, assignedTo, dueOn, actor);
+        t.setPin(lat, lng);
+        tasks.save(t);
         audit.record(actor, "FIELD_TASK_ASSIGNED", "loan", loanId,
                 "{\"to\":\"" + assignedTo + "\",\"due\":\"" + dueOn + "\"}", UUID.randomUUID());
         return t;

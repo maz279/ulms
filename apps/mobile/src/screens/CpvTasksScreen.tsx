@@ -8,12 +8,14 @@ import { useLang } from "../i18n/LangProvider";
 import { t } from "../i18n/strings";
 import { fetchFieldTasks, type FieldTaskView } from "../api/client";
 import { enqueue } from "../queue/store";
-import { validateFieldForm, type FieldForm } from "../sync/engine";
+import { validateFieldForm, type FieldForm, type Evidence } from "../sync/engine";
+import SignatureCanvas from "react-native-signature-canvas";
 
 export function CpvTasksScreen() {
   const lang = useLang();
   const [tasks, setTasks] = React.useState<FieldTaskView[]>([]);
   const [selected, setSelected] = React.useState<FieldTaskView | null>(null);
+  const [signature, setSignature] = React.useState<string | null>(null);   // dataURL ref
   const [form, setForm] = React.useState<FieldForm>({
     verificationType: "RESIDENCE", personMet: false,
     gps: { lat: 23.7936, lng: 90.4043, accuracyM: 6 },   // expo-location fills live
@@ -36,21 +38,45 @@ export function CpvTasksScreen() {
         <Text style={s.hint}>{t(lang, "cpv.photos")}: {form.photos}</Text>
         <TextInput style={s.input} multiline placeholder={t(lang, "cpv.notes")}
           value={form.notes} onChangeText={(v) => setForm({ ...form, notes: v })} />
+        <Text style={s.hint}>{t(lang, "cpv.signature")}{signature ? ` — ${t(lang, "cpv.signed")}` : ""}</Text>
+        <View style={{ height: 120, borderWidth: 1, borderColor: "#c9cede", borderRadius: 8 }}>
+          <SignatureCanvas
+            backgroundColor="rgba(240,242,251,1)"
+            penColor="#0B0E1A"
+            onOK={(img) => setSignature(img)}
+            onEmpty={() => setSignature(null)}
+            descriptionText=""
+            clearText="×"
+            confirmText="✓"
+          />
+        </View>
         <Pressable
           style={[s.btnPrimary, errors.length > 0 && { opacity: 0.5 }]}
           disabled={errors.length > 0}
           onPress={() => {
+            const at = new Date().toISOString();
+            const evidence: Evidence[] = [
+              { kind: "gps", ref: `gps:${form.gps?.lat},${form.gps?.lng}`,
+                capturedAt: at, sha256: fnv1a(`gps:${form.gps?.lat},${form.gps?.lng}`) },
+            ];
+            if (signature) {
+              // dataURL too heavy for the queue — keep the ref + content checksum
+              evidence.push({ kind: "signature", ref: `sig:${selected.id}`,
+                capturedAt: at, sha256: fnv1a(signature.slice(-2048)) });
+            }
+            if (form.notes) {
+              evidence.push({ kind: "note", ref: form.notes.slice(0, 200),
+                capturedAt: at, sha256: fnv1a(form.notes) });
+            }
             void enqueue({
-              id: String(Date.now()) + "-tc",
-              kind: "task-complete", loanId: selected.loanId, taskId: selected.id,
-              payload: { ...form },
-              evidence: [
-                { kind: "gps", ref: `gps:${form.gps?.lat},${form.gps?.lng}`,
-                  capturedAt: new Date().toISOString(), sha256: "live-hash" },
-              ],
+              id: `visit-${selected.id}-${Date.now()}`,
+              kind: "visit", loanId: selected.loanId, taskId: selected.id,
+              payload: { outcome: form.outcome },
+              evidence,
             });
-            Alert.alert("Queued", "Submission queued — syncs when online");
+            Alert.alert("Queued", "Visit queued — syncs when online (idempotent)");
             setSelected(null);
+            setSignature(null);
           }}>
           <Text style={s.btnText}>{t(lang, "cpv.submit")}</Text>
         </Pressable>
@@ -89,3 +115,15 @@ const s = StyleSheet.create({
   btnText: { color: "#fff", fontWeight: "600" },
   err: { color: "#C50F1F", fontSize: 12, marginTop: 8 },
 });
+
+
+/** Deterministic content checksum for queued evidence integrity (the EAS
+ *  build replaces this with an expo-crypto sha256 digest — same field). */
+function fnv1a(input: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0").repeat(4).slice(0, 32);
+}

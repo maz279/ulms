@@ -87,6 +87,15 @@ export interface Ptp {
 export interface FieldTask {
   id: string; loanId: string; assignedTo: string; dueOn: string;
   status: "OPEN" | "DONE"; evidence: string | null;
+  lat?: number | null; lng?: number | null; loanNo?: string;
+}
+export interface FieldVisitRow {
+  id: string; clientUuid: string; taskId: string | null; loanId: string | null;
+  officer: string; outcome: string; evidence: unknown; applied: boolean; appliedAt: string;
+}
+export interface SosAlertRow {
+  id: string; officer: string; loanId: string | null; lat: number | null; lng: number | null;
+  note: string | null; status: "OPEN" | "ACKNOWLEDGED"; createdAt: string;
 }
 export interface CollAction {
   id: string; loanId: string; actionType: string; outcome: string;
@@ -163,6 +172,8 @@ export const db = {
   payments: [] as Payment[],
   ptps: [] as Ptp[],
   fieldTasks: [] as FieldTask[],
+  fieldVisits: [] as FieldVisitRow[],
+  sosAlerts: [] as SosAlertRow[],
   collActions: [] as CollAction[],
   kycChecks: [] as KycCheck[],
   screeningHits: [] as { id: string; customerId: string; list: string; hit: boolean; checkedAt: string }[],
@@ -188,7 +199,7 @@ export const db = {
   strReports: [] as any[],
   portalDocs: [] as any[],
   audit: [] as AuditEntry[],
-  seq: { cif: 100887, app: 13, task: 3, pay: 5, ptp: 3, ft: 1, act: 1, disb: 1, cib: 1, doc: 1, kyc: 6, ret: 12, cond: 1, wl: 1, auc: 1, rec: 1 },
+  seq: { cif: 100887, app: 13, task: 3, pay: 5, ptp: 3, ft: 1, act: 1, disb: 1, cib: 1, doc: 1, kyc: 6, ret: 12, cond: 1, wl: 1, auc: 1, rec: 1, fv: 1, sos: 1 },
 };
 
 export const LADDER = [
@@ -360,7 +371,7 @@ function seed() {
 }
 function resetDb() {
   const fresh = {
-    customers: [], loans: [], applications: [], tasks: [], conditions: [], watchlist: [], auctions: [], payments: [], ptps: [],
+    customers: [], loans: [], applications: [], tasks: [], conditions: [], watchlist: [], auctions: [], fieldVisits: [], sosAlerts: [], payments: [], ptps: [],
     fieldTasks: [], collActions: [], kycChecks: [], screeningHits: [], disbursements: [],
     cibPulls: [], documents: [], eodRuns: [], provisionJvs: [], returns: [], reportDefs: [],
     loanFees: [], legalCases: [], audit: [],
@@ -369,7 +380,7 @@ function resetDb() {
     strReports: [], portalDocs: [],
   };
   Object.assign(db, fresh);
-  db.seq = { cif: 100887, app: 13, task: 3, pay: 5, ptp: 3, ft: 1, act: 1, disb: 1, cib: 1, doc: 1, kyc: 6, ret: 12, cond: 1, wl: 1, auc: 1, rec: 1 };
+  db.seq = { cif: 100887, app: 13, task: 3, pay: 5, ptp: 3, ft: 1, act: 1, disb: 1, cib: 1, doc: 1, kyc: 6, ret: 12, cond: 1, wl: 1, auc: 1, rec: 1, fv: 1, sos: 1 };
   seed();
   seedR3R4R5();
 }
