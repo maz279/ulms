@@ -14,9 +14,14 @@ export function LoginScreen({ onSignedIn }: { onSignedIn: () => void }) {
   const pending = React.useRef<Pending>(null);
 
   async function complete(url: string) {
-    const u = new URL(url.replace("ulmsfield://", "https://ulmsfield/"));
-    const code = u.searchParams.get("code");
-    const state = u.searchParams.get("state");
+    // Hermes has no URL global guarantee — parse the query by hand
+    const q = url.slice(url.indexOf("?") + 1);
+    const param = (k: string): string | null => {
+      const hit = q.split("&").find((kv) => kv.startsWith(k + "="));
+      return hit ? decodeURIComponent(hit.slice(k.length + 1)) : null;
+    };
+    const code = param("code");
+    const state = param("state");
     if (!code || !pending.current || pending.current.state !== state) {
       setErr("Login callback mismatch — retry sign-in");
       setBusy(false);

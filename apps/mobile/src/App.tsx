@@ -8,6 +8,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { loadSession } from "./auth/auth";
 import { LoginScreen } from "./auth/LoginScreen";
+import { PinLockScreen } from "./auth/PinLockScreen";
 import { TodayScreen } from "./screens/TodayScreen";
 import { CpvTasksScreen } from "./screens/CpvTasksScreen";
 import { SyncScreen } from "./screens/SyncScreen";
@@ -25,9 +26,14 @@ function LoginGate({ children }: { children: React.ReactNode }) {
     void loadSession().then(setSession);
   }, []);
   React.useEffect(() => { void loadSession().then(setSession); }, []);
+  const [pinOk, setPinOk] = React.useState(false);
   if (session === undefined) return null;                                    // splash
   if (!session) {
     return <LoginScreen onSignedIn={reload} />;
+  }
+  if (!pinOk) {
+    // app lock (08 A2): PIN on every cold start, after bank sign-in
+    return <PinLockScreen onUnlocked={() => setPinOk(true)} />;
   }
   return <>{children}</>;
 }
@@ -35,8 +41,10 @@ function LoginGate({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <LangProvider>
-      <NavigationContainer>
-        <LoginGate>
+      <LoginGate>
+        {/* container only mounts once a session exists — the login screen
+            never renders inside a navigator-less NavigationContainer */}
+        <NavigationContainer>
           <Tab.Navigator screenOptions={{ headerShown: false }}>
             <Tab.Screen name="today" component={TodayScreen} />
             <Tab.Screen name="cpv" component={CpvTasksScreen} />
@@ -45,8 +53,8 @@ export default function App() {
             <Tab.Screen name="sos" component={SosScreen} />
             <Tab.Screen name="sync" component={SyncScreen} />
           </Tab.Navigator>
-        </LoginGate>
-      </NavigationContainer>
+        </NavigationContainer>
+      </LoginGate>
     </LangProvider>
   );
 }

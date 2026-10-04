@@ -19,6 +19,7 @@ export function CpvTasksScreen() {
   const [signature, setSignature] = React.useState<string | null>(null);   // dataURL ref
   const [voiceSec, setVoiceSec] = React.useState<number | null>(null);     // UR-MOB-002: ≤5min note
   const recRef = React.useRef<Audio.Recording | null>(null);
+  const tickRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const [form, setForm] = React.useState<FieldForm>({
     verificationType: "RESIDENCE", personMet: false,
     gps: { lat: 23.7936, lng: 90.4043, accuracyM: 6 },   // expo-location fills live
@@ -48,6 +49,7 @@ export function CpvTasksScreen() {
             if (recRef.current) {
               await recRef.current.stopAndUnloadAsync();
               recRef.current = null;
+              if (tickRef.current) { clearInterval(tickRef.current); tickRef.current = null; }
               return;
             }
             try {
@@ -60,16 +62,15 @@ export function CpvTasksScreen() {
               recRef.current = recording;
               const started = Date.now();
               // UR-MOB-002: hard 5-minute cap — auto-stop and record the duration
-              const tick = setInterval(() => {
+              tickRef.current = setInterval(() => {
                 const sec = Math.round((Date.now() - started) / 1000);
                 setVoiceSec(sec);
                 if (sec >= 300 && recRef.current) {
-                  clearInterval(tick);
+                  if (tickRef.current) clearInterval(tickRef.current);
+                  tickRef.current = null;
                   void recRef.current.stopAndUnloadAsync().then(() => { recRef.current = null; });
                 }
               }, 1000);
-              recording.setOnRecordingStatusUpdate(null);
-              void recording;   // keep ref for stop
             } catch { /* mic unavailable — skip voice */ }
           }}>
           <Text style={s.btnText2}>{voiceSec == null ? t(lang, "cpv.voiceRec") : `${t(lang, "cpv.voiceStop")} (${voiceSec}s / 300s)`}</Text>
@@ -118,6 +119,8 @@ export function CpvTasksScreen() {
             setSelected(null);
             setSignature(null);
             setVoiceSec(null);
+            if (recRef.current) { void recRef.current.stopAndUnloadAsync(); recRef.current = null; }
+            if (tickRef.current) { clearInterval(tickRef.current); tickRef.current = null; }
           }}>
           <Text style={s.btnText}>{t(lang, "cpv.submit")}</Text>
         </Pressable>
