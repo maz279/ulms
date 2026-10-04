@@ -43,6 +43,16 @@ export const STRINGS: Record<string, { en: string; bn: string }> = {
   "more.help": { en: "Help & support", bn: "সহায়তা" },
   "more.logout": { en: "Sign out", bn: "সাইন আউট" },
   "more.branch": { en: "Your branch: BR-001 · +880 2 5566 0000", bn: "আপনার শাখা: বিআর-০০১ · +৮৮০ ২ ৫৫৬৬ ০০০০" },
+  /* visual-enhancement layer (prototype parity) */
+  "hero.tagline": { en: "Your loan, in your hands", bn: "আপনার ঋণ, আপনার হাতের মুঠোয়" },
+  "hero.sub": { en: "Repay, track and download statements — securely, any time.", bn: "কিস্তি পরিশোধ, আবেদন ট্র্যাকিং, স্টেটমেন্ট — সব কিছু নিরাপদে, যেকোনো সময়।" },
+  "login.cardTitle": { en: "Sign in with your mobile", bn: "মোবাইল দিয়ে সাইন ইন করুন" },
+  "login.cardSub": { en: "We text a code to your registered number", bn: "রেজিস্টার্ড নম্বরে এসএমএস কোড যাবে" },
+  "login.brandSub": { en: "ABC Bank Bangladesh · Digital Lending", bn: "এবিসি ব্যাংক বাংলাদেশ · ডিজিটাল ঋণ" },
+  "home.quickPay": { en: "Pay", bn: "পরিশোধ" },
+  "home.quickTrack": { en: "Applications", bn: "আবেদন" },
+  "home.quickStmt": { en: "Statements", bn: "স্টেটমেন্ট" },
+  "home.quickApply": { en: "Apply", bn: "আবেদন করুন" },
 };
 export function t(lang: Lang, key: string): string {
   const s = STRINGS[key];
