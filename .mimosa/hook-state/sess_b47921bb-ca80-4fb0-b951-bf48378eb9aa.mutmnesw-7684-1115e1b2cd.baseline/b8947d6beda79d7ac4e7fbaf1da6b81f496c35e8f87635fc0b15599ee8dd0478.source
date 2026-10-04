@@ -61,8 +61,8 @@ export interface LoanCard {
   dpd: number; classification: string;
 }
 export interface TrackerRow {
-  appNo: string; stage: string; productCode?: string;
-  amountMinor: number; createdAt: string;
+  appNo: string; stage: string; productCode: string;
+  amountMinor: number; submittedAt: string;
 }
 export interface PaymentLine {
   paidAt: string; amountMinor: number; rail: string; utr: string | null;

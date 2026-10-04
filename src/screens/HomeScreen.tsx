@@ -35,11 +35,11 @@ export function HomeScreen({ session }: { session: BorrowerSession }) {
                 <Text style={s.label}>{t(lang, "home.nextDue")}</Text>
               </View>
               <View style={s.fact}>
-                <Text style={[s.factV, item.dpd > 0 && { color: "#C50F1F" }]}>
-                  {item.dpd > 0 ? `${item.dpd}` : "✓"}
+                <Text style={[s.factV, (item.dpd ?? 0) > 0 && { color: "#C50F1F" }]}>
+                  {(item.dpd ?? 0) > 0 ? `${item.dpd}` : "✓"}
                 </Text>
                 <Text style={s.label}>
-                  {item.dpd > 0 ? t(lang, "home.dpd") : t(lang, "home.current")}
+                  {(item.dpd ?? 0) > 0 ? t(lang, "home.dpd") : t(lang, "home.current")}
                 </Text>
               </View>
             </View>

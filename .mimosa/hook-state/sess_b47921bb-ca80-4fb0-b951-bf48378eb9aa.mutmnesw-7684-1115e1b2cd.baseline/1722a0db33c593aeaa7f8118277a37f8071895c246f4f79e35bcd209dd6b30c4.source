@@ -31,7 +31,7 @@ export function TrackerScreen({ session }: { session: BorrowerSession }) {
           <View style={s.card}>
             <Text style={s.appNo}>{item.appNo}</Text>
             <Text style={s.stage}>{item.stage}</Text>
-            <Text style={s.meta}>{item.productCode ?? ""}{item.productCode ? " · " : ""}{tk(item.amountMinor)} · {item.createdAt.slice(0, 10)}</Text>
+            <Text style={s.meta}>{item.productCode} · {tk(item.amountMinor)} · {item.submittedAt.slice(0, 10)}</Text>
           </View>
         )}
       />
@@ -47,7 +47,7 @@ export function TrackerScreen({ session }: { session: BorrowerSession }) {
           onPress={async () => {
             setErr(null);
             try {
-              const a = await applyLoan(session.mobile, "retail-personal",
+              const a = await applyLoan(session.mobile, "retail-term",
                 Math.round(parseFloat(amount) * 100000 * 100), 24);
               setMsg(`${a.appNo} ✓`);
               setAmount("");

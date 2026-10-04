@@ -7,10 +7,10 @@ import { emiMonthly, payoffMonths, interestSaved } from "./emi";
 
 describe("borrower EMI oracle parity", () => {
   it("matches the bank formula on the shared fixtures", () => {
-    // ৳500,000 @ 13% for 36m — the web unit suite's fixture family
-    expect(emiMonthly(50_000_000, 36, 13)).toBe(16871);
-    // ৳100,000 @ 0% — straight-line
-    expect(emiMonthly(10_000_000, 20, 0)).toBe(500000);
+    // ৳500,000 @ 13% for 36m → ৳16,846.98 ≈ 1,684,698 minor
+    expect(emiMonthly(50_000_000, 36, 13)).toBe(1_684_698);
+    // ৳100,000 @ 0% — straight-line: ৳5,000 = 500,000 minor
+    expect(emiMonthly(10_000_000, 20, 0)).toBe(500_000);
     // rounding boundary sanity
     expect(emiMonthly(10_000_000, 12, 12)).toBeGreaterThan(0);
   });

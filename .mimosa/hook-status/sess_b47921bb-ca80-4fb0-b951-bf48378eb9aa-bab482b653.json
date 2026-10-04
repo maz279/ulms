@@ -1,14 +1,14 @@
 {
   "schemaVersion": "mimosa-hook-status/v1",
-  "recordedAt": "2026-10-04T09:33:12.409Z",
+  "recordedAt": "2026-10-04T09:36:13.697Z",
   "sessionId": "sess_b47921bb-ca80-4fb0-b951-bf48378eb9aa",
   "event": "PostToolUse",
-  "toolName": "Write",
-  "file": "README.md",
+  "toolName": "Edit",
+  "file": "C:\\Users\\maz_2\\.zcode\\cli\\memories\\projects\\lms-23b38b0b1512f198\\memory\\ulms-prototype-parity-rebuild.md",
   "outcome": "clear",
   "coverage": "complete",
   "findingCount": 0,
-  "durationMs": 4,
+  "durationMs": 6,
   "hostState": "hook_complete",
   "reportHint": ".mimosa/reports/"
 }

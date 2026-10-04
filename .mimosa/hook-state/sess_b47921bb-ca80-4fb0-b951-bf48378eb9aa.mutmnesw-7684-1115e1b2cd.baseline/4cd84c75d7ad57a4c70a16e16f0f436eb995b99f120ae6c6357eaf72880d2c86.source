@@ -1,7 +1,6 @@
 /* Home — the research-standard dashboard: greeting, per-loan card with
  * outstanding + EMI + next due + DPD status, pay-now shortcut.
  */
-import * as React from "react";
 import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useLang } from "../i18n/LangProvider";
