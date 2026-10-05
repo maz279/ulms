@@ -57,6 +57,14 @@ class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(p);
     }
 
+    /** External-audit fix: the admin form's PATCH — amend a DRAFT. */
+    @PatchMapping("/{code}")
+    @PreAuthorize("hasRole('admin')")
+    LoanProduct patch(@PathVariable String code, @RequestBody Map<String, Object> body,
+                      Authentication auth) {
+        return service.patch(code, body, AuthPrincipal.actorOf(auth));
+    }
+
     @PostMapping("/{code}/activate")
     @PreAuthorize("hasRole('admin')")
     LoanProduct activate(@PathVariable String code, Authentication auth) {

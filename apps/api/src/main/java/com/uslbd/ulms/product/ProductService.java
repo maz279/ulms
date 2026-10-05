@@ -77,6 +77,34 @@ public class ProductService {
         return p;
     }
 
+    /** External-audit fix: PATCH — amend the live DRAFT (frontend admin form
+     *  and mock already spoke this contract; Java lacked it). */
+    @Transactional
+    public LoanProduct patch(String code, java.util.Map<String, Object> body, String actor) {
+        var draft = products.findByCodeOrderByVersionDesc(code).stream()
+                .filter(p -> p.getStatus() == LoanProduct.Status.DRAFT)
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.CONFLICT,
+                        "no DRAFT " + code + " to amend — version it instead"));
+        Long max = body.get("maxAmountMinor") == null ? null
+                : ((Number) body.get("maxAmountMinor")).longValue();
+        Integer tenor = body.get("tenorMaxMonths") == null ? null
+                : ((Number) body.get("tenorMaxMonths")).intValue();
+        Integer rate = body.get("rateBp") == null ? null
+                : ((Number) body.get("rateBp")).intValue();
+        if (max != null && (max <= 0 || max < draft.getMinAmountMinor())) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "maxAmountMinor must stay >= min");
+        }
+        draft.amend(
+                body.get("nameEn") == null ? null : String.valueOf(body.get("nameEn")),
+                body.get("nameBn") == null ? null : String.valueOf(body.get("nameBn")),
+                max, tenor, rate);
+        audit.record(actor, "PRODUCT_AMEND", code, draft.getId(),
+                "\"" + body.keySet() + "\"", UUID.randomUUID());
+        return draft;
+    }
+
     @Transactional
     public LoanProduct activate(String code, String actor) {
         var draft = products.findByCodeOrderByVersionDesc(code).stream()

@@ -98,4 +98,36 @@ class ProductServiceTest {
         assertThat(over.violations()).hasSize(2);   // amount + tenor
         assertThat(over.emiMinor()).isNull();
     }
+
+
+    // ── external-audit fix: PATCH /products/{code} (admin form contract) ──
+
+    @org.junit.jupiter.api.Test
+    void patchAmendsDraftAndRefusesActiveOrBadBounds() {
+        var created = products.create("patch-t", "Patch Test", null,
+                1_000_000L, 50_000_000L, 6, 60, 1199, "user:admin");
+
+        var patched = products.patch("patch-t", java.util.Map.of(
+                "nameEn", "Patch Test v2", "maxAmountMinor", 80_000_000L), "user:admin");
+        assertThat(patched.getNameEn()).isEqualTo("Patch Test v2");
+        assertThat(patched.getMaxAmountMinor()).isEqualTo(80_000_000L);
+
+        // bounds guard: max below min is rejected
+        assertThatThrownBy(() -> products.patch("patch-t",
+                java.util.Map.of("maxAmountMinor", 1L), "user:admin"))
+                .hasMessageContaining("must stay >= min");
+
+        // activate → ACTIVE rows are immutable (version instead)
+        products.activate("patch-t", "user:admin");
+        assertThatThrownBy(() -> products.patch("patch-t",
+                java.util.Map.of("nameEn", "x"), "user:admin"))
+                .hasMessageContaining("no DRAFT");
+    }
+
+    @org.junit.jupiter.api.Test
+    void patchOnUnknownCodeIs409() {
+        assertThatThrownBy(() -> products.patch("no-such", java.util.Map.of(), "user:admin"))
+                .hasMessageContaining("no DRAFT");
+    }
+
 }

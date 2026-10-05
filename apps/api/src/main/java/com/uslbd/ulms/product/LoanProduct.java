@@ -50,6 +50,20 @@ public class LoanProduct {
 
     protected LoanProduct() {}
 
+    /** External-audit fix: amend a DRAFT in place (PATCH /products/{code}).
+     *  ACTIVE versions are immutable — version them via create+activate. */
+    void amend(String nameEn, String nameBn, Long maxAmountMinor,
+               Integer tenorMaxMonths, Integer rateBp) {
+        if (status != Status.DRAFT) {
+            throw new IllegalStateException("only DRAFT rows amend (now " + status + ")");
+        }
+        if (nameEn != null) this.nameEn = nameEn;
+        if (nameBn != null) this.nameBn = nameBn;
+        if (maxAmountMinor != null) this.maxAmountMinor = maxAmountMinor;
+        if (tenorMaxMonths != null) this.tenorMaxMonths = tenorMaxMonths;
+        if (rateBp != null) this.rateBp = rateBp;
+    }
+
     public static LoanProduct draft(UUID id, String code, String nameEn, String nameBn,
                                     long minAmountMinor, long maxAmountMinor,
                                     int tenorMinMonths, int tenorMaxMonths,
