@@ -131,14 +131,14 @@ export function LoginPage() {
 
           {(mode === "oidc" || mode === "open") && step === "creds" && (
             <form onSubmit={submitCreds}>
-              <label style={{ display: "block", fontSize: 12.5, fontWeight: 600, color: "#3949ab", margin: "0 0 6px" }}>Username</label>
-              <input value={user} onChange={(e) => setUser(e.target.value)} autoComplete="username"
+              <label htmlFor="ulms-login-user" style={{ display: "block", fontSize: 12.5, fontWeight: 600, color: "#3949ab", margin: "0 0 6px" }}>Username</label>
+              <input id="ulms-login-user" value={user} onChange={(e) => setUser(e.target.value)} autoComplete="username"
                 placeholder="e.g. r.islam"
                 style={{ width: "100%", boxSizing: "border-box", padding: "11px 12px", borderRadius: 8,
                   border: "1px solid #d5d8e4", fontSize: 14, marginBottom: 14, outline: "none",
                   background: "#f8f9fc" }} />
-              <label style={{ display: "block", fontSize: 12.5, fontWeight: 600, color: "#3949ab", margin: "0 0 6px" }}>Password</label>
-              <input type="password" value={pass} onChange={(e) => setPass(e.target.value)} autoComplete="current-password"
+              <label htmlFor="ulms-login-pass" style={{ display: "block", fontSize: 12.5, fontWeight: 600, color: "#3949ab", margin: "0 0 6px" }}>Password</label>
+              <input id="ulms-login-pass" type="password" value={pass} onChange={(e) => setPass(e.target.value)} autoComplete="current-password"
                 placeholder="••••••••"
                 style={{ width: "100%", boxSizing: "border-box", padding: "11px 12px", borderRadius: 8,
                   border: "1px solid #d5d8e4", fontSize: 14, marginBottom: 18, outline: "none",
@@ -191,10 +191,10 @@ export function LoginPage() {
               }}>
                 <span style={{ fontSize: 16 }}>🔐</span> Signed in as <b>{user}</b> — verification required
               </div>
-              <label style={{ display: "block", fontSize: 12.5, fontWeight: 600, color: "#3949ab", margin: "0 0 6px" }}>
+              <label htmlFor="ulms-login-mfa" style={{ display: "block", fontSize: 12.5, fontWeight: 600, color: "#3949ab", margin: "0 0 6px" }}>
                 Authenticator code
               </label>
-              <input value={mfa} onChange={(e) => setMfa(e.target.value)} autoFocus
+              <input id="ulms-login-mfa" value={mfa} onChange={(e) => setMfa(e.target.value)} autoFocus
                 placeholder="6-digit code (any word accepted in this demo stack)"
                 style={{ width: "100%", boxSizing: "border-box", padding: "11px 12px", borderRadius: 8,
                   border: "1px solid #d5d8e4", fontSize: 14, marginBottom: 18, outline: "none",

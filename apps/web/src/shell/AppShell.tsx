@@ -342,7 +342,9 @@ export function AppShell() {
       {/* 1. TOPBAR */}
       <header className="usl-topbar" role="banner">
         <button className="tb-btn" aria-label="Toggle navigation" title="Navigation (Ctrl+B)" onClick={toggleCollapsed}>☰</button>
-        <div className="tb-brand" style={{ cursor: "pointer" }} onClick={() => nav("/home")}>
+        <div className="tb-brand" role="button" tabIndex={0} aria-label="ULMS home"
+        style={{ cursor: "pointer" }} onClick={() => nav("/home")}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") nav("/home"); }}>
           <span className="tb-logo">U</span>
           <div className="tb-app">
             <b>ULMS <span style={{ fontWeight: 400 }}>· Unisoft Loan Management</span></b>
@@ -605,13 +607,17 @@ export function AppShell() {
             <div className="rp-h">{lang === "bn" ? "পিন করা" : "Pinned"}</div>
             {tabs.filter((x) => x.pin).length
               ? tabs.filter((x) => x.pin).map((x) => (
-                <div key={x.id} className={`rp-item${x.id === activeTab ? " on" : ""}`} onClick={() => { openTabRoute(x); setRailPanel(null); }}>
+                <div key={x.id} role="button" tabIndex={0} className={`rp-item${x.id === activeTab ? " on" : ""}`}
+                  onClick={() => { openTabRoute(x); setRailPanel(null); }}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { openTabRoute(x); setRailPanel(null); } } }>
                   {x.icon} <span className="trunc grow">{screenTitle(x)}</span>
                 </div>))
               : <div className="small" style={{ padding: "4px 8px" }}>{lang === "bn" ? "কোনো প্রিয় নেই" : "No pinned tabs"}</div>}
             <div className="rp-h" style={{ marginTop: 8 }}>{lang === "bn" ? "খোলা ট্যাব" : "Open tabs"} ({tabs.filter((x) => !x.pin).length})</div>
             {tabs.filter((x) => !x.pin).map((x) => (
-              <div key={x.id} className={`rp-item${x.id === activeTab ? " on" : ""}`} onClick={() => { openTabRoute(x); setRailPanel(null); }}>
+              <div key={x.id} role="button" tabIndex={0} className={`rp-item${x.id === activeTab ? " on" : ""}`}
+                  onClick={() => { openTabRoute(x); setRailPanel(null); }}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { openTabRoute(x); setRailPanel(null); } } }>
                 {x.icon} <span className="trunc grow">{screenTitle(x)}</span>
               </div>))}
             <div style={{ padding: 8 }}>
@@ -628,7 +634,9 @@ export function AppShell() {
               ? fav.map((mid) => {
                 const m: any = (LMS_MODULES as any)[mid];
                 return m ? (
-                  <div key={mid} className="rp-item" onClick={() => { go(`/workspace/${mid}`); setRailPanel(null); }}>
+                  <div key={mid} role="button" tabIndex={0} className="rp-item"
+                      onClick={() => { go(`/workspace/${mid}`); setRailPanel(null); }}
+                      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { go(`/workspace/${mid}`); setRailPanel(null); } } }>
                     {m.icon} <span className="trunc grow">{m.en}</span><span className="ni-badge">{mid}</span>
                   </div>) : null;
               })

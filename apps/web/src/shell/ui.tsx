@@ -279,13 +279,14 @@ export function Field({ label, required, area, type = "text", placeholder, value
 }) {
   const [touched, setTouched] = React.useState(false);
   const bad = invalid || (touched && required && !(value ?? "").trim());
+  const fid = React.useId();
   return (
     <div className={`field${span2 ? " span2" : ""}${bad ? " invalid" : ""}`} data-req={required ? 1 : 0}>
-      <label>{label}{required ? <span className="req">*</span> : null}</label>
+      <label htmlFor={fid}>{label}{required ? <span className="req">*</span> : null}</label>
       {area
-        ? <textarea rows={2} placeholder={placeholder ?? "…"} value={value} readOnly={readOnly}
+        ? <textarea id={fid} rows={2} placeholder={placeholder ?? "…"} value={value} readOnly={readOnly}
             onChange={(e) => onChange?.(e.target.value)} onBlur={() => setTouched(true)} />
-        : <input type={type} className={mono ? "mono" : undefined} placeholder={placeholder}
+        : <input id={fid} type={type} className={mono ? "mono" : undefined} placeholder={placeholder}
             value={value} readOnly={readOnly} onChange={(e) => onChange?.(e.target.value)} onBlur={() => setTouched(true)} />}
       <span className="err-msg">Required — {label} cannot be blank</span>
     </div>
@@ -392,7 +393,7 @@ export function FormModal({ mid, name, onClose }: { mid: string; name: string; o
             <thead><tr><th>#</th><th>Item</th><th>Value (৳)</th><th>Note</th></tr></thead>
             <tbody>
               {[1, 2].map((i) => (
-                <tr key={i}><td>{i}</td><td><input defaultValue={`Line ${i}`} /></td><td><input className="num" defaultValue={i * 250000} /></td><td><input /></td></tr>
+                <tr key={i}><td>{i}</td><td><input aria-label={`Row ${i} description`} defaultValue={`Line ${i}`} /></td><td><input className="num" aria-label={`Row ${i} amount`} defaultValue={i * 250000} /></td><td><input aria-label={`Row ${i} note`} /></td></tr>
               ))}
               <tr><td colSpan={4}><Btn label="＋ Add line" variant="btn-sm btn-2nd" onClick={() => toast("Line added")} /></td></tr>
             </tbody>

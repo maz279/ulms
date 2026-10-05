@@ -44,7 +44,7 @@ export function DocumentPanel({ appId }: { appId: string }) {
 
   return (
     <Box sx={{ display: "grid", gap: 1.5 }}>
-      <input ref={inputRef} type="file" hidden onChange={onPick} />
+      <input ref={inputRef} type="file" hidden aria-label="Choose document to upload" onChange={onPick} />
       <Button variant="outlined" startIcon={<UploadFileIcon />} disabled={busy}
         onClick={() => inputRef.current?.click()} sx={{ justifySelf: "start" }}>
         {busy ? "Uploading…" : "Upload document"}
