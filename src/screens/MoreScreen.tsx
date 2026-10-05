@@ -7,7 +7,9 @@ import { useLang } from "../i18n/LangProvider";
 import { t } from "../i18n/strings";
 import { tk } from "../domain/format";
 import { payoffMonths, interestSaved } from "../domain/emi";
-import type { BorrowerSession } from "../api/client";
+import { DEMO_MODE, type BorrowerSession } from "../api/client";
+import { resetDemo } from "../api/demo";
+import { fetchMe, saveSession } from "../api/client";
 
 export function MoreScreen({ session, onLogout }: {
   session: BorrowerSession; onLogout: () => void;
@@ -15,6 +17,7 @@ export function MoreScreen({ session, onLogout }: {
   const { lang, setLang } = useLang();
   const loan = session.me.loans[0];
   const [extra, setExtra] = React.useState("");
+  const [demoMsg, setDemoMsg] = React.useState<string | null>(null);
   const extraMinor = Math.round((parseFloat(extra) || 0) * 100);
   const base = loan ? payoffMonths(loan.outstandingMinor, loan.emiMinor, 0, 13) : null;
   const faster = loan ? payoffMonths(loan.outstandingMinor, loan.emiMinor, extraMinor, 13) : null;
@@ -56,9 +59,21 @@ export function MoreScreen({ session, onLogout }: {
         <Text style={s.fine}>{t(lang, "more.branch")}</Text>
       </View>
 
+      {DEMO_MODE && (
+        <Pressable style={s.logout} onPress={async () => {
+          await resetDemo();
+          const me = await fetchMe(session.mobile);
+          const next = { ...session, me };
+          await saveSession(next);
+          setDemoMsg("✓ demo data reset");
+        }}>
+          <Text style={s.logoutText}>↺ reset demo data</Text>
+        </Pressable>
+      )}
       <Pressable style={s.logout} onPress={onLogout}>
         <Text style={s.logoutText}>{t(lang, "more.logout")}</Text>
       </Pressable>
+      {demoMsg ? <Text style={{ color: "#107C10", fontSize: 12, textAlign: "center" }}>{demoMsg}</Text> : null}
     </View>
   );
 }

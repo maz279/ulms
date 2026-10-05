@@ -13,13 +13,24 @@ import { TrackerScreen } from "./screens/TrackerScreen";
 import { PayScreen } from "./screens/PayScreen";
 import { StatementsScreen } from "./screens/StatementsScreen";
 import { MoreScreen } from "./screens/MoreScreen";
-import { loadSession, saveSession, type BorrowerSession } from "./api/client";
+import { loadSession, saveSession, fetchMe, type BorrowerSession } from "./api/client";
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [session, setSession] = React.useState<BorrowerSession | null | undefined>(undefined);
   React.useEffect(() => { void loadSession().then(setSession); }, []);
+
+  /** Audit fix: payments/apply change balances — pull a fresh `me` so Home
+   *  never shows stale figures (the web prototype refetched; the app didn't). */
+  const refreshSession = React.useCallback(async (s: BorrowerSession) => {
+    try {
+      const me = await fetchMe(s.mobile);
+      const next = { ...s, me };
+      await saveSession(next);
+      setSession(next);
+    } catch { /* offline — keep the snapshot */ }
+  }, []);
 
   if (session === undefined) return null;   // splash
 
@@ -42,7 +53,7 @@ export default function App() {
             {() => <TrackerScreen session={session} />}
           </Tab.Screen>
           <Tab.Screen name="pay">
-            {() => <PayScreen session={session} />}
+            {() => <PayScreen session={session} onPaid={() => void refreshSession(session)} />}
           </Tab.Screen>
           <Tab.Screen name="statements">
             {() => <StatementsScreen session={session} />}

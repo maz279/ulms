@@ -12,7 +12,9 @@ import { initiatePayment, fetchPayments, assertSafeExternalUrl,
 
 const RAILS = ["BKASH", "NAGAD", "BEFTN"] as const;
 
-export function PayScreen({ session }: { session: BorrowerSession }) {
+export function PayScreen({ session, onPaid }: {
+  session: BorrowerSession; onPaid: () => void;
+}) {
   const { lang } = useLang();
   const loan = session.me.loans[0];
   const [amount, setAmount] = React.useState("");
@@ -65,6 +67,7 @@ export function PayScreen({ session }: { session: BorrowerSession }) {
             }
             setAmount("");
             reload();
+            onPaid();   // audit fix: refresh the session snapshot (Home balances)
           } catch (e) { setErr(String(e instanceof Error ? e.message : e)); }
         }}>
         <Text style={s.btnText}>{t(lang, "pay.confirm")}</Text>
