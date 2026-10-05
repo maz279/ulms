@@ -5,3 +5,5 @@ web-build/
 *.log
 .eas/
 .mimosa/
+mobileapp_apk/
+android/

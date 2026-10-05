@@ -13,8 +13,13 @@
    Linking opens it.
    ============================================================ */
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { demo } from "./demo";
 
-const RAW_BASE = (process.env.EXPO_PUBLIC_API_BASE ?? "http://localhost:8081").replace(/\/$/, "");
+/** DEMO MODE (default when no API base is configured): the release APK
+ *  runs standalone with the prototype's embedded API simulation — see
+ *  ./demo.ts. Setting EXPO_PUBLIC_API_BASE routes to the real backend. */
+export const DEMO_MODE = !process.env.EXPO_PUBLIC_API_BASE;
+const RAW_BASE = (process.env.EXPO_PUBLIC_API_BASE ?? "").replace(/\/$/, "");
 const ALLOW_LOCALHOST = RAW_BASE.startsWith("http://localhost") || RAW_BASE.startsWith("http://127.");
 const SESSION_KEY = "ulms.borrower.session";
 const ABS_URL = /^([a-z][a-z0-9+.-]*):\/\/([^/?#]+)/i;
@@ -34,7 +39,7 @@ function assertValidBase(base: string): string {
   return base;
 }
 
-const BASE = assertValidBase(RAW_BASE);
+const BASE = DEMO_MODE ? "" : assertValidBase(RAW_BASE);
 
 /** Single URL factory: fixed path constants + fully-encoded query values. */
 function buildUrl(path: string, query?: Record<string, string>): string {
@@ -83,6 +88,7 @@ async function jw<T>(res: Response): Promise<T> {
 
 /** Step 1 of login: request an SMS OTP for the mobile number. */
 export async function requestOtp(mobile: string): Promise<string | null> {
+  if (DEMO_MODE) return demo.requestOtp(mobile);
   const res = await fetch(buildUrl("/api/v1/portal/otp"), {
     method: "POST",
     headers: JSON_HEADERS,
@@ -94,6 +100,7 @@ export async function requestOtp(mobile: string): Promise<string | null> {
 
 /** Step 2: verify the code — the otpToken authorizes payment confirmations. */
 export async function verifyOtp(mobile: string, code: string): Promise<string> {
+  if (DEMO_MODE) return demo.verifyOtp(mobile, code);
   const res = await fetch(buildUrl("/api/v1/portal/otp/verify"), {
     method: "POST",
     headers: JSON_HEADERS,
@@ -104,16 +111,20 @@ export async function verifyOtp(mobile: string, code: string): Promise<string> {
 }
 
 export async function fetchMe(mobile: string): Promise<Me> {
+  if (DEMO_MODE) return demo.me(mobile);
   return jw(await fetch(buildUrl("/api/v1/portal/me", { mobile })));
 }
 
 export async function fetchTracker(cif: string): Promise<TrackerRow[]> {
+  // demo ignores cif (session mobile is the key); backend keys by cif
+  if (DEMO_MODE) return demo.tracker(demo.DEMO_MOBILE);
   const res = await fetch(buildUrl("/api/v1/portal/me/application", { cif }));
   if (!res.ok) return [];
   return (await res.json()).data ?? [];
 }
 
 export async function fetchPayments(mobile: string, loanId: string): Promise<PaymentLine[]> {
+  if (DEMO_MODE) return demo.payments(mobile, loanId);
   const res = await fetch(buildUrl("/api/v1/portal/me/payments", { loanId, mobile }));
   if (!res.ok) return [];
   return (await res.json()).data ?? [];
@@ -121,6 +132,7 @@ export async function fetchPayments(mobile: string, loanId: string): Promise<Pay
 
 export async function applyLoan(mobile: string, productCode: string,
                                 amountMinor: number, tenorMonths: number): Promise<{ appNo: string }> {
+  if (DEMO_MODE) return demo.apply(mobile, productCode, amountMinor, tenorMonths);
   return jw(await fetch(buildUrl("/api/v1/portal/me/applications"), {
     method: "POST",
     headers: JSON_HEADERS,
@@ -128,17 +140,24 @@ export async function applyLoan(mobile: string, productCode: string,
   }));
 }
 
-/** OTP-confirmed payment initiation — the rail URL opens bKash/Nagad
- *  (redirect model; the app NEVER handles card/wallet credentials). */
+/** OTP-confirmed payment initiation — against the bank backend the rail URL
+ *  opens bKash/Nagad (redirect model; the app NEVER handles card/wallet
+ *  credentials). In demo mode the embedded checkout posts immediately. */
 export async function initiatePayment(loanId: string, amountMinor: number,
                                       rail: string, otpToken: string | null,
                                       mobile: string): Promise<PaymentIntent> {
+  if (DEMO_MODE) return demo.initiate(loanId, amountMinor, rail, otpToken);
   const query = otpToken ? { otpToken, mobile } : undefined;
   return jw(await fetch(buildUrl("/api/v1/portal/me/payments/initiate", query), {
     method: "POST",
     headers: JSON_HEADERS,
     body: JSON.stringify({ loanId, amountMinor, rail }),
   }));
+}
+
+/** Demo statements: CSV text shared via the OS share sheet. */
+export async function demoStatementCsv(mobile: string, loanId: string): Promise<string> {
+  return demo.statementCsv(mobile, loanId);
 }
 
 export function statementUrl(loanId: string, mobile: string): string {

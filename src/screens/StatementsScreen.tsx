@@ -2,11 +2,11 @@
  * join from the same presign pattern at the native build).
  */
 import * as React from "react";
-import { View, Text, Pressable, StyleSheet, Linking } from "react-native";
+import { View, Text, Pressable, StyleSheet, Linking, Share } from "react-native";
 import { useLang } from "../i18n/LangProvider";
 import { t } from "../i18n/strings";
 import { tk } from "../domain/format";
-import { statementUrl, type BorrowerSession } from "../api/client";
+import { statementUrl, demoStatementCsv, DEMO_MODE, type BorrowerSession } from "../api/client";
 
 export function StatementsScreen({ session }: { session: BorrowerSession }) {
   const { lang } = useLang();
@@ -22,6 +22,14 @@ export function StatementsScreen({ session }: { session: BorrowerSession }) {
           <Pressable style={s.btn}
             onPress={() => {
               setErr(null);
+              if (DEMO_MODE) {
+                // standalone APK: generate the CSV and hand it to the OS
+                // share sheet (save, mail, Drive — user's choice)
+                void demoStatementCsv(session.mobile, l.loanId)
+                  .then((csv) => Share.share({ title: "statement-" + l.loanNo, message: csv }))
+                  .catch((e) => setErr(String(e instanceof Error ? e.message : e)));
+                return;
+              }
               // statementUrl is built from the VALIDATED API base — the
               // https-only guard applies to third-party rail URLs, not ours
               void Linking.openURL(statementUrl(l.loanId, session.mobile));
