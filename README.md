@@ -34,6 +34,11 @@ Technology Stack v3.
 repositories; their full commit histories (including audit and remediation
 trails) were absorbed into this repository with `git subtree`.
 
+> **Commit from this repository root.** The `.git` directories still present
+> inside `LMS_CODEBASE/` and `mobile_app/` are inert remnants of the absorbed
+> repositories — every commit in them is already reachable from this
+> repository's history. Do not commit inside those directories.
+
 ## Getting oriented
 
 1. `AGENTS.md` — project guide (structure, standards, compliance tables)
