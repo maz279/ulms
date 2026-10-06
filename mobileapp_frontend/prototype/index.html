@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ULMS Borrower — Working Prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="stage">
+    <aside class="side">
+      <h1>ULMS Borrower</h1>
+      <p class="tag">১০০% কার্যকর প্রোটোটাইপ · fully working prototype</p>
+      <ul class="notes">
+        <li>ওটিপি লগইন কাজ করে — ডেভ কোড স্ক্রিনেই দেখায় (OTP login works; the dev code is shown, simulating SMS)</li>
+        <li>আবেদন জমা → ট্র্যাকারে যোগ হয়; সীমা যাচাই (apply validates bounds and lands in the tracker)</li>
+        <li>পরিশোধ: ওটিপি নিশ্চিত → রেল চেকআউট → বকেয়া কমে, ইতিহাসে যোগ হয় (pay: OTP → checkout → outstanding drops)</li>
+        <li>স্টেটমেন্ট সত্যিই ডাউনলোড হয় (CSV) (statements really download)</li>
+        <li>ক্যালকুলেটর ব্যাংক-অরাকল সূত্রে হিসাব করে (calculator uses the bank-oracle EMI math)</li>
+        <li>বাংলা⇄English লাইভ টগল; সেশন localStorage-এ থাকে (live language toggle; session persists)</li>
+      </ul>
+      <p class="hint">Simulates the /portal API in-page with the same contract as the shipped app. Session persists per browser.</p>
+    </aside>
+
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+      <main id="screen" class="screen"></main>
+      <nav id="tabs" class="tabs hidden"></nav>
+    </div>
+  </div>
+
+  <!-- rail checkout overlay (simulated bKash/Nagad hosted page) -->
+  <div id="checkout" class="overlay hidden">
+    <div class="co-card">
+      <div class="co-head" id="coRail">bKash</div>
+      <div class="co-merchant">ABC Bank — Loan Repayment</div>
+      <div class="co-amount" id="coAmount">৳0</div>
+      <div class="co-field">Wallet / account <input id="coAcc" class="co-input" placeholder="01XXXXXXXXX"></div>
+      <button id="coPay" class="co-btn">Pay</button>
+      <button id="coCancel" class="co-cancel">Cancel</button>
+      <p class="co-fine">Simulated hosted checkout — the real app opens the rail's page and the bank webhook posts the payment.</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

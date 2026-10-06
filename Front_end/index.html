@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ULMS v2.0 — Unisoft Loan Management System · ABC Bank Bangladesh</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/tokens.css?v=16">
+<link rel="stylesheet" href="css/app.css?v=16">
+<style>
+.lp-features{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:20px}
+.lp-f{border:1px solid var(--stroke);border-radius:8px;padding:14px;background:var(--surface)}
+.lp-f b{display:block;font-size:14px;margin-bottom:4px}
+.lp-f span{font-size:12px;color:var(--ink-500)}
+.lp-lang{position:absolute;top:16px;right:16px;display:flex;gap:6px;z-index:5}
+.lp-lang button{border:1px solid rgba(233,236,248,.4);background:rgba(233,236,248,.08);color:#E9ECF8;
+  border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer}
+.lp-lang button.on{background:#E9ECF8;color:var(--navy-900);border-color:#E9ECF8;font-weight:600}
+</style>
+</head>
+<body>
+<main class="landing">
+  <section class="brand-panel">
+    <div class="lp-lang" role="group" aria-label="Language / ভাষা">
+      <button id="lang-en" onclick="setLang('en')">English</button>
+      <button id="lang-bn" onclick="setLang('bn')">বাংলা</button>
+    </div>
+    <div class="bp-logo"><span class="tb-logo">U</span><div><b>ULMS <span style="font-weight:400">v2.0</span></b><span data-en="Unisoft Loan Management System" data-bn="ইউনিসফট ঋণ ব্যবস্থাপনা সিস্টেম">Unisoft Loan Management System</span></div></div>
+    <div class="bp-hero">
+      <h1 data-en='Compliant lending at <em>Dhaka speed</em> — from application to recovery.' data-bn='আবেদন থেকে আদায় পর্যন্ত — <em>ঢাকার গতিতে</em> সর্বজনীন নিয়ম মেনে ঋণ প্রদান।'>Compliant lending at <em>Dhaka speed</em> — from application to recovery.</h1>
+      <p data-en="Built on Apache Fineract 1.10 for Bangladesh's scheduled banks: BRPD 15/2024 seven-stage classification, Bangladesh Bank CIB, NID e-KYC, bKash · Nagad · BEFTN rails — fully bilingual, Bangla and English." data-bn="বাংলাদেশের তফসিলি ব্যাংকগুলোর জন্য Apache Fineract 1.10-এর ওপর নির্মিত: বিআরপিডি ১৫/২০২৪ সাত-স্তরের শ্রেণিবিন্যাস, বাংলাদেশ ব্যাংক সিআইবি, এনআইডি ই-কেওয়াইসি, বিকাশ · নগদ · বিইএফটিএন রেল — সম্পূর্ণ দ্বিভাষিক, বাংলা ও ইংরেজি।">Built on Apache Fineract 1.10 for Bangladesh's scheduled banks: BRPD 15/2024 seven-stage classification, Bangladesh Bank CIB, NID e-KYC, bKash · Nagad · BEFTN rails — fully bilingual, Bangla and English.</p>
+      <div class="lp-features">
+        <div class="lp-f"><b data-en="11-day → 2-day TAT" data-bn="১১ দিন → ২ দিন ট্যাট">11-day → 2-day TAT</b><span data-en="ABC Bank case study result" data-bn="এবিসি ব্যাংক কেস স্টাডি ফলাফল">ABC Bank case study result</span></div>
+        <div class="lp-f"><b data-en="7-stage BRPD engine" data-bn="৭-স্তরের বিআরপিডি ইঞ্জিন">7-stage BRPD engine</b><span data-en="Daily EOD · provisioning GLs" data-bn="দৈনিক ইওডি · প্রভিশন জিএল">Daily EOD · provisioning GLs</span></div>
+        <div class="lp-f"><b data-en="CIB in 90 seconds" data-bn="৯০ সেকেন্ডে সিআইবি">CIB in 90 seconds</b><span data-en="vs 45 min manual legacy" data-bn="ম্যানুয়াল লিগ্যাসির ৪৫ মিনিটের বদলে">vs 45 min manual legacy</span></div>
+        <div class="lp-f"><b data-en="45 regulatory reports" data-bn="৪৫টি রেগুলেটরি রিপোর্ট">45 regulatory reports</b><span data-en="CL-1…5, Basel III, EDW" data-bn="সিএল-১…৫, বাজেল ৩, ইডিব্লু">CL-1…5, Basel III, EDW</span></div>
+      </div>
+    </div>
+    <div class="bp-stats">
+      <div class="st"><b>62</b><span data-en="target scheduled banks" data-bn="লক্ষ্য তফসিলি ব্যাংক">target scheduled banks</span></div>
+      <div class="st"><b>৳5,200 Cr</b><span data-en="portfolio under management (ABC)" data-bn="পরিচালনাধীন পোর্টফোলিও (এবিসি)">portfolio under management (ABC)</span></div>
+      <div class="st"><b>99.9%</b><span data-en="availability SLA" data-bn="অ্যাভেইলেবিলিটি এসএলএ">availability SLA</span></div>
+    </div>
+  </section>
+
+  <section class="login-side">
+    <div class="login-card">
+      <h2 data-en="Sign in to ULMS" data-bn="ইউএলএমএস-এ প্রবেশ করুন">Sign in to ULMS</h2>
+      <div class="lc-sub" data-en="ABC Bank Bangladesh · Staff console (STAGING)" data-bn="এবিসি ব্যাংক বাংলাদেশ · স্টাফ কনসোল (স্টেজিং)">ABC Bank Bangladesh · Staff console (STAGING)</div>
+      <form onsubmit="event.preventDefault();location.href='app.html';">
+        <div class="field"><label for="u" data-en="Work email / username" data-bn="কর্মস্থলের ইমেইল / ব্যবহারকারী নাম">Work email / username</label><input id="u" value="r.islam@abcbank.com.bd" autocomplete="username"></div>
+        <div class="field"><label for="p" data-en="Password" data-bn="পাসওয়ার্ড">Password</label><input id="p" type="password" value="••••••••••" autocomplete="current-password"></div>
+        <div class="field"><label for="m" data-en="MFA (TOTP — 6 digits)" data-bn="এমএফএ (টিওটিপি — ৬ ডিজিট)">MFA (TOTP — 6 digits)</label><input id="m" inputmode="numeric" placeholder="123456"></div>
+        <button class="btn btn-primary" style="width:100%;height:38px;justify-content:center" type="submit" data-en="Sign in" data-bn="প্রবেশ করুন">Sign in</button>
+      </form>
+      <div class="personas">
+        <h4 data-en="Or explore a demo persona" data-bn="অথবা একটি ডেমো পারসোনা দেখুন">Or explore a demo persona</h4>
+        <button class="persona" onclick="location.href='app.html#/home'">
+          <span class="p-av">MD</span><span><b data-en="Ahmed · Managing Director" data-bn="আহমেদ · ব্যবস্থাপনা পরিচালক">Ahmed · Managing Director</b><small data-en="Executive KPIs · board pack · NPA exceptions" data-bn="নির্বাহী কেপিআই · বোর্ড প্যাক · এনপিএ ব্যতিক্রম">Executive KPIs · board pack · NPA exceptions</small></span><span class="go">›</span></button>
+        <button class="persona" onclick="location.href='app.html#/pipeline'">
+          <span class="p-av">RA</span><span><b data-en="Rezaul · Branch Loan Officer" data-bn="রেজাউল · শাখা ঋণ কর্মকর্তা">Rezaul · Branch Loan Officer</b><small data-en="Applications, NID auto-fill, pipeline, documents" data-bn="আবেদন, এনআইডি অটো-ফিল, পাইপলাইন, দলিল">Applications, NID auto-fill, pipeline, documents</small></span><span class="go">›</span></button>
+        <button class="persona" onclick="location.href='app.html#/approvals'">
+          <span class="p-av">KA</span><span><b data-en="Karim · Branch Manager (L2)" data-bn="করিম · শাখা ব্যবস্থাপক (এল২)">Karim · Branch Manager (L2)</b><small data-en="Approvals, branch dashboard, SLA risk" data-bn="অনুমোদন, শাখা ড্যাশবোর্ড, এসএলএ ঝুঁকি">Approvals, branch dashboard, SLA risk</small></span><span class="go">›</span></button>
+        <button class="persona" onclick="location.href='app.html#/cib/CIF-100875'">
+          <span class="p-av">FA</span><span><b data-en="Fatima · HO Credit Analyst" data-bn="ফাতিমা · প্রধান কার্যালয় ক্রেডিট বিশ্লেষক">Fatima · HO Credit Analyst</b><small data-en="CIB reports, scoring, DBR, credit memos" data-bn="সিআইবি রিপোর্ট, স্কোরিং, ডিবিআর, ক্রেডিট মেমো">CIB reports, scoring, DBR, credit memos</small></span><span class="go">›</span></button>
+        <button class="persona" onclick="location.href='app.html#/collections'">
+          <span class="p-av">TA</span><span><b data-en="Tahmina · CPV / Collections" data-bn="তাহমিনা · সিপিভি / আদায়">Tahmina · CPV / Collections</b><small data-en="Field app, DPD buckets, PTP, visits" data-bn="ফিল্ড অ্যাপ, ডিপিডি বাকেট, পিটিপি, ভিজিট">Field app, DPD buckets, PTP, visits</small></span><span class="go">›</span></button>
+      </div>
+      <div style="margin-top:24px" class="small">
+        <span data-en="Also in this prototype:" data-bn="এই প্রোটোটাইপে আরও আছে:">Also in this prototype:</span>
+        <a href="portals.html" data-en="Borrower self-service portal" data-bn="ঋণগ্রহীতার সেলফ-সার্ভিস পোর্টাল">Borrower self-service portal</a> ·
+        <a href="mobile.html" data-en="Field / CPV mobile app" data-bn="ফিল্ড / সিপিভি মোবাইল অ্যাপ">Field / CPV mobile app</a> ·
+        <a href="app.html#/designsystem" data-en="Design system" data-bn="ডিজাইন সিস্টেম">Design system</a>
+      </div>
+      <div style="margin-top:18px" class="small" data-en="Unisoft Systems Limited · Youth Tower, Dhaka · office@uslbd.com" data-bn="ইউনিসফট সিস্টেমস লিমিটেড · ইউথ টাওয়ার, ঢাকা · office@uslbd.com">Unisoft Systems Limited · Youth Tower, Dhaka · office@uslbd.com</div>
+    </div>
+  </section>
+</main>
+<script>
+/* Language switcher — one language at a time, shared with the app shell (lms-lang). */
+function setLang(lang){
+  try{ localStorage.setItem("lms-lang",'"'+lang+'"'); }catch(e){}
+  applyLang(lang);
+}
+function applyLang(lang){
+  document.documentElement.setAttribute("lang",lang);
+  document.documentElement.classList.toggle("lang-bn",lang==="bn");
+  document.querySelectorAll("[data-en]").forEach(function(el){
+    var v=lang==="bn"?el.getAttribute("data-bn"):el.getAttribute("data-en");
+    if(v!=null) el.innerHTML=v;
+  });
+  document.getElementById("lang-en").classList.toggle("on",lang!=="bn");
+  document.getElementById("lang-bn").classList.toggle("on",lang==="bn");
+}
+(function(){
+  var lang="en";
+  try{ lang=(localStorage.getItem("lms-lang")||'"en"').replace(/"/g,"")==="bn"?"bn":"en"; }catch(e){}
+  applyLang(lang);
+})();
+</script>
+</body>
+</html>

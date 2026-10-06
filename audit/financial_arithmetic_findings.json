@@ -1,0 +1,164 @@
+[
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselService.java",
+    "line": 85,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": ": Math.round(cap * 10_000.0 / Math.max(1, totalRwa)) / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselService.java",
+    "line": 105,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "\"percentOfCapital\", Math.round(exposure * 10_000.0 / cap) / 100.0));"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReportingService.java",
+    "line": 69,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": ": Math.round(a[3] * 10_000.0 / a[2]) / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReturnsService.java",
+    "line": 199,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "row.put(\"rate_percent\", BrpdClassifier.byName(e.getKey()).provisionRateBp() / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReturnsService.java",
+    "line": 281,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "row.put(\"risk_weight_percent\", BaselCar.riskWeightBp(e.getKey()) / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReturnsService.java",
+    "line": 288,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "totals.put(\"car_percent\", car == Integer.MAX_VALUE ? null : car / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReturnsService.java",
+    "line": 289,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "totals.put(\"floor_percent\", BaselCar.FLOOR_BP / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReturnsService.java",
+    "line": 290,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "totals.put(\"buffer_pp\", car == Integer.MAX_VALUE ? null : BaselCar.bufferBp(car) / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReturnsService.java",
+    "line": 322,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "row.put(\"pd_percent\", s.getPdBp() / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReturnsService.java",
+    "line": 323,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "row.put(\"lgd_percent\", s.getLgdBp() / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReturnsService.java",
+    "line": 348,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "/ eligibleCapitalMinor) / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReturnsService.java",
+    "line": 560,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "kpis.put(\"carFloorPercent\", BaselCar.FLOOR_BP / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReturnsService.java",
+    "line": 570,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "return car == Integer.MAX_VALUE ? null : car / 100.0;"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/integration/fineract/FinacleCbsAdapter.java",
+    "line": 42,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": ".bodyValue(Map.of(\"limitKey\", limitKey, \"amount\", amountMinor / 100.0,"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/integration/fineract/FinacleCbsAdapter.java",
+    "line": 62,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "Map.of(\"account\", debitAccount, \"type\", \"D\", \"amount\", amountMinor / 100.0),"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/integration/fineract/FinacleCbsAdapter.java",
+    "line": 63,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "Map.of(\"account\", creditAccount, \"type\", \"C\", \"amount\", amountMinor / 100.0)),"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/integration/fineract/FineractJournalRestAdapter.java",
+    "line": 45,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "double major = amountMinor / 100.0;"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/integration/fineract/FineractLoanRestAdapter.java",
+    "line": 39,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "Map.entry(\"principal\", spec.principalMinor() / 100.0),   // Fineract majors"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/integration/fineract/FineractLoanRestAdapter.java",
+    "line": 110,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "\"transactionAmount\", amountMinor / 100.0,   // Fineract majors"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/integration/fineract/FineractLoanRestAdapter.java",
+    "line": 136,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "\"transactionAmount\", amountMinor / 100.0,   // Fineract majors"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/integration/fineract/FineractLoanRestAdapter.java",
+    "line": 162,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "\"transactionAmount\", amountMinor / 100.0,"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/integration/fineract/FineractLoanRestAdapter.java",
+    "line": 186,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "\"amount\", amountMinor / 100.0,   // Fineract majors"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/integration/rails/BkashRailAdapter.java",
+    "line": 53,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "\"amount\", String.valueOf(amountMinor / 100.0),"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/sanction/SanctionService.java",
+    "line": 58,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": "String ratePct = String.format(Locale.US, \"%.2f\", SANCTION_RATE_BP / 100.0);"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/CertificateController.java",
+    "line": 67,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": ".append(String.format(\"%.2f\", l.interestPaidMinor() / 100.0)).append(\"</td><td>\")"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/CertificateController.java",
+    "line": 68,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": ".append(String.format(\"%.2f\", l.totalPaidMinor() / 100.0)).append(\"</td></tr>\");"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/CertificateController.java",
+    "line": 71,
+    "type": "Java Division by 100.0 float conversion",
+    "snippet": ".append(String.format(\"%.2f\", totalInterest / 100.0))"
+  }
+]

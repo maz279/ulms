@@ -1,0 +1,687 @@
+{
+  "root_dir": "C:\\software_project\\mim_project\\LMS\\LMS_CODEBASE",
+  "total_files_scanned": 1933,
+  "total_loc": 83314,
+  "language_breakdown": {
+    "YAML": 16,
+    "Markdown": 51,
+    "JSON": 289,
+    "Dockerfile": 2,
+    "Java": 307,
+    "SQL": 19,
+    "TypeScript": 56,
+    "TypeScript (React)": 41,
+    "HTML": 1,
+    "CSS": 2,
+    "Shell": 4,
+    "JavaScript": 1
+  },
+  "loc_breakdown": {
+    "YAML": 3004,
+    "Markdown": 3656,
+    "JSON": 34519,
+    "Dockerfile": 34,
+    "Java": 23412,
+    "SQL": 1135,
+    "TypeScript": 8231,
+    "TypeScript (React)": 8068,
+    "HTML": 13,
+    "CSS": 830,
+    "Shell": 357,
+    "JavaScript": 55
+  },
+  "git_forensics": {
+    "has_git": true,
+    "top_churn_files": [
+      [
+        "packages/openapi/ulms-api.yaml",
+        7
+      ],
+      [
+        "apps/web/scripts/mockApi/plugin.ts",
+        6
+      ],
+      [
+        "apps/mobile/src/App.tsx",
+        5
+      ],
+      [
+        "apps/mobile/src/screens/CpvTasksScreen.tsx",
+        5
+      ],
+      [
+        "deploy/compose/docker-compose.yml",
+        5
+      ],
+      [
+        "apps/web/src/auth/LoginPage.tsx",
+        4
+      ],
+      [
+        "apps/web/nginx.conf",
+        4
+      ],
+      [
+        "apps/mobile/src/auth/LoginScreen.tsx",
+        3
+      ],
+      [
+        "apps/mobile/src/i18n/strings.ts",
+        3
+      ],
+      [
+        "apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsRepositories.java",
+        3
+      ]
+    ],
+    "authors": [],
+    "total_sample_commits": 0,
+    "top_author_share_pct": 0,
+    "bus_factor_risk": "HEALTHY"
+  },
+  "hygiene": {
+    "has_gitignore": true,
+    "has_editorconfig": false,
+    "has_readme": true,
+    "lockfiles_found": [],
+    "env_files_leaked": [
+      "deploy/compose/.env"
+    ],
+    "large_binaries_count": 0,
+    "todos_and_fixmes": 0
+  },
+  "hotspots": {
+    "large_files_count": 4,
+    "top_large_files": [
+      [
+        "apps/mobile/package-lock.json",
+        9149,
+        "JSON"
+      ],
+      [
+        "apps/web/package-lock.json",
+        3503,
+        "JSON"
+      ],
+      [
+        "packages/openapi/ulms-api.yaml",
+        2079,
+        "YAML"
+      ],
+      [
+        "apps/web/scripts/mockApi/plugin.ts",
+        1347,
+        "TypeScript"
+      ]
+    ],
+    "deep_nesting_count": 224,
+    "top_deep_nesting": [
+      [
+        "PLANNING/01_Architecture_Blueprint.md",
+        17,
+        "Markdown"
+      ],
+      [
+        "apps/api/src/main/java/com/uslbd/ulms/sanction/SanctionController.java",
+        16,
+        "Java"
+      ],
+      [
+        "apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java",
+        15,
+        "Java"
+      ],
+      [
+        "apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingService.java",
+        15,
+        "Java"
+      ],
+      [
+        "apps/api/src/main/java/com/uslbd/ulms/servicing/CertificateController.java",
+        14,
+        "Java"
+      ]
+    ]
+  },
+  "security_findings": {
+    "count": 4,
+    "items": [
+      {
+        "id": "SEC-04",
+        "severity": "P0",
+        "rule": "Hardcoded Password Assignment",
+        "pillar": "Security",
+        "entropy": 3.7,
+        "file": "docs/runbooks/RB-02_restore_drill.md",
+        "line": 40,
+        "snippet": "docker run -d --name rb-restore-drill -e POSTGRES_PASSWORD=\"$SCRATCH_PW\" postgres:17-alpin"
+      },
+      {
+        "id": "SEC-04",
+        "severity": "P0",
+        "rule": "Hardcoded Password Assignment",
+        "pillar": "Security",
+        "entropy": 4.38,
+        "file": "docs/runbooks/RB-03_eod_rerun.md",
+        "line": 24,
+        "snippet": "-d password=\"$OFFICER_PASSWORD\" \\"
+      },
+      {
+        "id": "SEC-04",
+        "severity": "P0",
+        "rule": "Hardcoded Password Assignment",
+        "pillar": "Security",
+        "entropy": 3.7,
+        "file": "e2e/README.md",
+        "line": 29,
+        "snippet": "-d password='<smoke-password>' | python -c \"import json,sys;print(json.load(sys.stdin)['ac"
+      },
+      {
+        "id": "SEC-04",
+        "severity": "P0",
+        "rule": "Hardcoded Password Assignment",
+        "pillar": "Security",
+        "entropy": 3.99,
+        "file": "e2e/README.md",
+        "line": 32,
+        "snippet": "-d password='<compliance-password>' | python -c \"import json,sys;print(json.load(sys.stdin"
+      }
+    ]
+  },
+  "smell_findings": {
+    "count": 50,
+    "items": [
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "README.md",
+        "line": 46,
+        "snippet": "npm run mock:api     # optional: also serves http://localhost:8081 for API-leg specs"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "README.md",
+        "line": 47,
+        "snippet": "npm run dev          # http://localhost:5173  (mock middleware is default-on)"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "README.md",
+        "line": 65,
+        "snippet": "curl -s http://localhost:8081/actuator/health            # {\"status\":\"UP\"}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "README.md",
+        "line": 66,
+        "snippet": "curl -s -X POST http://localhost:8081/api/v1/customers \\"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "README.md",
+        "line": 71,
+        "snippet": "#    c) web: http://localhost:5173 (login via Keycloak, create customer in UI)"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/main/resources/application.yml",
+        "line": 5,
+        "snippet": "url: ${ULMS_DB_URL:jdbc:postgresql://localhost:5432/ulms}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/main/resources/application.yml",
+        "line": 18,
+        "snippet": "issuer-uri: ${ULMS_OIDC_ISSUER:http://localhost:8082/realms/ulms}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/main/resources/application.yml",
+        "line": 31,
+        "snippet": "base-url: ${FINERACT_URL:https://localhost:8443/fineract-provider/api/v1}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/main/resources/application.yml",
+        "line": 38,
+        "snippet": "endpoint: ${ULMS_MINIO_ENDPOINT:http://localhost:9000}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/test/resources/application-test.yml",
+        "line": 14,
+        "snippet": "issuer-uri: ${ULMS_OIDC_ISSUER:http://localhost:8082/realms/ulms}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/test/resources/application-test.yml",
+        "line": 20,
+        "snippet": "endpoint: ${ULMS_MINIO_ENDPOINT:http://localhost:9000}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/test/resources/application-test.yml",
+        "line": 28,
+        "snippet": "base-url: ${ULMS_CIB_BASE_URL:http://localhost:9}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/test/resources/application-test.yml",
+        "line": 30,
+        "snippet": "base-url: ${ULMS_NIDW_BASE_URL:http://localhost:9}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/test/resources/application-test.yml",
+        "line": 35,
+        "snippet": "base-url: ${ULMS_BKASH_BASE_URL:http://localhost:9}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/test/resources/application-test.yml",
+        "line": 41,
+        "snippet": "base-url: ${ULMS_SMS_BASE_URL:http://localhost:9}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/test/resources/application-test.yml",
+        "line": 44,
+        "snippet": "base-url: ${ULMS_CBS_BASE_URL:http://localhost:9}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/api/src/test/resources/application-test.yml",
+        "line": 47,
+        "snippet": "base-url: ${ULMS_AV_BASE_URL:http://localhost:9}"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/mobile/src/api/client.ts",
+        "line": 10,
+        "snippet": "const BASE = (process.env.EXPO_PUBLIC_API_BASE ?? \"http://localhost:8081\").replace(/\\/$/, "
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/web/vite.config.ts",
+        "line": 16,
+        "snippet": "\"/api\": { target: \"http://localhost:8081\", changeOrigin: true },"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/web/vite.config.ts",
+        "line": 17,
+        "snippet": "\"/hooks\": { target: \"http://localhost:8081\", changeOrigin: true },   // rail callbacks (05"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/web/scripts/mockApi/standalone.ts",
+        "line": 4,
+        "snippet": "baseURL http://localhost:8081 (packages/openapi server entry)."
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/web/scripts/mockApi/standalone.ts",
+        "line": 26,
+        "snippet": "console.log(`[ulms-mock-api] listening on http://localhost:${PORT} (OpenAPI contract, in-m"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/web/src/auth/session.ts",
+        "line": 52,
+        "snippet": "if (import.meta.env.VITE_USE_MOCK_API === \"0\") return \"http://localhost:8082/realms/ulms\";"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/web/tests/unit/auth.test.ts",
+        "line": 109,
+        "snippet": "const iss = \"http://localhost:8082/realms/ulms\";"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/web/tests/unit/auth.test.ts",
+        "line": 111,
+        "snippet": "const u = new URL(authorizeUrl(iss, \"ulms-web\", \"http://localhost:5173/login\", \"chal\", \"st"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "apps/web/tests/unit/auth.test.ts",
+        "line": 120,
+        "snippet": "const u = new URL(logoutUrl(iss, \"ulms-web\", \"http://localhost:5173/login\", \"idt\"));"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/compose/docker-compose.yml",
+        "line": 34,
+        "snippet": "# (localhost:8082) while the api validates on the compose network \u2014 a"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/compose/docker-compose.yml",
+        "line": 37,
+        "snippet": "KC_HOSTNAME: http://localhost:8082"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/compose/docker-compose.yml",
+        "line": 44,
+        "snippet": "test: [\"CMD-SHELL\", \"bash -c 'exec 3<>/dev/tcp/localhost/8080'\"]"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/compose/docker-compose.yml",
+        "line": 77,
+        "snippet": "test: [\"CMD-SHELL\", \"wget --no-check-certificate -qO- https://localhost:8083/fineract-prov"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/compose/docker-compose.yml",
+        "line": 95,
+        "snippet": "test: [\"CMD-SHELL\", \"wget -qO- http://127.0.0.1:9333/cluster/status >/dev/null 2>&1 || wge"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/compose/docker-compose.yml",
+        "line": 95,
+        "snippet": "test: [\"CMD-SHELL\", \"wget -qO- http://127.0.0.1:9333/cluster/status >/dev/null 2>&1 || wge"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/compose/docker-compose.yml",
+        "line": 108,
+        "snippet": "ULMS_OIDC_ISSUER: http://localhost:8082/realms/ulms"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/compose/docker-compose.yml",
+        "line": 134,
+        "snippet": "test: [\"CMD-SHELL\", \"bash -c 'exec 3<>/dev/tcp/localhost/9977; printf \\\"GET /actuator/heal"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/compose/docker-compose.yml",
+        "line": 164,
+        "snippet": "test: [\"CMD-SHELL\", \"wget -qO- http://localhost:9090/-/ready >/dev/null\"]"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/compose/observability/prometheus.yml",
+        "line": 9,
+        "snippet": "- targets: [\"localhost:9090\"]"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/drills/backup-restore.sh",
+        "line": 7,
+        "snippet": "# The scratch container is ephemeral, localhost-bound, and torn down by this"
+      },
+      {
+        "id": "SMELL-02",
+        "severity": "P1",
+        "rule": "SQL Injection Risk (Raw Concatenation)",
+        "pillar": "Security",
+        "file": "deploy/drills/migration-45k-rehearsal.sh",
+        "line": 104,
+        "snippet": "WHERE NOT EXISTS (SELECT 1 FROM ${SCHEMA}.loan l WHERE l.loan_no = src.ref)\")"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/drills/migration-rehearsal.sh",
+        "line": 71,
+        "snippet": "until curl -sf \"http://localhost:$PORT_API/actuator/health\" >/dev/null 2>&1; do"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/perf/load-profile.js",
+        "line": 10,
+        "snippet": "const BASE = __ENV.ULMS_BASE_URL || \"http://localhost:5173\";"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/seed/realm-ulms.json",
+        "line": 47,
+        "snippet": "\"redirectUris\": [\"http://localhost:5173/*\", \"http://localhost:4173/*\"],"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/seed/realm-ulms.json",
+        "line": 47,
+        "snippet": "\"redirectUris\": [\"http://localhost:5173/*\", \"http://localhost:4173/*\"],"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/seed/realm-ulms.json",
+        "line": 48,
+        "snippet": "\"webOrigins\": [\"http://localhost:5173\", \"http://localhost:4173\"],"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "deploy/seed/realm-ulms.json",
+        "line": 48,
+        "snippet": "\"webOrigins\": [\"http://localhost:5173\", \"http://localhost:4173\"],"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "docs/g5-evidence/q2-infrastructure-verification.md",
+        "line": 24,
+        "snippet": "| 1 | Browser PKCE redirect to container-hostname `keycloak:8080` unreachable from host | "
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "docs/g5-evidence/q2-infrastructure-verification.md",
+        "line": 28,
+        "snippet": "| 5 | seaweedfs S3 binds loopback only from outside | probe master `/cluster/status` on 12"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "docs/runbooks/RB-01_incident_response.md",
+        "line": 30,
+        "snippet": "curl -s -m 5 http://localhost:8081/actuator/health          # {\"status\":\"UP\"} \u2014 verified"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "docs/runbooks/RB-01_incident_response.md",
+        "line": 31,
+        "snippet": "curl -sk -m 5 https://localhost:8083/fineract-provider/actuator/health   # Fineract TLS :8"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "docs/runbooks/RB-01_incident_response.md",
+        "line": 32,
+        "snippet": "curl -s -m 5 -o /dev/null -w \"%{http_code}\\n\" http://localhost:8082/realms/ulms   # Keyclo"
+      },
+      {
+        "id": "SMELL-09",
+        "severity": "P3",
+        "rule": "Hardcoded Localhost / Private IP Reference",
+        "pillar": "Maintainability",
+        "file": "docs/runbooks/RB-01_incident_response.md",
+        "line": 33,
+        "snippet": "curl -s -m 5 -o /dev/null -w \"%{http_code}\\n\" http://localhost:9002/ulms-documents # Seawe"
+      }
+    ]
+  },
+  "iso_5055_breakdown": {
+    "Security": {
+      "P0": 4,
+      "P1": 1,
+      "P2": 0,
+      "P3": 0
+    },
+    "Reliability": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0,
+      "P3": 0
+    },
+    "Performance": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0,
+      "P3": 0
+    },
+    "Maintainability": {
+      "P0": 0,
+      "P1": 0,
+      "P2": 0,
+      "P3": 277
+    }
+  },
+  "technical_debt": {
+    "remediation_hours": 98.5,
+    "remediation_dev_months": 0.62,
+    "estimated_cost_usd": 12312.5,
+    "blended_hourly_rate_usd": 125.0
+  },
+  "scorecard": {
+    "health_score": 0.0,
+    "grade": "F",
+    "verdict": "Severe Architectural Decay / Deployment Halt Advised",
+    "p0_critical_count": 4,
+    "p1_high_count": 1,
+    "p2_medium_count": 0,
+    "p3_low_count": 53
+  }
+}

@@ -1,0 +1,322 @@
+{
+ "aml": {
+  "entities": 5,
+  "endpoints": [
+   "GET /api/v1/customers/{idOrCif}/guarantors",
+   "POST /api/v1/customers/{idOrCif}/guarantors",
+   "GET /api/v1/customers/{idOrCif}/aml",
+   "POST /api/v1/customers/{idOrCif}/str",
+   "GET /api/v1/customers/{idOrCif}/ctrs",
+   "GET /api/v1/customers/{idOrCif}/monitoring-alerts",
+   "GET /api/v1/customers/{idOrCif}/goaml.xml",
+   "POST /api/v1/customers/{idOrCif}/goaml/submit",
+   "GET /api/v1/goaml/submissions"
+  ],
+  "roles": [
+   "collections,compliance,admin",
+   "compliance,admin"
+  ],
+  "publicServiceMethods": 14
+ },
+ "approval": {
+  "entities": 5,
+  "endpoints": [
+   "GET /api/v1/approvals/ladder",
+   "GET /api/v1/approvals/my-inbox",
+   "GET /api/v1/approvals/current/{applicationId}",
+   "POST /api/v1/approvals/{taskId}/act",
+   "GET /api/v1/approvals/conditions/{applicationId}",
+   "POST /api/v1/approvals/conditions/{conditionId}/resolve",
+   "POST /api/v1/disbursements/{applicationId}/prepare",
+   "POST /api/v1/disbursements/{id}/authorize",
+   "POST /api/v1/disbursements/{id}/release",
+   "GET /api/v1/disbursements/{id}",
+   "GET /api/v1/disbursements/application/{applicationId}"
+  ],
+  "roles": [
+   "branch-manager,regional-manager,ho-credit,admin",
+   "branch-officer,branch-manager,admin",
+   "branch-officer,branch-manager,regional-manager,\n            + divisional-head,ho-credit,credit-committee,md,admin"
+  ],
+  "publicServiceMethods": 11
+ },
+ "assessment": {
+  "entities": 8,
+  "endpoints": [
+   "POST /api/v1/assessments/cib/{cif}",
+   "POST /api/v1/assessments/cib/file",
+   "GET /api/v1/assessments/cib/{cif}",
+   "POST /api/v1/assessments/{applicationId}/score",
+   "POST /api/v1/assessments/{applicationId}/dbr",
+   "GET /api/v1/assessments/{applicationId}/score",
+   "POST /api/v1/assessments/{applicationId}/collateral",
+   "POST /api/v1/assessments/collateral/{collateralId}/valuation",
+   "GET /api/v1/assessments/collateral/{collateralId}/valuation",
+   "GET /api/v1/assessments/{applicationId}/collateral",
+   "GET /api/v1/customers/{customerId}/collateral",
+   "POST /api/v1/customers/{customerId}/collateral",
+   "GET /api/v1/customers/{customerId}/collateral/ltv"
+  ],
+  "roles": [
+   "branch-officer,admin",
+   "branch-officer,credit-analyst,admin",
+   "branch-officer,credit-analyst,branch-manager,regional-manager,ho-credit,compliance,admin",
+   "credit-analyst,branch-manager,regional-manager,ho-credit,compliance,admin",
+   "credit-analyst,compliance,admin"
+  ],
+  "publicServiceMethods": 21
+ },
+ "bocc": {
+  "entities": 3,
+  "endpoints": [
+   "GET /api/v1/bocc/meetings/",
+   "POST /api/v1/bocc/meetings/",
+   "GET /api/v1/bocc/meetings/{id}",
+   "POST /api/v1/bocc/meetings/{id}/attendance",
+   "POST /api/v1/bocc/meetings/{id}/vote",
+   "POST /api/v1/bocc/meetings/{id}/close"
+  ],
+  "roles": [
+   "branch-manager,admin"
+  ],
+  "publicServiceMethods": 6
+ },
+ "collections": {
+  "entities": 12,
+  "endpoints": [
+   "GET /api/v1/collections/auctions/",
+   "POST /api/v1/collections/auctions/",
+   "POST /api/v1/collections/auctions/{id}/held",
+   "POST /api/v1/collections/auctions/{id}/sold",
+   "POST /api/v1/collections/auctions/{id}/unsold",
+   "POST /api/v1/collections/auctions/{id}/cancel",
+   "GET /api/v1/collections/worklist",
+   "POST /api/v1/collections/{loanId}/actions/{actionType}",
+   "GET /api/v1/collections/{loanId}/actions",
+   "POST /api/v1/collections/{loanId}/ptp",
+   "POST /api/v1/collections/ptp/{ptpId}/outcome",
+   "GET /api/v1/collections/ptp/calendar",
+   "POST /api/v1/collections/field-tasks",
+   "POST /api/v1/collections/field-tasks/{taskId}/complete",
+   "GET /api/v1/collections/field-tasks",
+   "GET /api/v1/collections/dunning/queue",
+   "POST /api/v1/collections/dunning/run",
+   "POST /api/v1/collections/dunning/{actionId}/resolve",
+   "POST /api/v1/collections/{loanId}/legal-case",
+   "GET /api/v1/collections/{loanId}/legal-case",
+   "POST /api/v1/collections/legal-case/{caseId}/status",
+   "POST /api/v1/collections/{loanId}/waive-interest",
+   "GET /api/v1/field/tasks",
+   "POST /api/v1/field/visits",
+   "POST /api/v1/field/ptp",
+   "POST /api/v1/field/sos",
+   "POST /api/v1/field/sos/{id}/ack",
+   "GET /api/v1/field/sos",
+   "GET /api/v1/collections/watchlist/",
+   "POST /api/v1/collections/watchlist/",
+   "POST /api/v1/collections/watchlist/{id}/clear",
+   "GET /api/v1/write-offs",
+   "POST /api/v1/collections/{loanId}/write-off",
+   "POST /api/v1/write-offs/{id}/approve",
+   "POST /api/v1/write-offs/{id}/reverse",
+   "GET /api/v1/collections/{loanId}/recoveries",
+   "POST /api/v1/collections/{loanId}/recoveries"
+  ],
+  "roles": [
+   "collections,admin",
+   "collections,branch-manager,admin",
+   "collections,branch-officer,admin",
+   "collections,compliance,admin",
+   "compliance,admin,md"
+  ],
+  "publicServiceMethods": 47
+ },
+ "compliance": {
+  "entities": 18,
+  "endpoints": [
+   "GET /api/v1/compliance/basel/summary",
+   "POST /api/v1/compliance/basel/parallel/snapshot",
+   "POST /api/v1/compliance/basel/parallel/bank-value",
+   "GET /api/v1/compliance/basel/parallel/report",
+   "POST /api/v1/compliance/regcon/push",
+   "POST /api/v1/compliance/eod/run",
+   "GET /api/v1/compliance/classification",
+   "GET /api/v1/compliance/provision-calculator",
+   "GET /api/v1/compliance/alerts",
+   "POST /api/v1/compliance/provision-jv",
+   "GET /api/v1/compliance/provision-jv",
+   "GET /api/v1/compliance/returns",
+   "GET /api/v1/compliance/regcon-calendar",
+   "POST /api/v1/compliance/returns/{code}/generate",
+   "POST /api/v1/compliance/returns/{id}/signoff/check",
+   "POST /api/v1/compliance/returns/{id}/signoff/file",
+   "GET /api/v1/compliance/returns/{id}/file",
+   "GET /api/v1/compliance/ifrs9/ecl",
+   "POST /api/v1/compliance/ifrs9/ecl/run",
+   "GET /api/v1/compliance/basel/car",
+   "GET /api/v1/reporting/portfolio",
+   "GET /api/v1/reporting/definitions",
+   "POST /api/v1/reporting/definitions",
+   "GET /api/v1/reporting/definitions/{id}/run"
+  ],
+  "roles": [
+   "compliance,admin",
+   "compliance,branch-manager,admin",
+   "compliance,credit-analyst,branch-manager,admin",
+   "compliance,credit-analyst,branch-manager,collections,admin"
+  ],
+  "publicServiceMethods": 31
+ },
+ "customer": {
+  "entities": 5,
+  "endpoints": [
+   "POST /api/v1/customers/",
+   "GET /api/v1/customers/",
+   "POST /api/v1/customers/{id}/kyc-refresh",
+   "POST /api/v1/customers/{id}/screen",
+   "POST /api/v1/customers/{survivorCif}/merge-duplicate",
+   "POST /api/v1/customers/{cif}/risk"
+  ],
+  "roles": [
+   "admin,compliance",
+   "branch-officer,admin",
+   "branch-officer,compliance,admin",
+   "compliance,admin"
+  ],
+  "publicServiceMethods": 14
+ },
+ "customer360": {
+  "entities": 0,
+  "endpoints": [
+   "GET /api/v1/customers/{idOrCif}"
+  ],
+  "roles": [],
+  "publicServiceMethods": 0
+ },
+ "notification": {
+  "entities": 6,
+  "endpoints": [
+   "GET /api/v1/notifications/templates",
+   "POST /api/v1/notifications/templates",
+   "GET /api/v1/notifications/outbox",
+   "POST /api/v1/notifications/send"
+  ],
+  "roles": [],
+  "publicServiceMethods": 6
+ },
+ "origination": {
+  "entities": 7,
+  "endpoints": [
+   "POST /api/v1/applications/",
+   "PATCH /api/v1/applications/{id}",
+   "POST /api/v1/applications/{id}/submit",
+   "POST /api/v1/applications/{id}/cpv",
+   "POST /api/v1/applications/{id}/documents",
+   "GET /api/v1/applications/{id}/documents",
+   "GET /api/v1/applications/{id}",
+   "GET /api/v1/applications/"
+  ],
+  "roles": [
+   "branch-officer,admin",
+   "branch-officer,collections,admin"
+  ],
+  "publicServiceMethods": 17
+ },
+ "partner": {
+  "entities": 1,
+  "endpoints": [
+   "POST /api/v1/partner/applications",
+   "GET /api/v1/partner/applications/{id}/status"
+  ],
+  "roles": [],
+  "publicServiceMethods": 2
+ },
+ "platform": {
+  "entities": 8,
+  "endpoints": [],
+  "roles": [],
+  "publicServiceMethods": 0
+ },
+ "portal": {
+  "entities": 1,
+  "endpoints": [
+   "GET /api/v1/portal/me",
+   "GET /api/v1/portal/me/application",
+   "GET /api/v1/portal/me/payments",
+   "POST /api/v1/portal/me/applications",
+   "POST /api/v1/portal/me/documents",
+   "POST /api/v1/portal/otp",
+   "POST /api/v1/portal/otp/verify",
+   "POST /api/v1/portal/me/payments/initiate",
+   "GET /api/v1/portal/me/loans/{loanId}/statement",
+   "GET /api/v1/portal/me/loans/{loanId}/statement.csv"
+  ],
+  "roles": [
+   "branch-officer,collections,admin"
+  ],
+  "publicServiceMethods": 4
+ },
+ "product": {
+  "entities": 1,
+  "endpoints": [
+   "GET /api/v1/products/",
+   "GET /api/v1/products/{code}",
+   "POST /api/v1/products/",
+   "PATCH /api/v1/products/{code}",
+   "POST /api/v1/products/{code}/activate",
+   "GET /api/v1/products/{code}/eligibility"
+  ],
+  "roles": [],
+  "publicServiceMethods": 6
+ },
+ "sanction": {
+  "entities": 1,
+  "endpoints": [
+   "POST /api/v1/sanctions/{applicationId}/generate",
+   "POST /api/v1/sanctions/{id}/resend",
+   "GET /api/v1/sanctions/",
+   "GET /api/v1/sanctions/{id}",
+   "POST /api/v1/sanctions/{id}/accept"
+  ],
+  "roles": [
+   "branch-manager,regional-manager,divisional-head,ho-credit,credit-committee,md,admin"
+  ],
+  "publicServiceMethods": 4
+ },
+ "servicing": {
+  "entities": 12,
+  "endpoints": [
+   "GET /api/v1/certificates/tax/{year}",
+   "GET /api/v1/certificates/tax/{year}/pdf",
+   "POST /hooks/payments/{rail}",
+   "GET /api/v1/loans/",
+   "GET /api/v1/loans/{id}",
+   "POST /api/v1/loans/{id}/fees",
+   "POST /api/v1/loans/{id}/payments",
+   "GET /api/v1/loans/{id}/payments",
+   "POST /api/v1/loans/{id}/payment-intents",
+   "GET /api/v1/loans/{id}/payment-intents",
+   "GET /api/v1/loans/{id}/schedule",
+   "GET /api/v1/loans/{id}/statement",
+   "POST /api/v1/loans/{id}/settle-quote",
+   "POST /api/v1/loans/{id}/reschedule-request",
+   "POST /api/v1/loans/reschedule/{requestId}/decision",
+   "POST /api/v1/loans/payments/reconcile",
+   "GET /api/v1/servicing/blr",
+   "POST /api/v1/servicing/blr",
+   "POST /api/v1/servicing/loans/{loanId}/moratorium",
+   "POST /api/v1/servicing/loans/{loanId}/top-up"
+  ],
+  "roles": [
+   "branch-manager,ho-credit,admin",
+   "branch-manager,regional-manager,ho-credit,admin",
+   "branch-officer,collections,admin",
+   "branch-officer,collections,compliance,credit-analyst,admin",
+   "branch-officer,compliance,admin",
+   "branch-officer,credit-analyst,admin",
+   "collections,compliance,admin",
+   "compliance,admin"
+  ],
+  "publicServiceMethods": 34
+ }
+}

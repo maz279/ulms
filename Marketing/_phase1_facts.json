@@ -1,0 +1,22 @@
+{
+ "java_last_full_suite": {
+  "tests": 4,
+  "suites": 1,
+  "failures": 0,
+  "xml_age_hours": 1
+ },
+ "flyway_migrations": 18,
+ "openapi_paths": 140,
+ "web_src_files": 50,
+ "web_unit_tests": 44,
+ "e2e_specs": 12,
+ "field_screens": 6,
+ "field_tests": 20,
+ "borrower_screens": 7,
+ "borrower_tests": 10,
+ "scheduled_jobs": 11,
+ "runbooks": 12,
+ "ci_stages": 6,
+ "ci_jobs": 14,
+ "compose_services": 8
+}

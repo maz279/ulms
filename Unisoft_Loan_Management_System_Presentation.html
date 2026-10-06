@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unisoft Loan Management System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+        
+        :root {
+            --primary-color: #0D47A1;
+            --secondary-color: #1976D2;
+            --accent-color: #FF6F00;
+            --text-dark: #212121;
+            --text-light: #757575;
+            --bg-light: #F5F7FA;
+            --white: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .poster-container {
+            width: 720px;
+            background-color: var(--white);
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 500px;
+            color: var(--white);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            text-align: left;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://sfile.chatglm.cn/images-ppt/cf2969d6f833.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(13, 71, 161, 0.9);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            display: inline-block;
+            padding-bottom: 10px;
+            width: fit-content;
+        }
+
+        .main-title {
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            max-width: 80%;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: var(--white);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Metrics Section */
+        .metrics-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            padding: 30px 40px;
+            background-color: var(--white);
+            margin-top: -60px;
+            position: relative;
+            z-index: 4;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 15px 10px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            width: 48%;
+            margin-bottom: 15px;
+        }
+
+        .metric-number {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 40px;
+            background-color: var(--bg-light);
+            border-bottom: 1px solid #eee;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            position: relative;
+            padding-left: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            bottom: 5px;
+            width: 5px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .content-card h3 {
+            font-size: 20px;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        .content-card p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+
+        .content-card ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .content-card li {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        /* Evolution Timeline */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #eee;
+            z-index: 1;
+        }
+
+        .timeline-item {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .timeline-item .dot {
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border: 3px solid var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 14px;
+        }
+
+        .timeline-item h4 {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .timeline-item p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comparison-table th {
+            background-color: #f5f7fa;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .comparison-table td {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* Modules Grid */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .module-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--secondary-color);
+            height: 100%;
+            page-break-inside: avoid;
+        }
+
+        .module-card h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .module-card p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .module-card ul {
+            margin-left: 15px;
+            margin-top: 10px;
+        }
+
+        .module-card li {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        /* Benefits List */
+        .benefits-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .benefit-icon {
+            width: 24px;
+            height: 24px;
+            background-color: var(--accent-color);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .benefit-item p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .tech-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .tech-item {
+            background-color: #E3F2FD;
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Implementation Steps */
+        .implementation-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .step-content p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        /* Success Stories */
+        .success-story {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e3f2fd 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .success-story h4 {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .success-story p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .success-story ul {
+            margin-left: 20px;
+        }
+
+        .success-story li {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        /* Product Editions */
+        .edition-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .edition-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            border-top: 4px solid;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .edition-standard { border-color: #4CAF50; }
+        .edition-enterprise { border-color: #2196F3; }
+        .edition-islamic { border-color: #673AB7; }
+        .edition-digital { border-color: #FF9800; }
+
+        .edition-info h4 {
+            font-size: 18px;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .edition-info p {
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .edition-price {
+            margin-top: auto;
+            text-align: center;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .price-tag {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--primary-color);
+        }
+
+        .price-sub {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--text-dark);
+            color: var(--white);
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        .footer h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+
+        .copyright {
+            color: #9e9e9e;
+            font-size: 12px;
+            margin-top: 30px;
+            border-top: 1px solid #424242;
+            padding-top: 20px;
+        }
+
+        /* Simple icons using Unicode */
+        .icon-check::before {
+            content: "✓";
+            color: var(--accent-color);
+            margin-right: 5px;
+            font-weight: bold;
+        }
+
+        .icon-arrow::before {
+            content: "▼";
+            color: var(--white);
+            font-size: 48px;
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Simplified icon replacement */
+        .icon-section-title::before {
+            content: "▶";
+            color: var(--secondary-color);
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        /* PDF-specific adjustments */
+        @media print {
+            body {
+                background-color: white;
+            }
+            
+            .poster-container {
+                box-shadow: none;
+                width: 100%;
+            }
+            
+            .hero-bg {
+                background-color: var(--primary-color);
+                background-image: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="poster-container">
+        
+        <!-- Hero Section -->
+        <div class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <span class="version-badge">Version 1.0 | Jan 2026</span>
+                <div class="logo-text">UNISOFT SYSTEMS</div>
+                <h1 class="main-title">Loan<br>Management<br>System</h1>
+                <p class="subtitle">Empowering Bangladesh's Banking Sector with Next-Generation Digital Lending.</p>
+                <div class="icon-arrow"></div>
+            </div>
+        </div>
+
+        <!-- Metrics Section -->
+        <div class="metrics-container">
+            <div class="metric-item">
+                <span class="metric-number">85%</span>
+                <span class="metric-label">Faster Processing</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-number">95%</span>
+                <span class="metric-label">Credit Decisions</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-number">90%</span>
+                <span class="metric-label">Error Reduction</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-number">< 48h</span>
+                <span class="metric-label">Turnaround Time</span>
+            </div>
+        </div>
+
+        <!-- Background & Evolution Section -->
+        <div class="section">
+            <h2 class="section-title icon-section-title">Evolution of Lending</h2>
+            <div class="content-card">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="dot">1</div>
+                        <h4>Manual Era</h4>
+                        <p>Pre-2000s</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="dot">2</div>
+                        <h4>Basic Auto</h4>
+                        <p>2000-2010</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="dot">3</div>
+                        <h4>Integrated</h4>
+                        <p>2010-2020</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="dot">4</div>
+                        <h4>AI-Powered</h4>
+                        <p>2020+</p>
+                    </div>
+                </div>
+                <p>The journey from manual lending processes to modern digital Loan Management Systems has transformed banking operations globally. ULMS represents the fourth phase: AI-Powered Digital Lending with machine learning credit decisions and real-time risk assessment.</p>
+            </div>
+        </div>
+
+        <!-- Pain Points & Solutions -->
+        <div class="section">
+            <h2 class="section-title icon-section-title">Pain Points & Solutions</h2>
+            <div class="content-card">
+                <h3>Operational Challenges</h3>
+                <ul>
+                    <li><strong>Slow Processing:</strong> 7-15 days due to manual workflows → ULMS Solution: Digital workflow with parallel processing</li>
+                    <li><strong>Manual Credit Assessment:</strong> 3-5 days due to manual data gathering → ULMS Solution: Automated credit scoring with real-time CIB</li>
+                    <li><strong>High Error Rates:</strong> 5-10% due to manual data entry → ULMS Solution: System-driven calculations and validations</li>
+                    <li><strong>Document Management Chaos:</strong> Physical files in multiple locations → ULMS Solution: Encrypted DMS with digital workflows</li>
+                    <li><strong>Customer Status Opacity:</strong> No tracking system → ULMS Solution: Customer portal with real-time status</li>
+                </ul>
+            </div>
+            <div class="content-card">
+                <h3>Compliance Challenges</h3>
+                <ul>
+                    <li><strong>Manual Classification:</strong> Error-prone due to manual DPD calculation → ULMS Solution: Automated classification engine</li>
+                    <li><strong>Provisioning Errors:</strong> Financial impact due to manual calculations → ULMS Solution: Auto-calculation & posting</li>
+                    <li><strong>CIB Reporting Delays:</strong> Non-compliance risk due to manual file preparation → ULMS Solution: Automated batch generation</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Comprehensive Modules -->
+        <div class="section" style="background-color: #E8EAF6;">
+            <h2 class="section-title icon-section-title">Comprehensive Modules</h2>
+            <div class="modules-grid">
+                <div class="module-card">
+                    <h4>Loan Origination</h4>
+                    <p>Digital application channels (Web, Mobile, API), e-KYC integration, BOCC workflow, and automated approval processing.</p>
+                    <ul>
+                        <li>Digital Application & Document Management</li>
+                        <li>BOCC Module with Digital Signatures</li>
+                        <li>e-KYC & NID Verification</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <h4>Credit Management</h4>
+                    <p>AI-powered credit scoring engine, real-time CIB integration, CPV management with geotagging, and collateral tracking.</p>
+                    <ul>
+                        <li>Automated Credit Scoring (90%+ accuracy)</li>
+                        <li>Real-time CIB Integration</li>
+                        <li>Contact Point Verification (CPV)</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <h4>Loan Servicing</h4>
+                    <p>Same-day disbursement, EMI processing, account management services, and loan modification options.</p>
+                    <ul>
+                        <li>Multiple Disbursement Methods</li>
+                        <li>Flexible Repayment Processing</li>
+                        <li>Account Management Services</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <h4>Collection & Recovery</h4>
+                    <p>Proactive delinquency management, NPA classification (BRPD 15/2024 compliant), and recovery tracking.</p>
+                    <ul>
+                        <li>Automated Collection Strategies</li>
+                        <li>Real-time NPA Identification</li>
+                        <li>Legal Recovery Tracking</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <h4>Regulatory Engine</h4>
+                    <p>100% Bangladesh Bank compliance with built-in BRPD 15/2024, IFRS-9 ECL, and Basel III reporting.</p>
+                    <ul>
+                        <li>Automated Classification (7-stage)</li>
+                        <li>One-click Report Generation</li>
+                        <li>Audit-ready Documentation</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <h4>Analytics & Reporting</h4>
+                    <p>Real-time dashboards, 100+ operational reports, management information systems, and regulatory submissions.</p>
+                    <ul>
+                        <li>Real-time Management Dashboards</li>
+                        <li>Automated Regulatory Reports</li>
+                        <li>Custom Report Builder</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <h4>Product Configuration</h4>
+                    <p>Flexible product engine to configure loan products, interest rates, repayment schedules, and charges without coding.</p>
+                    <ul>
+                        <li>Retail, SME, Corporate Products</li>
+                        <li>Islamic Banking Products</li>
+                        <li>Parameter-based Configuration</li>
+                    </ul>
+                </div>
+                <div class="module-card">
+                    <h4>Integration Hub</h4>
+                    <p>Pre-built connectors for Core Banking, CIB Online, NID/e-KYC, payment gateways (bKash, Nagad, Rocket).</p>
+                    <ul>
+                        <li>CBS Integration (REST/SOAP)</li>
+                        <li>CIB Online Integration</li>
+                        <li>Payment Gateway APIs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business & Tech Solutions -->
+        <div class="section">
+            <h2 class="section-title icon-section-title">Business & Tech Solutions</h2>
+            <div class="content-card">
+                <h3>Digital Transformation Enablement</h3>
+                <p>ULMS addresses key challenges to drive digital transformation:</p>
+                <ul>
+                    <li><strong>Manual loan processing:</strong> End-to-end digital workflow (85% faster)</li>
+                    <li><strong>Paper-based documentation:</strong> Digital document management (80% cost reduction)</li>
+                    <li><strong>Lack of customer visibility:</strong> Self-service customer portal (Enhanced CX)</li>
+                    <li><strong>Slow decision-making:</strong> AI-powered credit scoring (95% faster decisions)</li>
+                    <li><strong>Inefficient collections:</strong> Automated collection strategies (15% better recovery)</li>
+                </ul>
+            </div>
+            <div class="tech-stack">
+                <h3>Modern Microservices Architecture</h3>
+                <p>Scalable, resilient, and API-first design ensuring seamless integration and independent service scaling.</p>
+                <div class="tech-items">
+                    <div class="tech-item">Java 17 + Spring Boot 3.x</div>
+                    <div class="tech-item">React.js 18 + Material-UI</div>
+                    <div class="tech-item">PostgreSQL 15+ + Redis</div>
+                    <div class="tech-item">Docker + Kubernetes</div>
+                    <div class="tech-item">OAuth 2.0 + JWT</div>
+                    <div class="tech-item">150+ REST APIs</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="section" style="background-color: #E3F2FD;">
+            <h2 class="section-title icon-section-title">Benefits for Banks</h2>
+            <div class="benefits-list">
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <p><strong>Operational Excellence:</strong> 85% faster loan processing, 95% faster credit decisions, 90% reduction in data entry errors.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <p><strong>Financial Impact:</strong> 40% staff productivity gain, 80% paper reduction, significant cost savings on operations.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <p><strong>Regulatory Compliance:</strong> 100% built-in Bangladesh Bank compliance, zero penalties, audit-ready documentation.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <p><strong>Business Growth:</strong> 60-70% straight-through processing rate, improved customer experience, faster time-to-market.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <p><strong>Technology Superiority:</strong> Modern microservices architecture, API-first design, horizontal scalability.</p>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-icon">✓</div>
+                    <p><strong>Local Support:</strong> 24/7 Dhaka-based support team, dedicated account managers, rapid implementation.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scalability & Future-Proof -->
+        <div class="section">
+            <h2 class="section-title icon-section-title">Scalability & Future-Proof</h2>
+            <div class="content-card">
+                <h3>Horizontal Scaling Architecture</h3>
+                <p>From 10 to 1,000+ branches without re-implementation. Handle 10,000+ daily loan applications with 99.9% uptime availability.</p>
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✓</div>
+                        <p><strong>Database Scaling:</strong> Read replicas, connection pooling, partitioning, indexing, and caching.</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✓</div>
+                        <p><strong>Future-Proof:</strong> Modular architecture, extensibility points, technology evolution strategy.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="content-card">
+                <h3>Performance Benchmarks</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Metric</th>
+                        <th>Target</th>
+                        <th>Achievement</th>
+                    </tr>
+                    <tr>
+                        <td>API Response Time</td>
+                        <td><500ms (95th percentile)</td>
+                        <td>✓ Meets</td>
+                    </tr>
+                    <tr>
+                        <td>Page Load Time</td>
+                        <td><2 seconds</td>
+                        <td>✓ Meets</td>
+                    </tr>
+                    <tr>
+                        <td>Concurrent Users</td>
+                        <td>1,000+</td>
+                        <td>✓ Supports</td>
+                    </tr>
+                    <tr>
+                        <td>System Availability</td>
+                        <td>99.9% uptime</td>
+                        <td>✓ Achievable</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Implementation Methodology -->
+        <div class="section" style="background-color: #FFF3E0;">
+            <h2 class="section-title icon-section-title">Implementation Methodology</h2>
+            <div class="implementation-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Discovery (Weeks 1-2)</h4>
+                        <p>Business requirements gathering, technical architecture design, integration planning, project plan finalization.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Configuration (Weeks 3-6)</h4>
+                        <p>System installation & setup, product configuration, workflow design, integration development.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Testing (Weeks 7-10)</h4>
+                        <p>Unit testing, integration testing, user acceptance testing, performance testing.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Training (Weeks 11-12)</h4>
+                        <p>Admin training, end user training, management briefing, train-the-trainer sessions.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h4>Go-Live (Weeks 13-16)</h4>
+                        <p>Data migration, parallel run, production cutover, hypercare support.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <div class="step-content">
+                        <h4>Optimization (Weeks 17-24)</h4>
+                        <p>Performance tuning, additional features, process optimization, knowledge transfer.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services & Support -->
+        <div class="section">
+            <h2 class="section-title icon-section-title">Services & Support</h2>
+            <div class="content-card">
+                <h3>Comprehensive Support Tiers</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Tier</th>
+                        <th>Response Time</th>
+                        <th>Availability</th>
+                        <th>Scope</th>
+                    </tr>
+                    <tr>
+                        <td>Critical</td>
+                        <td><2 hours</td>
+                        <td>24/7</td>
+                        <td>System down</td>
+                    </tr>
+                    <tr>
+                        <td>High</td>
+                        <td><4 hours</td>
+                        <td>24/7</td>
+                        <td>Major functionality affected</td>
+                    </tr>
+                    <tr>
+                        <td>Medium</td>
+                        <td><8 hours</td>
+                        <td>Business hours</td>
+                        <td>Partial functionality affected</td>
+                    </tr>
+                    <tr>
+                        <td>Low</td>
+                        <td><24 hours</td>
+                        <td>Business hours</td>
+                        <td>General inquiries</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="content-card">
+                <h3>Training Programs</h3>
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✓</div>
+                        <p><strong>System Administration:</strong> 2 days for IT Team (On-site)</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✓</div>
+                        <p><strong>End User Training:</strong> 3 days for Branch Staff (On-site)</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✓</div>
+                        <p><strong>Management Briefing:</strong> 1 day for Executives (On-site)</p>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">✓</div>
+                        <p><strong>Train-the-Trainer:</strong> 3 days for Super Users (On-site)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Stories -->
+        <div class="section" style="background-color: #E8F5E9;">
+            <h2 class="section-title icon-section-title">Success Stories</h2>
+            <div class="success-story">
+                <h4>Tier 2 Private Bank</h4>
+                <p><strong>Challenge:</strong> 15-day loan processing time, 40% customer drop-off</p>
+                <p><strong>Solution:</strong> ULMS Standard implementation</p>
+                <ul>
+                    <li class="icon-check">Processing time reduced to 48 hours</li>
+                    <li class="icon-check">Customer drop-off reduced by 60%</li>
+                    <li class="icon-check">Staff productivity increased by 35%</li>
+                    <li class="icon-check">ROI achieved in 14 months</li>
+                </ul>
+            </div>
+            <div class="success-story">
+                <h4>Islamic Window Bank</h4>
+                <p><strong>Challenge:</strong> Manual Shariah compliance documentation, slow approval</p>
+                <p><strong>Solution:</strong> ULMS Islamic implementation</p>
+                <ul>
+                    <li class="icon-check">Shariah approval workflow automated</li>
+                    <li class="icon-check">Processing time reduced by 75%</li>
+                    <li class="icon-check">Documentation 100% compliant</li>
+                    <li class="icon-check">Islamic product portfolio grew by 45%</li>
+                </ul>
+            </div>
+            <div class="success-story">
+                <h4>SME-Focused Bank</h4>
+                <p><strong>Challenge:</strong> High NPA ratio (8%), slow collections</p>
+                <p><strong>Solution:</strong> ULMS Enterprise with advanced analytics</p>
+                <ul>
+                    <li class="icon-check">NPA ratio reduced to 4.5%</li>
+                    <li class="icon-check">Collection efficiency improved by 20%</li>
+                    <li class="icon-check">Early warning system prevented BDT 12 Cr in potential defaults</li>
+                    <li class="icon-check">SME loan book grew by 60%</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Product Editions -->
+        <div class="section">
+            <h2 class="section-title icon-section-title">Product Editions</h2>
+            <div class="edition-cards">
+                <div class="edition-card edition-standard">
+                    <div class="edition-info">
+                        <h4>ULMS Standard</h4>
+                        <p>For growing banks (1-50 branches). Complete LOS, Servicing, and basic reporting.</p>
+                        <ul>
+                            <li class="icon-check">Complete Loan Origination System</li>
+                            <li class="icon-check">Credit Management & Scoring</li>
+                            <li class="icon-check">Loan Servicing & Collection</li>
+                            <li class="icon-check">Regulatory Reporting (BRPD, CIB)</li>
+                            <li class="icon-check">Branch & HO User Workflows</li>
+                            <li class="icon-check">Core Banking Integration</li>
+                        </ul>
+                    </div>
+                    <div class="edition-price">
+                        <div class="price-tag">2.5 Cr+</div>
+                        <div class="price-sub">Implementation: 4-6 months</div>
+                    </div>
+                </div>
+                <div class="edition-card edition-enterprise">
+                    <div class="edition-info">
+                        <h4>ULMS Enterprise</h4>
+                        <p>For large banks (50+ branches). Advanced AI/ML, High-volume processing, Multi-currency.</p>
+                        <ul>
+                            <li class="icon-check">Everything in Standard, PLUS:</li>
+                            <li class="icon-check">Advanced Analytics & BI</li>
+                            <li class="icon-check">AI/ML Credit Scoring Models</li>
+                            <li class="icon-check">High-Volume Processing</li>
+                            <li class="icon-check">Advanced Workflow Automation</li>
+                            <li class="icon-check">API Developer Portal</li>
+                        </ul>
+                    </div>
+                    <div class="edition-price">
+                        <div class="price-tag">4.0 Cr+</div>
+                        <div class="price-sub">Implementation: 4-6 months</div>
+                    </div>
+                </div>
+                <div class="edition-card edition-islamic">
+                    <div class="edition-info">
+                        <h4>ULMS Islamic</h4>
+                        <p>For Islamic Banks. Complete Shariah-compliant lending with Islamic product support.</p>
+                        <ul>
+                            <li class="icon-check">Complete Shariah-Compliant LMS</li>
+                            <li class="icon-check">Murabaha, Ijara, Musharaka, Mudaraba</li>
+                            <li class="icon-check">Istisna, Bai-Muajjal Products</li>
+                            <li class="icon-check">Shariah Board Approval Workflow</li>
+                            <li class="icon-check">Islamic Profit Calculation</li>
+                            <li class="icon-check">Zakat Calculation & Deduction</li>
+                        </ul>
+                    </div>
+                    <div class="edition-price">
+                        <div class="price-tag">3.5 Cr+</div>
+                        <div class="price-sub">Implementation: 5-7 months</div>
+                    </div>
+                </div>
+                <div class="edition-card edition-digital">
+                    <div class="edition-info">
+                        <h4>ULMS Digital</h4>
+                        <p>For Digital Banks/Fintechs. Cloud-native, API-first, Straight-Through Processing.</p>
+                        <ul>
+                            <li class="icon-check">Cloud-Native Architecture</li>
+                            <li class="icon-check">API-First Design</li>
+                            <li class="icon-check">High-Volume Transaction Processing</li>
+                            <li class="icon-check">Customer Self-Service Portal</li>
+                            <li class="icon-check">Real-Time Credit Decisioning</li>
+                            <li class="icon-check">Embedded Finance Capabilities</li>
+                        </ul>
+                    </div>
+                    <div class="edition-price">
+                        <div class="price-tag">Volume</div>
+                        <div class="price-sub">Implementation: 3-5 months</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Details -->
+        <div class="section" style="background-color: #E8F5E9;">
+            <h2 class="section-title icon-section-title">Pricing & Licensing</h2>
+            <div class="content-card">
+                <h3>Transparent, Predictable Pricing</h3>
+                <p><span class="icon-check">Unlimited User Licenses</span> - No per-user or per-branch fees<br>
+                <span class="icon-check">Complete Implementation</span> - From installation to go-live<br>
+                <span class="icon-check">Training Programs</span> - Comprehensive training for all users<br>
+                <span class="icon-check">Data Migration</span> - Migration from existing systems<br>
+                <span class="icon-check">Core Banking Integration</span> - Integration with major CBS platforms<br>
+                <span class="icon-check">Regulatory Updates</span> - Updates for Bangladesh Bank regulations<br>
+                <span class="icon-check">Software Updates</span> - All version updates for 1 year<br>
+                <span class="icon-check">Technical Support</span> - 24/7 support for 1 year</p>
+            </div>
+            <div class="content-card">
+                <h3>Annual Maintenance</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Component</th>
+                        <th>Annual Fee</th>
+                        <th>Includes</th>
+                    </tr>
+                    <tr>
+                        <td>Software Maintenance</td>
+                        <td>10-12% of license</td>
+                        <td>Updates, patches, enhancements</td>
+                    </tr>
+                    <tr>
+                        <td>Support Services</td>
+                        <td>BDT 30-50 Lakh</td>
+                        <td>24/7 helpdesk, on-site support</td>
+                    </tr>
+                    <tr>
+                        <td>Regulatory Updates</td>
+                        <td>Included</td>
+                        <td>Bangladesh Bank regulation updates</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Competitor Comparison -->
+        <div class="section">
+            <h2 class="section-title icon-section-title">Competitive Advantage</h2>
+            <div class="content-card">
+                <h3>Why Unisoft ULMS Outperforms Competitors</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Feature/Function</th>
+                        <th>Unisoft ULMS</th>
+                        <th>International Solutions</th>
+                    </tr>
+                    <tr>
+                        <td>Implementation Time</td>
+                        <td>4-6 months</td>
+                        <td>12-24 months</td>
+                    </tr>
+                    <tr>
+                        <td>Total Cost (3 Years)</td>
+                        <td>3.4-5.5 Cr BDT</td>
+                        <td>14-32 Cr BDT</td>
+                    </tr>
+                    <tr>
+                        <td>User Licensing</td>
+                        <td>Unlimited</td>
+                        <td>Per User/Branch Fees</td>
+                    </tr>
+                    <tr>
+                        <td>Bangladesh Compliance</td>
+                        <td>Built-in</td>
+                        <td>Customization Required</td>
+                    </tr>
+                    <tr>
+                        <td>Local Support</td>
+                        <td>24/7 Dhaka</td>
+                        <td>Limited/Offshore</td>
+                    </tr>
+                    <tr>
+                        <td>Bengali Language</td>
+                        <td>Native support</td>
+                        <td>Translation needed</td>
+                    </tr>
+                    <tr>
+                        <td>CIB Integration</td>
+                        <td>Pre-built</td>
+                        <td>Custom development</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="content-card">
+                <h3>3-Year Total Cost of Ownership Comparison</h3>
+                <div style="background-color: #f5f7fa; padding: 15px; border-radius: 8px; text-align: center; margin-top: 15px;">
+                    <p><strong>SAVINGS WITH UNISOFT ULMS:</strong></p>
+                    <p style="margin-top: 10px;">vs. Finacle: 65-75% | vs. FinnOne Neo: 70-80% | vs. TCS BaNCS: 75-85% | vs. Local Vendors: 20-40%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integration Marketplace -->
+        <div class="section" style="background-color: #E3F2FD;">
+            <h2 class="section-title icon-section-title">Integration Marketplace</h2>
+            <div class="content-card">
+                <h3>Connect With Your Banking Ecosystem</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 15px;">
+                    <div style="background-color: #fff; padding: 10px; border-radius: 8px; text-align: center;">
+                        <strong>Core Banking</strong>
+                        <div style="font-size: 12px; margin-top: 5px; color: var(--text-light);">Temenos T24, Finacle, TCS BaNCS, Finastra</div>
+                    </div>
+                    <div style="background-color: #fff; padding: 10px; border-radius: 8px; text-align: center;">
+                        <strong>Payment Gateways</strong>
+                        <div style="font-size: 12px; margin-top: 5px; color: var(--text-light);">bKash, Nagad, Rocket, Tap, Upay</div>
+                    </div>
+                    <div style="background-color: #fff; padding: 10px; border-radius: 8px; text-align: center;">
+                        <strong>Regulatory Systems</strong>
+                        <div style="font-size: 12px; margin-top: 5px; color: var(--text-light);">CIB Online, NID Database, BFIU AML</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <h2>Ready to Transform?</h2>
+            <p style="margin-bottom: 30px; opacity: 0.8;">Contact us for a free demonstration and ROI analysis.</p>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span>🌐</span>
+                    <span>www.uslbd.com</span>
+                </div>
+                <div class="contact-item">
+                    <span>📧</span>
+                    <span>info@uslbd.com</span>
+                </div>
+                <div class="contact-item">
+                    <span>📞</span>
+                    <span>+880 1709-642404</span>
+                </div>
+                <div class="contact-item">
+                    <span>📍</span>
+                    <span>Youth Tower, Dhaka</span>
+                </div>
+            </div>
+
+            <div class="copyright">
+                © 2026 Unisoft Systems Limited. All Rights Reserved.
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,980 @@
+[
+  {
+    "verb": "GET",
+    "path": "/api/v1/customers/{idOrCif}/guarantors",
+    "controller": "AmlController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/customers/{idOrCif}/guarantors",
+    "controller": "AmlController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/customers/{idOrCif}/aml",
+    "controller": "AmlController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/customers/{idOrCif}/str",
+    "controller": "AmlController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/customers/{idOrCif}/ctrs",
+    "controller": "AmlController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/customers/{idOrCif}/monitoring-alerts",
+    "controller": "AmlController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "",
+    "controller": "AmlController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/customers/{idOrCif}/goaml/submit",
+    "controller": "AmlController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/goaml/submissions",
+    "controller": "AmlController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/approvals/ladder",
+    "controller": "ApprovalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/ApprovalController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/approvals/my-inbox",
+    "controller": "ApprovalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/ApprovalController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/approvals/current/{applicationId}",
+    "controller": "ApprovalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/ApprovalController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/approvals/{taskId}/act",
+    "controller": "ApprovalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/ApprovalController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/approvals/conditions/{applicationId}",
+    "controller": "ApprovalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/ApprovalController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/approvals/conditions/{conditionId}/resolve",
+    "controller": "ApprovalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/ApprovalController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/disbursements/{applicationId}/prepare",
+    "controller": "DisbursementController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/DisbursementController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/disbursements/{id}/authorize",
+    "controller": "DisbursementController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/DisbursementController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/disbursements/{id}/release",
+    "controller": "DisbursementController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/DisbursementController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/disbursements/{id}",
+    "controller": "DisbursementController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/DisbursementController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/disbursements/application/{applicationId}",
+    "controller": "DisbursementController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/DisbursementController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/assessments/cib/{cif}",
+    "controller": "AssessmentController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/assessments/cib/file",
+    "controller": "AssessmentController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/assessments/cib/{cif}",
+    "controller": "AssessmentController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/assessments/{applicationId}/score",
+    "controller": "AssessmentController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/assessments/{applicationId}/dbr",
+    "controller": "AssessmentController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/assessments/{applicationId}/score",
+    "controller": "AssessmentController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/assessments/{applicationId}/collateral",
+    "controller": "AssessmentController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/assessments/collateral/{collateralId}/valuation",
+    "controller": "AssessmentController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/assessments/collateral/{collateralId}/valuation",
+    "controller": "AssessmentController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/assessments/{applicationId}/collateral",
+    "controller": "AssessmentController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/customers/{customerId}/collateral",
+    "controller": "CollateralController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/CollateralController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/customers/{customerId}/collateral",
+    "controller": "CollateralController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/CollateralController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/customers/{customerId}/collateral/ltv",
+    "controller": "CollateralController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/CollateralController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/bocc/meetings",
+    "controller": "BoccController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/bocc/BoccController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/bocc/meetings",
+    "controller": "BoccController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/bocc/BoccController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/bocc/meetings/{id}",
+    "controller": "BoccController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/bocc/BoccController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/bocc/meetings/{id}/attendance",
+    "controller": "BoccController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/bocc/BoccController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/bocc/meetings/{id}/vote",
+    "controller": "BoccController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/bocc/BoccController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/bocc/meetings/{id}/close",
+    "controller": "BoccController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/bocc/BoccController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/collections/auctions",
+    "controller": "AuctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/AuctionController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/auctions",
+    "controller": "AuctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/AuctionController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/auctions/{id}/held",
+    "controller": "AuctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/AuctionController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/auctions/{id}/sold",
+    "controller": "AuctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/AuctionController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/auctions/{id}/unsold",
+    "controller": "AuctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/AuctionController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/auctions/{id}/cancel",
+    "controller": "AuctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/AuctionController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/collections/worklist",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/{loanId}/actions/{actionType}",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/collections/{loanId}/actions",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/{loanId}/ptp",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/ptp/{ptpId}/outcome",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/collections/ptp/calendar",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/field-tasks",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/field-tasks/{taskId}/complete",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/collections/field-tasks",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/collections/dunning/queue",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/dunning/run",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/dunning/{actionId}/resolve",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/{loanId}/legal-case",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/collections/{loanId}/legal-case",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/legal-case/{caseId}/status",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/{loanId}/waive-interest",
+    "controller": "CollectionsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/field/tasks",
+    "controller": "FieldGatewayController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/field/visits",
+    "controller": "FieldGatewayController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/field/ptp",
+    "controller": "FieldGatewayController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/field/sos",
+    "controller": "FieldGatewayController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/field/sos/{id}/ack",
+    "controller": "FieldGatewayController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/field/sos",
+    "controller": "FieldGatewayController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/collections/watchlist",
+    "controller": "WatchlistController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/WatchlistController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/watchlist",
+    "controller": "WatchlistController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/WatchlistController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/watchlist/{id}/clear",
+    "controller": "WatchlistController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/WatchlistController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/write-offs",
+    "controller": "WriteOffController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/WriteOffController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/{loanId}/write-off",
+    "controller": "WriteOffController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/WriteOffController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/write-offs/{id}/approve",
+    "controller": "WriteOffController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/WriteOffController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/write-offs/{id}/reverse",
+    "controller": "WriteOffController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/WriteOffController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/collections/{loanId}/recoveries",
+    "controller": "WriteOffController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/WriteOffController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/collections/{loanId}/recoveries",
+    "controller": "WriteOffController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/WriteOffController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance/basel/summary",
+    "controller": "BaselOpsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselOpsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/compliance/basel/parallel/snapshot",
+    "controller": "BaselOpsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselOpsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/compliance/basel/parallel/bank-value",
+    "controller": "BaselOpsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselOpsController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance",
+    "controller": "BaselOpsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselOpsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/compliance/regcon/push",
+    "controller": "BaselOpsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselOpsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/compliance/eod/run",
+    "controller": "ComplianceController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ComplianceController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance/classification",
+    "controller": "ComplianceController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ComplianceController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance/provision-calculator",
+    "controller": "ComplianceController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ComplianceController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance/alerts",
+    "controller": "ComplianceController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ComplianceController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/compliance/provision-jv",
+    "controller": "ComplianceController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ComplianceController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance/provision-jv",
+    "controller": "ComplianceController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ComplianceController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance/returns",
+    "controller": "RegconController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance/regcon-calendar",
+    "controller": "RegconController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/compliance/returns/{code}/generate",
+    "controller": "RegconController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/compliance/returns/{id}/signoff/check",
+    "controller": "RegconController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/compliance/returns/{id}/signoff/file",
+    "controller": "RegconController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance/returns/{id}/file",
+    "controller": "RegconController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance/ifrs9/ecl",
+    "controller": "RegconController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/compliance/ifrs9/ecl/run",
+    "controller": "RegconController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/compliance/basel/car",
+    "controller": "RegconController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/reporting/portfolio",
+    "controller": "ReportingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReportingController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/reporting/definitions",
+    "controller": "ReportingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReportingController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/reporting/definitions",
+    "controller": "ReportingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReportingController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/reporting/definitions/{id}/run",
+    "controller": "ReportingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ReportingController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/customers",
+    "controller": "CustomerController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/customer/CustomerController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/customers",
+    "controller": "CustomerController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/customer/CustomerController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/customers/{id}/kyc-refresh",
+    "controller": "CustomerController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/customer/CustomerController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/customers/{id}/screen",
+    "controller": "CustomerController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/customer/CustomerController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/customers/{survivorCif}/merge-duplicate",
+    "controller": "CustomerHygieneController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/customer/CustomerHygieneController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/customers/{cif}/risk",
+    "controller": "CustomerHygieneController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/customer/CustomerHygieneController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/customers/{idOrCif}",
+    "controller": "Customer360Controller.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/customer360/Customer360Controller.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/notifications/templates",
+    "controller": "NotificationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/notification/NotificationController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/notifications/templates",
+    "controller": "NotificationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/notification/NotificationController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/notifications/outbox",
+    "controller": "NotificationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/notification/NotificationController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/notifications/send",
+    "controller": "NotificationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/notification/NotificationController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/applications",
+    "controller": "ApplicationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/origination/ApplicationController.java"
+  },
+  {
+    "verb": "PATCH",
+    "path": "/api/v1/applications/{id}",
+    "controller": "ApplicationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/origination/ApplicationController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/applications/{id}/submit",
+    "controller": "ApplicationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/origination/ApplicationController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/applications/{id}/cpv",
+    "controller": "ApplicationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/origination/ApplicationController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/applications/{id}/documents",
+    "controller": "ApplicationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/origination/ApplicationController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/applications/{id}/documents",
+    "controller": "ApplicationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/origination/ApplicationController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/applications/{id}",
+    "controller": "ApplicationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/origination/ApplicationController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/applications",
+    "controller": "ApplicationController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/origination/ApplicationController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/partner/applications",
+    "controller": "PartnerController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/partner/PartnerController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/partner/applications/{id}/status",
+    "controller": "PartnerController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/partner/PartnerController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/outbox",
+    "controller": "OutboxController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/platform/outbox/OutboxController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/outbox/relay",
+    "controller": "OutboxController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/platform/outbox/OutboxController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/portal/me",
+    "controller": "PortalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/portal/me/application",
+    "controller": "PortalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/portal/me/payments",
+    "controller": "PortalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/portal/me/applications",
+    "controller": "PortalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/portal/me/documents",
+    "controller": "PortalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/portal/otp",
+    "controller": "PortalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/portal/otp/verify",
+    "controller": "PortalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/portal/me/payments/initiate",
+    "controller": "PortalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/portal/me/loans/{loanId}/statement",
+    "controller": "PortalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/portal/me/loans/{loanId}/statement.csv",
+    "controller": "PortalController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/products",
+    "controller": "ProductController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/product/ProductController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/products/{code}",
+    "controller": "ProductController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/product/ProductController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/products",
+    "controller": "ProductController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/product/ProductController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/products/{code}/activate",
+    "controller": "ProductController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/product/ProductController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/products/{code}/eligibility",
+    "controller": "ProductController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/product/ProductController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/sanctions/{applicationId}/generate",
+    "controller": "SanctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/sanction/SanctionController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/sanctions/{id}/resend",
+    "controller": "SanctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/sanction/SanctionController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/sanctions",
+    "controller": "SanctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/sanction/SanctionController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/sanctions/{id}",
+    "controller": "SanctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/sanction/SanctionController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/sanctions/{id}/accept",
+    "controller": "SanctionController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/sanction/SanctionController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/certificates/tax/{year}",
+    "controller": "CertificateController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/CertificateController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/certificates",
+    "controller": "CertificateController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/CertificateController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/hooks/payments/{rail}",
+    "controller": "RailWebhookController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/RailWebhookController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/loans",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/loans/{id}",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/loans/{id}/fees",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/loans/{id}/payments",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/loans/{id}/payments",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/loans/{id}/payment-intents",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/loans/{id}/payment-intents",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/loans/{id}/schedule",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/loans/{id}/statement",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/loans/{id}/settle-quote",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/loans/{id}/reschedule-request",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/loans/reschedule/{requestId}/decision",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/loans/payments/reconcile",
+    "controller": "ServicingController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java"
+  },
+  {
+    "verb": "GET",
+    "path": "/api/v1/servicing/blr",
+    "controller": "ServicingOpsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingOpsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/servicing/blr",
+    "controller": "ServicingOpsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingOpsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/servicing/loans/{loanId}/moratorium",
+    "controller": "ServicingOpsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingOpsController.java"
+  },
+  {
+    "verb": "POST",
+    "path": "/api/v1/servicing/loans/{loanId}/top-up",
+    "controller": "ServicingOpsController.java",
+    "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingOpsController.java"
+  }
+]

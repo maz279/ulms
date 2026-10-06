@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ABC Bank · Loan Portal (Borrower Self-Service)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/tokens.css?v=16">
+<link rel="stylesheet" href="css/app.css?v=16">
+</head>
+<body>
+<nav class="usl-topbar" style="position:sticky">
+  <div class="tb-brand"><span class="tb-logo" style="background:linear-gradient(135deg,var(--brand-50),var(--brand-80))">A</span>
+  <div class="tb-app"><b data-en="ABC Bank · Loan Portal" data-bn="এবিসি ব্যাংক · ঋণ পোর্টাল">ABC Bank · Loan Portal</b><span>&nbsp;</span></div></div>
+  <div style="margin-left:auto" class="flex">
+    <button class="tb-btn" onclick="toggleLang()" title="Language" aria-label="Language" id="lang-btn">বাংলা</button>
+    <button class="tb-btn">🔔</button>
+    <button class="tb-btn" onclick="location.href='index.html'" title="Back to ULMS home">⌂</button>
+  </div>
+</nav>
+
+<div class="portal-hero">
+  <h1 data-en="Welcome back, Md. Rafiqul Islam" data-bn="স্বাগতম, মোঃ রফিকুল ইসলাম">Welcome back, Md. Rafiqul Islam</h1>
+  <p data-en="Track your application, download statements, pay EMI and message your relationship officer." data-bn="আপনার আবেদনের অবস্থা দেখুন, স্টেটমেন্ট ডাউনলোড করুন, কিস্তি পরিশোধ করুন এবং রিলেশনশিপ কর্মকর্তার সঙ্গে যোগাযোগ করুন।">Track your application, download statements, pay EMI and message your relationship officer.</p>
+</div>
+
+<div style="max-width:1080px;margin:-34px auto 0;padding:0 20px 60px">
+  <div class="dash-grid">
+    <div class="w4">
+      <div class="balance-card">
+        <div class="b-l" data-en="Outstanding balance · SME Term Loan" data-bn="বকেয়া ব্যালেন্স · এসএমই টার্ম ঋণ">Outstanding balance · SME Term Loan</div>
+        <div class="b-v">৳12,40,000</div>
+        <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:12px;color:#D6DCF2">
+          <span data-en="EMI ৳39,847 · due 05 Oct" data-bn="কিস্তি ৳৩৯,৮৪৭ · দেয় ০৫ অক্টো">EMI ৳39,847 · due 05 Oct</span><span data-en="Instalment 18/48" data-bn="কিস্তি ১৮/৪৮">Instalment 18/48</span></div>
+        <button class="btn" style="background:#fff;color:var(--brand-70);border:none;margin-top:14px;width:100%;justify-content:center"
+          onclick="alert('Payment sheet (prototype) — bKash / Nagad / card / BEFTN')" data-en="Pay EMI now" data-bn="এখনই কিস্তি পরিশোধ করুন">Pay EMI now</button>
+      </div>
+    </div>
+    <div class="w8" style="display:grid;gap:12px">
+      <section class="card"><div class="card-h"><h3><span data-en="Application tracker — APP-7239 (SME Top-up ৳45 L)" data-bn="আবেদন ট্র্যাকার — APP-7239 (এসএমই টপ-আপ ৳৪৫ লক্ষ)">Application tracker — APP-7239 (SME Top-up ৳45 L)</span></h3><span class="live">● live</span></div>
+        <div class="card-pad">
+          <div class="bpf">
+            <div class="bpf-step done"><span class="b-dot">✓</span><span><span data-en="Received" data-bn="গৃহীত">Received</span><small>20 Sep</small></span></div>
+            <div class="bpf-step done"><span class="b-dot">✓</span><span>CIB<small>21 Sep</small></span></div>
+            <div class="bpf-step done"><span class="b-dot">✓</span><span><span data-en="Scoring" data-bn="স্কোরিং">Scoring</span><small>21 Sep</small></span></div>
+            <div class="bpf-step done"><span class="b-dot">✓</span><span>CPV<small>23 Sep</small></span></div>
+            <div class="bpf-step current"><span class="b-dot">5</span><span><span data-en="Approval" data-bn="অনুমোদন">Approval</span><small data-en="at L3 · ~1 day" data-bn="এল৩-এ · ~১ দিন">at L3 · ~1 day</small></span></div>
+            <div class="bpf-step"><span class="b-dot">6</span><span><span data-en="Sanction" data-bn="স্যাংশন">Sanction</span><small data-en="queued" data-bn="সারিতে">queued</small></span></div>
+          </div>
+          <div class="small" data-en="Next: Regional Manager approval. You will get an SMS the moment the sanction letter is ready." data-bn="পরবর্তী ধাপ: আঞ্চলিক ব্যবস্থাপকের অনুমোদন। স্যাংশন পত্র প্রস্তুত হওয়ার সঙ্গে সঙ্গেই এসএমএস পাবেন।">Next: Regional Manager approval. You will get an SMS the moment the sanction letter is ready.</div>
+        </div>
+      </section>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+        <div class="pay-opt" onclick="alert('bKash payment (prototype)')"><span class="po-logo" style="background:#E2136E">b</span><span><b>bKash</b><small data-en="Instant · no fee" data-bn="তাৎক্ষণিক · ফি নেই">Instant · no fee</small></span></div>
+        <div class="pay-opt" onclick="alert('Nagad payment (prototype)')"><span class="po-logo" style="background:#F5811F">N</span><span><b>Nagad</b><small data-en="Instant · no fee" data-bn="তাৎক্ষণিক · ফি নেই">Instant · no fee</small></span></div>
+        <div class="pay-opt" onclick="alert('Card payment (prototype)')"><span class="po-logo" style="background:#2E9BD6">▮▮</span><span><b data-en="Debit / Credit card" data-bn="ডেবিট / ক্রেডিট কার্ড">Debit / Credit card</b><small>Visa · Mastercard</small></span></div>
+        <div class="pay-opt" onclick="alert('BEFTN transfer (prototype)')"><span class="po-logo" style="background:var(--brand-60)">⇄</span><span><b data-en="BEFTN transfer" data-bn="বিইএফটিএন ট্রান্সফার">BEFTN transfer</b><small data-en="1–2 working days" data-bn="১–২ কার্যদিবস">1–2 working days</small></span></div>
+      </div>
+      <section class="card"><div class="card-h"><h3 data-en="Documents & certificates" data-bn="দলিল ও সনদপত্র">Documents & certificates</h3></div>
+        <div class="miniList">
+          <div class="mi"><span>📄</span><span class="grow" data-en="Repayment schedule (Apr 2026 – Mar 2030)" data-bn="পরিশোধ সূচি (এপ্রিল ২০২৬ – মার্চ ২০৩০)">Repayment schedule (Apr 2026 – Mar 2030)</span><button class="btn btn-sm btn-2nd" onclick="alert('Download PDF (prototype)')" data-en="Download" data-bn="ডাউনলোড">Download</button></div>
+          <div class="mi"><span>📄</span><span class="grow" data-en="Account statement — last 12 months" data-bn="হিসাবের স্টেটমেন্ট — শেষ ১২ মাস">Account statement — last 12 months</span><button class="btn btn-sm btn-2nd" onclick="alert('Download PDF (prototype)')" data-en="Download" data-bn="ডাউনলোড">Download</button></div>
+          <div class="mi"><span>📄</span><span class="grow" data-en="Annual interest certificate (tax) FY 2025-26" data-bn="বার্ষিক সুদ সনদপত্র (কর) এফওয়াই ২০২৫-২৬">Annual interest certificate (tax) FY 2025-26</span><button class="btn btn-sm btn-2nd" onclick="alert('Download PDF (prototype)')" data-en="Download" data-bn="ডাউনলোড">Download</button></div>
+        </div>
+      </section>
+    </div>
+    <div class="w12">
+      <section class="card"><div class="card-h"><h3 data-en="Help & support" data-bn="সহায়তা ও যোগাযোগ">Help & support</h3></div>
+      <div class="card-pad small">
+        <span data-en="Helpline 16222 (24/7) · relationship officer S. Mia (Gulshan branch) · " data-bn="হেল্পলাইন ১৬২২২ (২৪/৭) · রিলেশনশিপ কর্মকর্তা এস. মিয়া (গুলশান শাখা) · ">Helpline 16222 (24/7) · relationship officer S. Mia (Gulshan branch) · </span>
+        <a href="javascript:alert('Chatbot (prototype)')" data-en="Rahim — bilingual chatbot" data-bn="রহিম — দ্বিভাষিক চ্যাটবট">Rahim — bilingual chatbot</a> ·
+        <span data-en="Complaints resolved within 3 working days per Bangladesh Bank consumer guidelines." data-bn="বাংলাদেশ ব্যাংকের ভোক্তা নির্দেশিকা অনুযায়ী ৩ কার্যদিবসের মধ্যে অভিযোগ নিষ্পত্তি।">Complaints resolved within 3 working days per Bangladesh Bank consumer guidelines.</span>
+      </div></section>
+    </div>
+  </div>
+</div>
+<script>
+/* One language at a time; shares the lms-lang preference with the app shell. */
+function toggleLang(){ setLang(curLang()==="bn"?"en":"bn"); }
+function curLang(){ try{ return (localStorage.getItem("lms-lang")||'"en"').replace(/"/g,"")==="bn"?"bn":"en"; }catch(e){ return "en"; } }
+function setLang(lang){
+  try{ localStorage.setItem("lms-lang",'"'+lang+'"'); }catch(e){}
+  applyLang(lang);
+}
+function applyLang(lang){
+  document.documentElement.setAttribute("lang",lang);
+  document.documentElement.classList.toggle("lang-bn",lang==="bn");
+  document.querySelectorAll("[data-en]").forEach(function(el){
+    var v=lang==="bn"?el.getAttribute("data-bn"):el.getAttribute("data-en");
+    if(v!=null) el.innerHTML=v;
+  });
+  document.getElementById("lang-btn").textContent = lang==="bn" ? "English" : "বাংলা";
+}
+applyLang(curLang());
+</script>
+</body>
+</html>

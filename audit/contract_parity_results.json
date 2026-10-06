@@ -1,0 +1,1251 @@
+{
+  "matched_count": 99,
+  "total_backend_endpoints": 163,
+  "orphaned_backend_count": 64,
+  "phantom_frontend_count": 7,
+  "orphaned_backend": [
+    {
+      "verb": "GET",
+      "path": "/api/v1/customers/{idOrCif}/ctrs",
+      "controller": "AmlController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java",
+      "regex": "^/api/v1/customers/[^/]+/ctrs$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/customers/{idOrCif}/monitoring-alerts",
+      "controller": "AmlController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java",
+      "regex": "^/api/v1/customers/[^/]+/monitoring-alerts$"
+    },
+    {
+      "verb": "GET",
+      "path": "",
+      "controller": "AmlController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java",
+      "regex": "^$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/customers/{idOrCif}/goaml/submit",
+      "controller": "AmlController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java",
+      "regex": "^/api/v1/customers/[^/]+/goaml/submit$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/goaml/submissions",
+      "controller": "AmlController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/aml/AmlController.java",
+      "regex": "^/api/v1/goaml/submissions$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/approvals/my-inbox",
+      "controller": "ApprovalController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/ApprovalController.java",
+      "regex": "^/api/v1/approvals/my-inbox$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/disbursements/{id}",
+      "controller": "DisbursementController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/approval/DisbursementController.java",
+      "regex": "^/api/v1/disbursements/[^/]+$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/assessments/cib/file",
+      "controller": "AssessmentController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java",
+      "regex": "^/api/v1/assessments/cib/file$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/assessments/{applicationId}/score",
+      "controller": "AssessmentController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java",
+      "regex": "^/api/v1/assessments/[^/]+/score$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/assessments/{applicationId}/dbr",
+      "controller": "AssessmentController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java",
+      "regex": "^/api/v1/assessments/[^/]+/dbr$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/assessments/collateral/{collateralId}/valuation",
+      "controller": "AssessmentController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java",
+      "regex": "^/api/v1/assessments/collateral/[^/]+/valuation$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/assessments/collateral/{collateralId}/valuation",
+      "controller": "AssessmentController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java",
+      "regex": "^/api/v1/assessments/collateral/[^/]+/valuation$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/assessments/{applicationId}/collateral",
+      "controller": "AssessmentController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/AssessmentController.java",
+      "regex": "^/api/v1/assessments/[^/]+/collateral$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/customers/{customerId}/collateral",
+      "controller": "CollateralController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/CollateralController.java",
+      "regex": "^/api/v1/customers/[^/]+/collateral$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/customers/{customerId}/collateral",
+      "controller": "CollateralController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/CollateralController.java",
+      "regex": "^/api/v1/customers/[^/]+/collateral$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/customers/{customerId}/collateral/ltv",
+      "controller": "CollateralController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/assessment/CollateralController.java",
+      "regex": "^/api/v1/customers/[^/]+/collateral/ltv$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/collections/auctions",
+      "controller": "AuctionController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/AuctionController.java",
+      "regex": "^/api/v1/collections/auctions$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/collections/{loanId}/actions",
+      "controller": "CollectionsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java",
+      "regex": "^/api/v1/collections/[^/]+/actions$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/collections/field-tasks",
+      "controller": "CollectionsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java",
+      "regex": "^/api/v1/collections/field-tasks$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/collections/{loanId}/legal-case",
+      "controller": "CollectionsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java",
+      "regex": "^/api/v1/collections/[^/]+/legal-case$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/collections/legal-case/{caseId}/status",
+      "controller": "CollectionsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/CollectionsController.java",
+      "regex": "^/api/v1/collections/legal-case/[^/]+/status$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/field/tasks",
+      "controller": "FieldGatewayController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java",
+      "regex": "^/api/v1/field/tasks$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/field/visits",
+      "controller": "FieldGatewayController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java",
+      "regex": "^/api/v1/field/visits$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/field/ptp",
+      "controller": "FieldGatewayController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java",
+      "regex": "^/api/v1/field/ptp$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/field/sos",
+      "controller": "FieldGatewayController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java",
+      "regex": "^/api/v1/field/sos$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/field/sos/{id}/ack",
+      "controller": "FieldGatewayController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java",
+      "regex": "^/api/v1/field/sos/[^/]+/ack$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/field/sos",
+      "controller": "FieldGatewayController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/FieldGatewayController.java",
+      "regex": "^/api/v1/field/sos$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/collections/watchlist",
+      "controller": "WatchlistController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/collections/WatchlistController.java",
+      "regex": "^/api/v1/collections/watchlist$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/compliance/basel/summary",
+      "controller": "BaselOpsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselOpsController.java",
+      "regex": "^/api/v1/compliance/basel/summary$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/compliance/basel/parallel/snapshot",
+      "controller": "BaselOpsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselOpsController.java",
+      "regex": "^/api/v1/compliance/basel/parallel/snapshot$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/compliance/basel/parallel/bank-value",
+      "controller": "BaselOpsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselOpsController.java",
+      "regex": "^/api/v1/compliance/basel/parallel/bank-value$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/compliance",
+      "controller": "BaselOpsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselOpsController.java",
+      "regex": "^/api/v1/compliance$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/compliance/regcon/push",
+      "controller": "BaselOpsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/BaselOpsController.java",
+      "regex": "^/api/v1/compliance/regcon/push$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/compliance/alerts",
+      "controller": "ComplianceController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ComplianceController.java",
+      "regex": "^/api/v1/compliance/alerts$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/compliance/provision-jv",
+      "controller": "ComplianceController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/ComplianceController.java",
+      "regex": "^/api/v1/compliance/provision-jv$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/compliance/returns/{code}/generate",
+      "controller": "RegconController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java",
+      "regex": "^/api/v1/compliance/returns/[^/]+/generate$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/compliance/ifrs9/ecl",
+      "controller": "RegconController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java",
+      "regex": "^/api/v1/compliance/ifrs9/ecl$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/compliance/ifrs9/ecl/run",
+      "controller": "RegconController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/compliance/RegconController.java",
+      "regex": "^/api/v1/compliance/ifrs9/ecl/run$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/customers/{survivorCif}/merge-duplicate",
+      "controller": "CustomerHygieneController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/customer/CustomerHygieneController.java",
+      "regex": "^/api/v1/customers/[^/]+/merge-duplicate$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/customers/{cif}/risk",
+      "controller": "CustomerHygieneController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/customer/CustomerHygieneController.java",
+      "regex": "^/api/v1/customers/[^/]+/risk$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/applications/{id}",
+      "controller": "ApplicationController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/origination/ApplicationController.java",
+      "regex": "^/api/v1/applications/[^/]+$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/applications",
+      "controller": "ApplicationController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/origination/ApplicationController.java",
+      "regex": "^/api/v1/applications$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/partner/applications/{id}/status",
+      "controller": "PartnerController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/partner/PartnerController.java",
+      "regex": "^/api/v1/partner/applications/[^/]+/status$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/portal/me",
+      "controller": "PortalController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java",
+      "regex": "^/api/v1/portal/me$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/portal/me/application",
+      "controller": "PortalController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java",
+      "regex": "^/api/v1/portal/me/application$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/portal/me/payments",
+      "controller": "PortalController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java",
+      "regex": "^/api/v1/portal/me/payments$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/portal/otp",
+      "controller": "PortalController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java",
+      "regex": "^/api/v1/portal/otp$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/portal/otp/verify",
+      "controller": "PortalController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java",
+      "regex": "^/api/v1/portal/otp/verify$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/portal/me/payments/initiate",
+      "controller": "PortalController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java",
+      "regex": "^/api/v1/portal/me/payments/initiate$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/portal/me/loans/{loanId}/statement",
+      "controller": "PortalController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java",
+      "regex": "^/api/v1/portal/me/loans/[^/]+/statement$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/portal/me/loans/{loanId}/statement.csv",
+      "controller": "PortalController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/portal/PortalController.java",
+      "regex": "^/api/v1/portal/me/loans/[^/]+/statement.csv$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/products",
+      "controller": "ProductController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/product/ProductController.java",
+      "regex": "^/api/v1/products$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/products/{code}",
+      "controller": "ProductController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/product/ProductController.java",
+      "regex": "^/api/v1/products/[^/]+$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/certificates/tax/{year}",
+      "controller": "CertificateController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/CertificateController.java",
+      "regex": "^/api/v1/certificates/tax/[^/]+$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/certificates",
+      "controller": "CertificateController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/CertificateController.java",
+      "regex": "^/api/v1/certificates$"
+    },
+    {
+      "verb": "POST",
+      "path": "/hooks/payments/{rail}",
+      "controller": "RailWebhookController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/RailWebhookController.java",
+      "regex": "^/hooks/payments/[^/]+$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/loans/{id}/fees",
+      "controller": "ServicingController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java",
+      "regex": "^/api/v1/loans/[^/]+/fees$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/loans/{id}/payment-intents",
+      "controller": "ServicingController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java",
+      "regex": "^/api/v1/loans/[^/]+/payment-intents$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/loans/reschedule/{requestId}/decision",
+      "controller": "ServicingController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java",
+      "regex": "^/api/v1/loans/reschedule/[^/]+/decision$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/loans/payments/reconcile",
+      "controller": "ServicingController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingController.java",
+      "regex": "^/api/v1/loans/payments/reconcile$"
+    },
+    {
+      "verb": "GET",
+      "path": "/api/v1/servicing/blr",
+      "controller": "ServicingOpsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingOpsController.java",
+      "regex": "^/api/v1/servicing/blr$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/servicing/blr",
+      "controller": "ServicingOpsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingOpsController.java",
+      "regex": "^/api/v1/servicing/blr$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/servicing/loans/{loanId}/moratorium",
+      "controller": "ServicingOpsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingOpsController.java",
+      "regex": "^/api/v1/servicing/loans/[^/]+/moratorium$"
+    },
+    {
+      "verb": "POST",
+      "path": "/api/v1/servicing/loans/{loanId}/top-up",
+      "controller": "ServicingOpsController.java",
+      "file": "LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/servicing/ServicingOpsController.java",
+      "regex": "^/api/v1/servicing/loans/[^/]+/top-up$"
+    }
+  ],
+  "phantom_frontend": [
+    {
+      "file": "applications.ts",
+      "line": 84,
+      "verb": "GET",
+      "url_raw": "/api/v1/applications${q}",
+      "snippet": "fetch(`/api/v1/applications${q}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "collections.ts",
+      "line": 132,
+      "verb": "GET",
+      "url_raw": "/api/v1/collections/watchlist${qs}",
+      "snippet": "fetch(`/api/v1/collections/watchlist${qs}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "collections.ts",
+      "line": 167,
+      "verb": "GET",
+      "url_raw": "/api/v1/collections/auctions${suffix}",
+      "snippet": "fetch(`/api/v1/collections/auctions${suffix}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 24,
+      "verb": "GET",
+      "url_raw": "/api/v1/products${includeInactive ? ",
+      "snippet": "fetch(`/api/v1/products${includeInactive ? \""
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 31,
+      "verb": "PATCH",
+      "url_raw": "/api/v1/products/${encodeURIComponent(code)}",
+      "snippet": "fetch(`/api/v1/products/${encodeURIComponent(code)}`, { method: \"PATCH\", headers: authHeaders(), bod"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 49,
+      "verb": "POST",
+      "url_raw": "/api/v1/compliance/returns/${encodeURIComponent(code)}/generate${q}",
+      "snippet": "fetch(`/api/v1/compliance/returns/${encodeURIComponent(code)}/generate${q}`, {     method: \"POST\", h"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 112,
+      "verb": "GET",
+      "url_raw": "/api/v1/compliance/ifrs9/ecl${q}",
+      "snippet": "fetch(`/api/v1/compliance/ifrs9/ecl${q}`, { headers: authHeaders() }"
+    }
+  ],
+  "frontend_calls": [
+    {
+      "file": "applications.ts",
+      "line": 47,
+      "verb": "POST",
+      "url_raw": "/api/v1/applications",
+      "snippet": "fetch(\"/api/v1/applications\", {     method: \"POST\", headers: authHeaders(crypto.randomUUID()),     b"
+    },
+    {
+      "file": "applications.ts",
+      "line": 57,
+      "verb": "POST",
+      "url_raw": "/api/v1/applications/${id}/submit",
+      "snippet": "fetch(`/api/v1/applications/${id}/submit`, {     method: \"POST\", headers: authHeaders(),   }"
+    },
+    {
+      "file": "applications.ts",
+      "line": 71,
+      "verb": "POST",
+      "url_raw": "/api/v1/applications/${id}/cpv",
+      "snippet": "fetch(`/api/v1/applications/${id}/cpv`, {     method: \"POST\", headers: authHeaders(),     body: JSON"
+    },
+    {
+      "file": "applications.ts",
+      "line": 84,
+      "verb": "GET",
+      "url_raw": "/api/v1/applications${q}",
+      "snippet": "fetch(`/api/v1/applications${q}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "applications.ts",
+      "line": 94,
+      "verb": "PATCH",
+      "url_raw": "/api/v1/applications/${id}",
+      "snippet": "fetch(`/api/v1/applications/${id}`, {     method: \"PATCH\", headers: authHeaders(), body: JSON.string"
+    },
+    {
+      "file": "applications.ts",
+      "line": 105,
+      "verb": "GET",
+      "url_raw": "/api/v1/approvals/ladder",
+      "snippet": "fetch(\"/api/v1/approvals/ladder\", { headers: authHeaders() }"
+    },
+    {
+      "file": "applications.ts",
+      "line": 111,
+      "verb": "GET",
+      "url_raw": "/api/v1/approvals/current/${appId}",
+      "snippet": "fetch(`/api/v1/approvals/current/${appId}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "applications.ts",
+      "line": 121,
+      "verb": "POST",
+      "url_raw": "/api/v1/approvals/${taskId}/act",
+      "snippet": "fetch(`/api/v1/approvals/${taskId}/act`, {     method: \"POST\", headers: authHeaders(),     body: JSO"
+    },
+    {
+      "file": "applications.ts",
+      "line": 134,
+      "verb": "GET",
+      "url_raw": "/api/v1/approvals/conditions/${appId}",
+      "snippet": "fetch(`/api/v1/approvals/conditions/${appId}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "applications.ts",
+      "line": 143,
+      "verb": "POST",
+      "url_raw": "/api/v1/approvals/conditions/${id}/resolve",
+      "snippet": "fetch(`/api/v1/approvals/conditions/${id}/resolve`, {     method: \"POST\", headers: authHeaders(),   "
+    },
+    {
+      "file": "applications.ts",
+      "line": 178,
+      "verb": "POST",
+      "url_raw": "/api/v1/applications/${appId}/documents?docType=${encodeURIComponent(docType)}",
+      "snippet": "fetch(     `/api/v1/applications/${appId}/documents?docType=${encodeURIComponent(docType)}`,     { m"
+    },
+    {
+      "file": "applications.ts",
+      "line": 190,
+      "verb": "GET",
+      "url_raw": "/api/v1/applications/${appId}/documents",
+      "snippet": "fetch(`/api/v1/applications/${appId}/documents`, { headers: authHeaders() }"
+    },
+    {
+      "file": "assessments.ts",
+      "line": 18,
+      "verb": "POST",
+      "url_raw": "/api/v1/assessments/cib/${encodeURIComponent(cif)}",
+      "snippet": "fetch(`/api/v1/assessments/cib/${encodeURIComponent(cif)}`, {     method: \"POST\", headers: authHeade"
+    },
+    {
+      "file": "assessments.ts",
+      "line": 29,
+      "verb": "GET",
+      "url_raw": "/api/v1/assessments/cib/${encodeURIComponent(cif)}",
+      "snippet": "fetch(`/api/v1/assessments/cib/${encodeURIComponent(cif)}`, {     headers: authHeaders(),   }"
+    },
+    {
+      "file": "assessments.ts",
+      "line": 43,
+      "verb": "GET",
+      "url_raw": "/api/v1/assessments/${applicationId}/score",
+      "snippet": "fetch(`/api/v1/assessments/${applicationId}/score`, {     headers: authHeaders(),   }"
+    },
+    {
+      "file": "assessments.ts",
+      "line": 55,
+      "verb": "POST",
+      "url_raw": "/api/v1/assessments/${applicationId}/collateral",
+      "snippet": "fetch(`/api/v1/assessments/${applicationId}/collateral`, {     method: \"POST\", headers: authHeaders("
+    },
+    {
+      "file": "collections.ts",
+      "line": 26,
+      "verb": "GET",
+      "url_raw": "/api/v1/collections/worklist",
+      "snippet": "fetch(\"/api/v1/collections/worklist\", { headers: authHeaders() }"
+    },
+    {
+      "file": "collections.ts",
+      "line": 32,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/${loanId}/actions/${actionType}",
+      "snippet": "fetch(`/api/v1/collections/${loanId}/actions/${actionType}`, {     method: \"POST\", headers: authHead"
+    },
+    {
+      "file": "collections.ts",
+      "line": 41,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/${loanId}/ptp",
+      "snippet": "fetch(`/api/v1/collections/${loanId}/ptp`, {     method: \"POST\", headers: authHeaders(), body: JSON."
+    },
+    {
+      "file": "collections.ts",
+      "line": 47,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/ptp/${ptpId}/outcome",
+      "snippet": "fetch(`/api/v1/collections/ptp/${ptpId}/outcome`, {     method: \"POST\", headers: authHeaders(), body"
+    },
+    {
+      "file": "collections.ts",
+      "line": 53,
+      "verb": "GET",
+      "url_raw": "/api/v1/collections/ptp/calendar?from=${from}&to=${to}",
+      "snippet": "fetch(     `/api/v1/collections/ptp/calendar?from=${from}&to=${to}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "collections.ts",
+      "line": 60,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/field-tasks",
+      "snippet": "fetch(\"/api/v1/collections/field-tasks\", {     method: \"POST\", headers: authHeaders(), body: JSON.st"
+    },
+    {
+      "file": "collections.ts",
+      "line": 66,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/field-tasks/${taskId}/complete",
+      "snippet": "fetch(`/api/v1/collections/field-tasks/${taskId}/complete`, {     method: \"POST\", headers: authHeade"
+    },
+    {
+      "file": "collections.ts",
+      "line": 79,
+      "verb": "GET",
+      "url_raw": "/api/v1/collections/dunning/queue",
+      "snippet": "fetch(\"/api/v1/collections/dunning/queue\", { headers: authHeaders() }"
+    },
+    {
+      "file": "collections.ts",
+      "line": 84,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/dunning/run",
+      "snippet": "fetch(\"/api/v1/collections/dunning/run\", {     method: \"POST\", headers: authHeaders(),   }"
+    },
+    {
+      "file": "collections.ts",
+      "line": 92,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/dunning/${actionId}/resolve",
+      "snippet": "fetch(`/api/v1/collections/dunning/${actionId}/resolve`, {     method: \"POST\", headers: authHeaders("
+    },
+    {
+      "file": "collections.ts",
+      "line": 105,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/${loanId}/legal-case",
+      "snippet": "fetch(`/api/v1/collections/${loanId}/legal-case`, {     method: \"POST\", headers: authHeaders(), body"
+    },
+    {
+      "file": "collections.ts",
+      "line": 111,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/${loanId}/waive-interest",
+      "snippet": "fetch(`/api/v1/collections/${loanId}/waive-interest`, {     method: \"POST\", headers: authHeaders(), "
+    },
+    {
+      "file": "collections.ts",
+      "line": 132,
+      "verb": "GET",
+      "url_raw": "/api/v1/collections/watchlist${qs}",
+      "snippet": "fetch(`/api/v1/collections/watchlist${qs}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "collections.ts",
+      "line": 138,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/watchlist",
+      "snippet": "fetch(\"/api/v1/collections/watchlist\", {     method: \"POST\", headers: authHeaders(),     body: JSON."
+    },
+    {
+      "file": "collections.ts",
+      "line": 145,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/watchlist/${id}/clear",
+      "snippet": "fetch(`/api/v1/collections/watchlist/${id}/clear`, {     method: \"POST\", headers: authHeaders(), bod"
+    },
+    {
+      "file": "collections.ts",
+      "line": 167,
+      "verb": "GET",
+      "url_raw": "/api/v1/collections/auctions${suffix}",
+      "snippet": "fetch(`/api/v1/collections/auctions${suffix}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "collections.ts",
+      "line": 174,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/auctions",
+      "snippet": "fetch(\"/api/v1/collections/auctions\", {     method: \"POST\", headers: authHeaders(),     body: JSON.s"
+    },
+    {
+      "file": "collections.ts",
+      "line": 181,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/auctions/${id}/held",
+      "snippet": "fetch(`/api/v1/collections/auctions/${id}/held`, {     method: \"POST\", headers: authHeaders(),   }"
+    },
+    {
+      "file": "collections.ts",
+      "line": 188,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/auctions/${id}/sold",
+      "snippet": "fetch(`/api/v1/collections/auctions/${id}/sold`, {     method: \"POST\", headers: authHeaders(),     b"
+    },
+    {
+      "file": "collections.ts",
+      "line": 195,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/auctions/${id}/unsold",
+      "snippet": "fetch(`/api/v1/collections/auctions/${id}/unsold`, {     method: \"POST\", headers: authHeaders(),   }"
+    },
+    {
+      "file": "collections.ts",
+      "line": 201,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/auctions/${id}/cancel",
+      "snippet": "fetch(`/api/v1/collections/auctions/${id}/cancel`, {     method: \"POST\", headers: authHeaders(),   }"
+    },
+    {
+      "file": "compliance.ts",
+      "line": 11,
+      "verb": "POST",
+      "url_raw": "/api/v1/compliance/eod/run",
+      "snippet": "fetch(\"/api/v1/compliance/eod/run\", {     method: \"POST\", headers: authHeaders(),     body: JSON.str"
+    },
+    {
+      "file": "compliance.ts",
+      "line": 38,
+      "verb": "GET",
+      "url_raw": "/api/v1/compliance/classification",
+      "snippet": "fetch(\"/api/v1/compliance/classification\", { headers: authHeaders() }"
+    },
+    {
+      "file": "compliance.ts",
+      "line": 53,
+      "verb": "GET",
+      "url_raw": "/api/v1/compliance/provision-calculator?${q}",
+      "snippet": "fetch(`/api/v1/compliance/provision-calculator?${q}`, {     headers: authHeaders(),   }"
+    },
+    {
+      "file": "compliance.ts",
+      "line": 83,
+      "verb": "POST",
+      "url_raw": "/api/v1/compliance/provision-jv",
+      "snippet": "fetch(\"/api/v1/compliance/provision-jv\", {     method: \"POST\", headers: authHeaders(),     body: JSO"
+    },
+    {
+      "file": "customers.ts",
+      "line": 72,
+      "verb": "POST",
+      "url_raw": "/api/v1/customers",
+      "snippet": "fetch('/api/v1/customers', {     method: 'POST',     headers: authHeaders(crypto.randomUUID()),     "
+    },
+    {
+      "file": "customers.ts",
+      "line": 80,
+      "verb": "GET",
+      "url_raw": "/api/v1/customers?page=${page}&size=${size}",
+      "snippet": "fetch(`/api/v1/customers?page=${page}&size=${size}`, {     headers: authHeaders(),   }"
+    },
+    {
+      "file": "customers.ts",
+      "line": 86,
+      "verb": "POST",
+      "url_raw": "/api/v1/customers/${encodeURIComponent(customerId)}/kyc-refresh",
+      "snippet": "fetch(`/api/v1/customers/${encodeURIComponent(customerId)}/kyc-refresh`, {     method: 'POST',     h"
+    },
+    {
+      "file": "customers.ts",
+      "line": 94,
+      "verb": "POST",
+      "url_raw": "/api/v1/customers/${encodeURIComponent(customerId)}/screen",
+      "snippet": "fetch(`/api/v1/customers/${encodeURIComponent(customerId)}/screen`, {     method: 'POST',     header"
+    },
+    {
+      "file": "customers.ts",
+      "line": 101,
+      "verb": "GET",
+      "url_raw": "/api/v1/customers/${encodeURIComponent(cifOrId)}",
+      "snippet": "fetch(`/api/v1/customers/${encodeURIComponent(cifOrId)}`, {     headers: authHeaders(),   }"
+    },
+    {
+      "file": "disbursements.ts",
+      "line": 11,
+      "verb": "POST",
+      "url_raw": "/api/v1/disbursements/${applicationId}/prepare",
+      "snippet": "fetch(`/api/v1/disbursements/${applicationId}/prepare`, {     method: \"POST\", headers: authHeaders()"
+    },
+    {
+      "file": "disbursements.ts",
+      "line": 22,
+      "verb": "POST",
+      "url_raw": "/api/v1/disbursements/${id}/authorize",
+      "snippet": "fetch(`/api/v1/disbursements/${id}/authorize`, {     method: \"POST\", headers: authHeaders(),   }"
+    },
+    {
+      "file": "disbursements.ts",
+      "line": 33,
+      "verb": "POST",
+      "url_raw": "/api/v1/disbursements/${id}/release",
+      "snippet": "fetch(`/api/v1/disbursements/${id}/release`, {     method: \"POST\", headers: authHeaders(),   }"
+    },
+    {
+      "file": "disbursements.ts",
+      "line": 46,
+      "verb": "GET",
+      "url_raw": "/api/v1/disbursements/application/${applicationId}",
+      "snippet": "fetch(`/api/v1/disbursements/application/${applicationId}`, {     headers: authHeaders(),   }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 24,
+      "verb": "GET",
+      "url_raw": "/api/v1/products${includeInactive ? ",
+      "snippet": "fetch(`/api/v1/products${includeInactive ? \""
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 28,
+      "verb": "POST",
+      "url_raw": "/api/v1/products",
+      "snippet": "fetch(\"/api/v1/products\", { method: \"POST\", headers: authHeaders(crypto.randomUUID()), body: JSON.st"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 31,
+      "verb": "PATCH",
+      "url_raw": "/api/v1/products/${encodeURIComponent(code)}",
+      "snippet": "fetch(`/api/v1/products/${encodeURIComponent(code)}`, { method: \"PATCH\", headers: authHeaders(), bod"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 34,
+      "verb": "POST",
+      "url_raw": "/api/v1/products/${encodeURIComponent(code)}/activate",
+      "snippet": "fetch(`/api/v1/products/${encodeURIComponent(code)}/activate`, { method: \"POST\", headers: authHeader"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 42,
+      "verb": "GET",
+      "url_raw": "/api/v1/products/${encodeURIComponent(code)}/eligibility?${q}",
+      "snippet": "fetch(`/api/v1/products/${encodeURIComponent(code)}/eligibility?${q}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 53,
+      "verb": "GET",
+      "url_raw": "/api/v1/sanctions",
+      "snippet": "fetch(\"/api/v1/sanctions\", { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 57,
+      "verb": "POST",
+      "url_raw": "/api/v1/sanctions/${encodeURIComponent(applicationId)}/generate",
+      "snippet": "fetch(`/api/v1/sanctions/${encodeURIComponent(applicationId)}/generate`, { method: \"POST\", headers: "
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 60,
+      "verb": "GET",
+      "url_raw": "/api/v1/sanctions/${encodeURIComponent(id)}",
+      "snippet": "fetch(`/api/v1/sanctions/${encodeURIComponent(id)}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 63,
+      "verb": "POST",
+      "url_raw": "/api/v1/sanctions/${encodeURIComponent(id)}/accept?token=${encodeURIComponent(token)}",
+      "snippet": "fetch(`/api/v1/sanctions/${encodeURIComponent(id)}/accept?token=${encodeURIComponent(token)}`, { met"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 66,
+      "verb": "POST",
+      "url_raw": "/api/v1/sanctions/${encodeURIComponent(id)}/resend",
+      "snippet": "fetch(`/api/v1/sanctions/${encodeURIComponent(id)}/resend`, { method: \"POST\", headers: authHeaders()"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 79,
+      "verb": "GET",
+      "url_raw": "/api/v1/bocc/meetings",
+      "snippet": "fetch(\"/api/v1/bocc/meetings\", { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 83,
+      "verb": "POST",
+      "url_raw": "/api/v1/bocc/meetings",
+      "snippet": "fetch(\"/api/v1/bocc/meetings\", { method: \"POST\", headers: authHeaders(), body: JSON.stringify(body) "
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 86,
+      "verb": "GET",
+      "url_raw": "/api/v1/bocc/meetings/${encodeURIComponent(id)}",
+      "snippet": "fetch(`/api/v1/bocc/meetings/${encodeURIComponent(id)}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 89,
+      "verb": "POST",
+      "url_raw": "/api/v1/bocc/meetings/${encodeURIComponent(id)}/attendance",
+      "snippet": "fetch(`/api/v1/bocc/meetings/${encodeURIComponent(id)}/attendance`, { method: \"POST\", headers: authH"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 92,
+      "verb": "POST",
+      "url_raw": "/api/v1/bocc/meetings/${encodeURIComponent(id)}/vote",
+      "snippet": "fetch(`/api/v1/bocc/meetings/${encodeURIComponent(id)}/vote`, { method: \"POST\", headers: authHeaders"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 95,
+      "verb": "POST",
+      "url_raw": "/api/v1/bocc/meetings/${encodeURIComponent(id)}/close",
+      "snippet": "fetch(`/api/v1/bocc/meetings/${encodeURIComponent(id)}/close`, { method: \"POST\", headers: authHeader"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 104,
+      "verb": "GET",
+      "url_raw": "/api/v1/outbox",
+      "snippet": "fetch(\"/api/v1/outbox\", { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 108,
+      "verb": "POST",
+      "url_raw": "/api/v1/outbox/relay",
+      "snippet": "fetch(\"/api/v1/outbox/relay\", { method: \"POST\", headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 119,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/${encodeURIComponent(loanId)}/write-off",
+      "snippet": "fetch(`/api/v1/collections/${encodeURIComponent(loanId)}/write-off`, { method: \"POST\", headers: auth"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 122,
+      "verb": "GET",
+      "url_raw": "/api/v1/write-offs",
+      "snippet": "fetch(\"/api/v1/write-offs\", { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 126,
+      "verb": "POST",
+      "url_raw": "/api/v1/write-offs/${encodeURIComponent(id)}/approve",
+      "snippet": "fetch(`/api/v1/write-offs/${encodeURIComponent(id)}/approve`, { method: \"POST\", headers: authHeaders"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 129,
+      "verb": "POST",
+      "url_raw": "/api/v1/write-offs/${encodeURIComponent(id)}/reverse",
+      "snippet": "fetch(`/api/v1/write-offs/${encodeURIComponent(id)}/reverse`, { method: \"POST\", headers: authHeaders"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 136,
+      "verb": "GET",
+      "url_raw": "/api/v1/collections/${encodeURIComponent(loanId)}/recoveries",
+      "snippet": "fetch(`/api/v1/collections/${encodeURIComponent(loanId)}/recoveries`, { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 140,
+      "verb": "POST",
+      "url_raw": "/api/v1/collections/${encodeURIComponent(loanId)}/recoveries",
+      "snippet": "fetch(`/api/v1/collections/${encodeURIComponent(loanId)}/recoveries`, { method: \"POST\", headers: aut"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 150,
+      "verb": "GET",
+      "url_raw": "/api/v1/customers/${encodeURIComponent(cifOrId)}/guarantors",
+      "snippet": "fetch(`/api/v1/customers/${encodeURIComponent(cifOrId)}/guarantors`, { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 154,
+      "verb": "POST",
+      "url_raw": "/api/v1/customers/${encodeURIComponent(cifOrId)}/guarantors",
+      "snippet": "fetch(`/api/v1/customers/${encodeURIComponent(cifOrId)}/guarantors`, { method: \"POST\", headers: auth"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 160,
+      "verb": "GET",
+      "url_raw": "/api/v1/notifications/templates",
+      "snippet": "fetch(\"/api/v1/notifications/templates\", { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 164,
+      "verb": "POST",
+      "url_raw": "/api/v1/notifications/templates",
+      "snippet": "fetch(\"/api/v1/notifications/templates\", { method: \"POST\", headers: authHeaders(), body: JSON.string"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 168,
+      "verb": "GET",
+      "url_raw": "/api/v1/notifications/outbox",
+      "snippet": "fetch(\"/api/v1/notifications/outbox\", { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 172,
+      "verb": "POST",
+      "url_raw": "/api/v1/notifications/send",
+      "snippet": "fetch(\"/api/v1/notifications/send\", { method: \"POST\", headers: authHeaders(), body: JSON.stringify(b"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 176,
+      "verb": "GET",
+      "url_raw": "/api/v1/customers/${encodeURIComponent(cifOrId)}/aml",
+      "snippet": "fetch(`/api/v1/customers/${encodeURIComponent(cifOrId)}/aml`, { headers: authHeaders() }"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 179,
+      "verb": "POST",
+      "url_raw": "/api/v1/customers/${encodeURIComponent(cifOrId)}/str",
+      "snippet": "fetch(`/api/v1/customers/${encodeURIComponent(cifOrId)}/str`, { method: \"POST\", headers: authHeaders"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 184,
+      "verb": "POST",
+      "url_raw": "/api/v1/portal/me/applications",
+      "snippet": "fetch(\"/api/v1/portal/me/applications\", { method: \"POST\", headers: authHeaders(), body: JSON.stringi"
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 187,
+      "verb": "POST",
+      "url_raw": "/api/v1/portal/me/documents",
+      "snippet": "fetch(\"/api/v1/portal/me/documents\", { method: \"POST\", headers: authHeaders(), body: JSON.stringify("
+    },
+    {
+      "file": "r3r4r5.ts",
+      "line": 192,
+      "verb": "POST",
+      "url_raw": "/api/v1/partner/applications",
+      "snippet": "fetch(\"/api/v1/partner/applications\", { method: \"POST\", headers: h, body: JSON.stringify(body) }"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 37,
+      "verb": "GET",
+      "url_raw": "/api/v1/compliance/returns",
+      "snippet": "fetch(\"/api/v1/compliance/returns\", { headers: authHeaders() }"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 49,
+      "verb": "POST",
+      "url_raw": "/api/v1/compliance/returns/${encodeURIComponent(code)}/generate${q}",
+      "snippet": "fetch(`/api/v1/compliance/returns/${encodeURIComponent(code)}/generate${q}`, {     method: \"POST\", h"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 58,
+      "verb": "POST",
+      "url_raw": "/api/v1/compliance/returns/${id}/signoff/check",
+      "snippet": "fetch(`/api/v1/compliance/returns/${id}/signoff/check`, {     method: \"POST\", headers: authHeaders()"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 67,
+      "verb": "POST",
+      "url_raw": "/api/v1/compliance/returns/${id}/signoff/file",
+      "snippet": "fetch(`/api/v1/compliance/returns/${id}/signoff/file`, {     method: \"POST\", headers: authHeaders(),"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 77,
+      "verb": "GET",
+      "url_raw": "/api/v1/compliance/returns/${entry.returnId}/file",
+      "snippet": "fetch(`/api/v1/compliance/returns/${entry.returnId}/file`, {     headers: authHeaders(),   }"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 93,
+      "verb": "GET",
+      "url_raw": "/api/v1/compliance/regcon-calendar?months=${months}",
+      "snippet": "fetch(`/api/v1/compliance/regcon-calendar?months=${months}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 112,
+      "verb": "GET",
+      "url_raw": "/api/v1/compliance/ifrs9/ecl${q}",
+      "snippet": "fetch(`/api/v1/compliance/ifrs9/ecl${q}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 128,
+      "verb": "GET",
+      "url_raw": "/api/v1/compliance/basel/car",
+      "snippet": "fetch(\"/api/v1/compliance/basel/car\", { headers: authHeaders() }"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 151,
+      "verb": "GET",
+      "url_raw": "/api/v1/reporting/portfolio?groupby=${encodeURIComponent(groupby)}",
+      "snippet": "fetch(`/api/v1/reporting/portfolio?groupby=${encodeURIComponent(groupby)}`,     { headers: authHeade"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 165,
+      "verb": "GET",
+      "url_raw": "/api/v1/reporting/definitions",
+      "snippet": "fetch(\"/api/v1/reporting/definitions\", { headers: authHeaders() }"
+    },
+    {
+      "file": "regcon.ts",
+      "line": 172,
+      "verb": "POST",
+      "url_raw": "/api/v1/reporting/definitions",
+      "snippet": "fetch(\"/api/v1/reporting/definitions\", {     method: \"POST\", headers: authHeaders(),     body: JSON."
+    },
+    {
+      "file": "regcon.ts",
+      "line": 184,
+      "verb": "GET",
+      "url_raw": "/api/v1/reporting/definitions/${id}/run",
+      "snippet": "fetch(`/api/v1/reporting/definitions/${id}/run`, { headers: authHeaders() }"
+    },
+    {
+      "file": "servicing.ts",
+      "line": 39,
+      "verb": "GET",
+      "url_raw": "/api/v1/loans",
+      "snippet": "fetch(\"/api/v1/loans\", { headers: authHeaders() }"
+    },
+    {
+      "file": "servicing.ts",
+      "line": 44,
+      "verb": "GET",
+      "url_raw": "/api/v1/loans/${id}",
+      "snippet": "fetch(`/api/v1/loans/${id}`, { headers: authHeaders() }"
+    },
+    {
+      "file": "servicing.ts",
+      "line": 49,
+      "verb": "POST",
+      "url_raw": "/api/v1/loans/${loanId}/payments",
+      "snippet": "fetch(`/api/v1/loans/${loanId}/payments`, {     method: \"POST\", headers: authHeaders(),     body: JS"
+    },
+    {
+      "file": "servicing.ts",
+      "line": 56,
+      "verb": "GET",
+      "url_raw": "/api/v1/loans/${loanId}/payments",
+      "snippet": "fetch(`/api/v1/loans/${loanId}/payments`, { headers: authHeaders() }"
+    },
+    {
+      "file": "servicing.ts",
+      "line": 62,
+      "verb": "POST",
+      "url_raw": "/api/v1/loans/${loanId}/payment-intents",
+      "snippet": "fetch(`/api/v1/loans/${loanId}/payment-intents`, {     method: \"POST\", headers: authHeaders(), body:"
+    },
+    {
+      "file": "servicing.ts",
+      "line": 68,
+      "verb": "GET",
+      "url_raw": "/api/v1/loans/${loanId}/schedule",
+      "snippet": "fetch(`/api/v1/loans/${loanId}/schedule`, { headers: authHeaders() }"
+    },
+    {
+      "file": "servicing.ts",
+      "line": 75,
+      "verb": "GET",
+      "url_raw": "/api/v1/loans/${loanId}/statement?page=${page}",
+      "snippet": "fetch(`/api/v1/loans/${loanId}/statement?page=${page}`, {     headers: authHeaders(),   }"
+    },
+    {
+      "file": "servicing.ts",
+      "line": 86,
+      "verb": "POST",
+      "url_raw": "/api/v1/loans/${loanId}/settle-quote",
+      "snippet": "fetch(`/api/v1/loans/${loanId}/settle-quote`, {     method: \"POST\", headers: authHeaders(),   }"
+    },
+    {
+      "file": "servicing.ts",
+      "line": 93,
+      "verb": "POST",
+      "url_raw": "/api/v1/loans/${loanId}/reschedule-request",
+      "snippet": "fetch(`/api/v1/loans/${loanId}/reschedule-request`, {     method: \"POST\", headers: authHeaders(), bo"
+    }
+  ]
+}

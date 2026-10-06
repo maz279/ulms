@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ULMS Borrower — UX Preview (English)</title>
+<style>
+  /* ============================================================
+     ULMS Borrower app — visual prototype gallery.
+     A 1:1 HTML rendering of the six React Native screens as built
+     in ../mobile_app (same tokens: #3F51B5 primary, #1E2660 deep,
+     #F7F8FC canvas, #E1E5F2 line, #107C10 ok, #C50F1F err).
+     Demo data mirrors the live mock stack (LN-300001 · retail-home
+     · ৳24,80,000 outstanding · EMI ৳88,958 · next due 2026-10-05).
+     Bangla-first per 07 §6 — this is a preview, not a new design.
+     ============================================================ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #E9ECF8; font-family: "Segoe UI", "Noto Sans Bengali", system-ui, sans-serif; padding: 28px; }
+  h1 { color: #0D1233; font-size: 22px; margin-bottom: 4px; }
+  .sub { color: #555e77; font-size: 13px; margin-bottom: 26px; }
+  .row { display: flex; flex-wrap: wrap; gap: 34px; align-items: flex-start; }
+  .shot { width: 300px; }
+  .shot h2 { color: #1E2660; font-size: 14px; margin-bottom: 8px; }
+  .shot p  { color: #667; font-size: 11.5px; margin-bottom: 10px; min-height: 28px; }
+  /* phone frame */
+  .phone { width: 300px; height: 620px; border-radius: 34px; background: #fff;
+           border: 9px solid #0D1233; overflow: hidden; position: relative;
+           box-shadow: 0 18px 44px rgba(13,18,51,.28); display: flex; flex-direction: column; }
+  .notch { width: 110px; height: 22px; background: #0D1233; border-radius: 0 0 14px 14px; margin: 0 auto; }
+  .scr { flex: 1; overflow: hidden; display: flex; flex-direction: column; background: #F7F8FC; }
+  .pad { padding: 16px; }
+  /* status strip */
+  .status { display: flex; justify-content: space-between; padding: 4px 16px 0; font-size: 10px; color: #333; }
+  /* tab bar (mirrors the React Navigation bottom tabs) */
+  .tabs { display: flex; border-top: 1px solid #E1E5F2; background: #fff; padding: 7px 4px 9px; }
+  .tab { flex: 1; text-align: center; font-size: 9.5px; color: #8a90a5; }
+  .tab .ico { font-size: 17px; display: block; margin-bottom: 2px; }
+  .tab.on { color: #3F51B5; font-weight: 700; }
+  /* shared atoms */
+  .h1 { font-size: 19px; font-weight: 800; color: #111; margin-top: 10px; }
+  .card { background: #fff; border: 1px solid #E1E5F2; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+  .mono { font-family: Consolas, monospace; }
+  .muted { color: #888; font-size: 11px; }
+  .label { font-size: 10.5px; color: #888; }
+  .btn { background: #3F51B5; color: #fff; border-radius: 9px; padding: 12px; text-align: center; font-weight: 700; font-size: 13.5px; margin-top: 8px; }
+  .btn.green { background: #107C10; }
+  .btn.ghost { background: #fff; color: #C50F1F; border: 1px solid #C50F1F; }
+  .input { border: 1px solid #c9cede; border-radius: 8px; padding: 11px; font-size: 13px; color: #333; background: #fff; margin-top: 8px; }
+  .ph { color: #9aa0b5; }
+  .err { color: #C50F1F; font-size: 11px; }
+  .ok { color: #107C10; font-size: 11.5px; }
+  .logo { width: 56px; height: 56px; border-radius: 14px; background: #1E2660; color: #F0C441;
+          font-size: 30px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 8px auto 6px; }
+  .chip { display: inline-block; border: 1px solid #3F51B5; color: #3F51B5; border-radius: 16px; padding: 5px 14px; font-size: 11px; font-weight: 600; margin-right: 7px; }
+  .chip.on { background: #3F51B5; color: #fff; }
+</style>
+</head>
+<body>
+  <h1>ULMS Borrower — Mobile App UX Preview (English)</h1>
+  <p class="sub">Six screens exactly as built in <b>mobile_app/</b> (Expo 54 · React Native) — same colors and layout with the app's English strings. Demo data mirrors the live mock: LN-300001 · retail-home · outstanding ৳24,80,000 · EMI ৳88,958 · next due 05 Oct 2026.</p>
+  <p class="sub" style="border-left:3px solid #107C10;padding-left:10px"><b>Updated:</b> the shipped app now carries the <b>gradient hero login with news carousel</b> and the <b>hero balance-card home</b> — <a href="prototype/" style="color:#3F51B5">click the working prototype</a> to experience the current design live.</p>
+
+  <div class="row">
+
+    <!-- 1 · LOGIN (OTP) -->
+    <div class="shot">
+      <h2>1 · Login — OTP</h2>
+      <p>Passwordless per Bangladesh Bank MFS norm: mobile → SMS code. Dev stack auto-fills the code.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad" style="text-align:center">
+          <div class="logo">৳</div>
+          <div class="h1">ULMS Borrower</div>
+          <p class="muted" style="margin-top:3px">Welcome — ABC Bank</p>
+          <div class="input mono" style="text-align:left">+8801712345678</div>
+          <div class="input mono" style="text-align:left">493021</div>
+          <div class="btn">Sign in</div>
+          <p class="ok" style="margin-top:9px">Dev OTP auto-filled — production delivers by SMS</p>
+          <p class="muted" style="margin-top:12px">OTP per Bangladesh Bank MFS norm · no card data on device</p>
+        </div>
+        <div class="tabs">
+          <div class="tab on"><span class="ico">🔑</span>Login</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 2 · HOME -->
+    <div class="shot">
+      <h2>2 · Home — account cards</h2>
+      <p>Outstanding, EMI, next due, DPD status per loan; pay-now jumps to the Pay tab.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div class="h1">Hello, Rahim Uddin</div>
+          <div class="card" style="margin-top:12px">
+            <div class="mono muted">LN-300001 · retail-home</div>
+            <div style="font-size:27px;font-weight:800;color:#1E2660;margin-top:4px">৳24,80,000</div>
+            <div class="label">Outstanding balance</div>
+            <div style="display:flex;gap:16px;margin-top:10px">
+              <div style="flex:1"><div style="font-weight:700;font-size:14px">৳88,958</div><div class="label">Monthly instalment</div></div>
+              <div style="flex:1"><div style="font-weight:700;font-size:14px">2026-10-05</div><div class="label">Next due</div></div>
+              <div style="flex:1"><div style="font-weight:700;font-size:14px;color:#107C10">✓</div><div class="label">Your account is current</div></div>
+            </div>
+            <div class="btn">Pay now</div>
+          </div>
+          <div class="card">
+            <div class="mono muted">LN-300002 · sme-term</div>
+            <div style="font-size:22px;font-weight:800;color:#1E2660;margin-top:3px">৳18,75,000</div>
+            <div style="display:flex;gap:16px;margin-top:8px">
+              <div style="flex:1"><div style="font-weight:700;font-size:13px">৳62,114</div><div class="label">Monthly instalment</div></div>
+              <div style="flex:1"><div style="font-weight:700;font-size:13px;color:#C50F1F">22</div><div class="label">days past due</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="tabs">
+          <div class="tab on"><span class="ico">🏠</span>Home</div><div class="tab"><span class="ico">📄</span>Applications</div>
+          <div class="tab"><span class="ico">💳</span>Pay</div><div class="tab"><span class="ico">🧾</span>Statements</div>
+          <div class="tab"><span class="ico">⚙</span>More</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 3 · TRACKER + APPLY -->
+    <div class="shot">
+      <h2>3 · My Applications — tracker + apply</h2>
+      <p>Stage tracker on the bank's BPF; in-app apply against the retail-personal product bounds.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div class="h1">My applications</div>
+          <div class="card" style="margin-top:10px">
+            <div class="mono" style="font-weight:700">APP-8126</div>
+            <div style="color:#3F51B5;font-weight:700;margin-top:2px">SUBMITTED</div>
+            <div class="muted" style="margin-top:2px">retail-personal · ৳1,00,000 · 2026-10-04</div>
+          </div>
+          <div class="card">
+            <div class="mono" style="font-weight:700">APP-G2-11</div>
+            <div style="color:#3F51B5;font-weight:700;margin-top:2px">SANCTION</div>
+            <div class="muted" style="margin-top:2px">sme-term · ৳15,00,000 · 2026-10-01</div>
+          </div>
+          <div class="card">
+            <div style="font-weight:700;font-size:13.5px;margin-bottom:2px">Apply for a loan</div>
+            <div class="input ph">Amount (৳ Lakh)</div>
+            <div class="btn">Submit application</div>
+          </div>
+        </div>
+        <div class="tabs">
+          <div class="tab"><span class="ico">🏠</span>Home</div><div class="tab on"><span class="ico">📄</span>Applications</div>
+          <div class="tab"><span class="ico">💳</span>Pay</div><div class="tab"><span class="ico">🧾</span>Statements</div>
+          <div class="tab"><span class="ico">⚙</span>More</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 4 · PAY -->
+    <div class="shot">
+      <h2>4 · Pay — bKash/Nagad redirect</h2>
+      <p>OTP-confirmed initiation; the rail's hosted checkout opens in the system browser — credentials never touch the app.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div class="h1">Make a payment — LN-300001</div>
+          <p class="muted" style="margin:3px 0 6px">Monthly instalment ৳88,958 · বকেয়া ৳24,80,000</p>
+          <div class="input ph">পরিমাণ (৳)</div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <span class="chip on">BKASH</span><span class="chip">NAGAD</span><span class="chip">BEFTN</span>
+          </div>
+          <div class="btn green" style="margin-top:14px">Confirm &amp; pay</div>
+          <p class="ok" style="margin-top:8px">Opening secure checkout…</p>
+          <div style="font-weight:700;font-size:13px;margin-top:14px">Payment history</div>
+          <div class="card" style="margin-top:8px"><div style="font-weight:700">৳88,958</div><div class="muted">2026-09-05 · BKASH · TXN9F2K1</div></div>
+          <div class="card"><div style="font-weight:700">৳88,958</div><div class="muted">2026-08-05 · NAGAD · TXN4A7C9</div></div>
+        </div>
+        <div class="tabs">
+          <div class="tab"><span class="ico">🏠</span>Home</div><div class="tab"><span class="ico">📄</span>Applications</div>
+          <div class="tab on"><span class="ico">💳</span>Pay</div><div class="tab"><span class="ico">🧾</span>Statements</div>
+          <div class="tab"><span class="ico">⚙</span>More</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 5 · STATEMENTS -->
+    <div class="shot">
+      <h2>5 · Statements</h2>
+      <p>Per-loan CSV statement download (tax certificates join via the same presign pattern).</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div class="h1">স্টেটমেন্ট</div>
+          <div class="card" style="margin-top:10px">
+            <div class="mono" style="font-weight:700">LN-300001</div>
+            <div class="muted">৳24,80,000</div>
+            <div class="btn">Download statement (CSV)</div>
+          </div>
+          <div class="card">
+            <div class="mono" style="font-weight:700">LN-300002</div>
+            <div class="muted">৳18,75,000</div>
+            <div class="btn">Download statement (CSV)</div>
+          </div>
+          <p class="muted" style="margin-top:10px">statement-LN-300001.csv · 38 rows · generated by the bank API</p>
+        </div>
+        <div class="tabs">
+          <div class="tab"><span class="ico">🏠</span>Home</div><div class="tab"><span class="ico">📄</span>Applications</div>
+          <div class="tab"><span class="ico">💳</span>Pay</div><div class="tab on"><span class="ico">🧾</span>Statements</div>
+          <div class="tab"><span class="ico">⚙</span>More</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 6 · MORE -->
+    <div class="shot">
+      <h2>6 · More — language / calculator / help</h2>
+      <p>Bangla⇄English toggle, early-payoff calculator (bank-oracle EMI math), branch help line, sign out.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div class="h1">আরও</div>
+          <div class="card" style="margin-top:10px">
+            <div style="font-weight:700;font-size:13px;margin-bottom:7px">ভাষা</div>
+            <span class="chip on">বাংলা</span><span class="chip">English</span>
+          </div>
+          <div class="card">
+            <div style="font-weight:700;font-size:13px">Early payoff calculator</div>
+            <div class="input" style="color:#333">50000</div>
+            <div class="ok" style="font-weight:700;margin-top:9px">34 → 20 mo · ৳2,45,406 saved</div>
+            <div class="muted" style="margin-top:3px">EMI ৳88,958 @ 13% p.a. (shown: extra ৳50,000/month)</div>
+          </div>
+          <div class="card">
+            <div style="font-weight:700;font-size:13px">Help &amp; support</div>
+            <div class="muted" style="margin-top:3px">Your branch: BR-001 · +880 2 5566 0000</div>
+          </div>
+          <div class="btn ghost">Sign out</div>
+        </div>
+        <div class="tabs">
+          <div class="tab"><span class="ico">🏠</span>Home</div><div class="tab"><span class="ico">📄</span>Applications</div>
+          <div class="tab"><span class="ico">💳</span>Pay</div><div class="tab"><span class="ico">🧾</span>Statements</div>
+          <div class="tab on"><span class="ico">⚙</span>More</div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</body>
+</html>

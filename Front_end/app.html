@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ULMS · Unisoft Loan Management System — ABC Bank Bangladesh</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/tokens.css?v=16">
+<link rel="stylesheet" href="css/app.css?v=16">
+</head>
+<body>
+<div id="app-root">
+  <div style="padding:48px;display:flex;justify-content:center">
+    <div class="page-skel" style="width:min(860px,90vw)">
+      <div class="sk" style="height:48px;width:100%"></div>
+      <div class="sk" style="height:320px;width:100%"></div>
+      <div class="sk" style="height:120px;width:60%"></div>
+    </div>
+  </div>
+</div>
+<div id="lms-modal"></div>
+<script src="js/nav_data.js?v=16"></script>
+<script src="js/demo_data.js?v=16"></script>
+<script src="js/i18n.js?v=16"></script>
+<script src="js/i18n_data.js?v=16"></script>
+<script src="js/charts.js?v=16"></script>
+<script src="js/shell.js?v=16"></script>
+<script src="js/app.js?v=16"></script>
+<script>
+(function(){
+  "use strict";
+  var root=document.getElementById("app-root");
+  LMSRenderShell(root);
+  if(!location.hash) location.replace("#/home");
+  LMSRoute();
+  // keep active tab highlighted on nav clicks handled via hashchange
+  window.addEventListener("hashchange",function(){
+    var n=document.getElementById("rail-n"); if(n) n.textContent=LMS_SHELL.tabs.length;
+  });
+  var n=document.getElementById("rail-n"); if(n) n.textContent=LMS_SHELL.tabs.length;
+})();
+</script>
+</body>
+</html>

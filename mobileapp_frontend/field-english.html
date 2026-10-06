@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ULMS Field — UX Preview (English)</title>
+<style>
+  /* ============================================================
+     ULMS Field app (field-officer CPV/collections) — visual
+     prototype gallery. A 1:1 HTML rendering of the eight React
+     Native screens as built in ../LMS_CODEBASE/apps/mobile
+     (Expo 54 · RN 0.81): LoginScreen, PinLockScreen, TodayScreen,
+     CpvTasksScreen, MapScreen, ProofGalleryScreen, SosScreen,
+     SyncScreen — same tokens (#3F51B5/#1E2660/#107C10/#C50F1F),
+     strings.ts Bangla-first copy verbatim, mock-stack demo data.
+     This is a preview of the implemented design, not a new design.
+     ============================================================ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #E9ECF8; font-family: "Segoe UI", "Noto Sans Bengali", system-ui, sans-serif; padding: 28px; }
+  h1 { color: #0D1233; font-size: 22px; margin-bottom: 4px; }
+  .sub { color: #555e77; font-size: 13px; margin-bottom: 26px; }
+  .back { position: absolute; top: 24px; right: 28px; font-size: 12.5px; color: #3F51B5; text-decoration: none; font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 34px; align-items: flex-start; }
+  .shot { width: 300px; }
+  .shot h2 { color: #1E2660; font-size: 14px; margin-bottom: 8px; }
+  .shot p  { color: #667; font-size: 11.5px; margin-bottom: 10px; min-height: 28px; }
+  .phone { width: 300px; height: 620px; border-radius: 34px; background: #fff;
+           border: 9px solid #0D1233; overflow: hidden; position: relative;
+           box-shadow: 0 18px 44px rgba(13,18,51,.28); display: flex; flex-direction: column; }
+  .notch { width: 110px; height: 22px; background: #0D1233; border-radius: 0 0 14px 14px; margin: 0 auto; }
+  .scr { flex: 1; overflow: hidden; display: flex; flex-direction: column; background: #fff; }
+  .scr.gray { background: #F7F8FC; }
+  .pad { padding: 16px; overflow: hidden; flex: 1; }
+  .status { display: flex; justify-content: space-between; padding: 4px 16px 0; font-size: 10px; color: #333; }
+  .tabs { display: flex; border-top: 1px solid #E1E5F2; background: #fff; padding: 7px 4px 9px; }
+  .tab { flex: 1; text-align: center; font-size: 8.5px; color: #8a90a5; }
+  .tab .ico { font-size: 16px; display: block; margin-bottom: 2px; }
+  .tab.on { color: #3F51B5; font-weight: 700; }
+  .h1 { font-size: 20px; font-weight: 800; color: #111; }
+  .card { background: #fff; border: 1px solid #e0e0e6; border-radius: 10px; padding: 12px; margin-bottom: 8px; }
+  .gray .card { border-color: #E1E5F2; }
+  .mono { font-family: Consolas, monospace; }
+  .muted { color: #555; font-size: 12px; }
+  .meta { color: #555; font-size: 12px; margin: 3px 0; }
+  .hint { font-size: 11px; color: #777; margin: 6px 0; }
+  .err { color: #C50F1F; font-size: 12px; }
+  .ok { color: #107C10; font-size: 12px; }
+  .btnP { background: #3F51B5; color: #fff; border-radius: 8px; padding: 8px 12px;
+          font-size: 13px; font-weight: 600; display: inline-block; }
+  .btnOut { border: 1px solid #3F51B5; color: #3F51B5; border-radius: 8px; padding: 8px 12px;
+            font-size: 13px; font-weight: 600; display: inline-block; background: #fff; }
+  .btnBig { background: #3F51B5; color: #fff; border-radius: 8px; padding: 12px; text-align: center;
+            font-weight: 700; font-size: 14px; margin-top: 14px; opacity: .5; }
+  .btnBig.full { opacity: 1; }
+  .input { border: 1px solid #c9cede; border-radius: 8px; padding: 10px; font-size: 13px; background: #fff; margin-top: 8px; }
+  .ph { color: #9aa0b5; }
+  .logo { width: 56px; height: 56px; border-radius: 14px; background: #1E2660; color: #fff;
+          font-size: 30px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 8px auto 6px; }
+  .switch { width: 44px; height: 26px; background: #3F51B5; border-radius: 13px; position: relative; }
+  .switch::after { content: ""; position: absolute; right: 3px; top: 3px; width: 20px; height: 20px; background: #fff; border-radius: 10px; }
+  .sigbox { height: 92px; border: 1px solid #c9cede; border-radius: 8px; background: #F0F2FB; margin-top: 6px;
+            position: relative; overflow: hidden; }
+  .sigpath { position: absolute; inset: 12px 20px; }
+  .board { height: 210px; border: 1px solid #c9cede; border-radius: 10px; background: #F7F8FC;
+           position: relative; overflow: hidden; }
+  .gridH { position: absolute; left: 0; right: 0; height: 1px; background: #E1E5F2; }
+  .gridV { position: absolute; top: 0; bottom: 0; width: 1px; background: #E1E5F2; }
+  .pin { position: absolute; width: 32px; height: 32px; margin-left: -16px; margin-top: -32px;
+         border-radius: 16px; background: #C50F1F; color: #fff; font-size: 8.5px; font-weight: 700;
+         display: flex; align-items: center; justify-content: center; }
+  .pill { display: inline-block; border: 1px solid; border-radius: 16px; padding: 4px 12px; font-size: 10.5px; font-weight: 600; }
+  .pill.warn { color: #996a00; border-color: #d9b84a; background: #fff8e6; }
+  .pill.ok { color: #107C10; border-color: #107C10; }
+</style>
+</head>
+<body>
+  <a class="back" href="index.html">← All previews</a>
+  <h1>ULMS Field — Field App UX Preview (English)</h1>
+  <p class="sub">Eight screens exactly as built in <b>LMS_CODEBASE/apps/mobile/</b> (Expo 54 · React Native) — offline-first CPV & collections for field officers. Demo data mirrors the mock stack.</p>
+  <p class="sub" style="border-left:3px solid #107C10;padding-left:10px"><b>Updated:</b> the field app login now carries the same gradient hero with a staff security-notice carousel (offline-first · PKCE · SOS).</p>
+
+  <div class="row">
+
+    <!-- 1 · LOGIN (bank PKCE) -->
+    <div class="shot">
+      <h2>1 · Login — bank account (PKCE)</h2>
+      <p>Keycloak PKCE via the system browser; the ulmsfield:// callback exchanges the code. No passwords stored.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad" style="text-align:center">
+          <div class="logo">U</div>
+          <div style="font-size:24px;font-weight:800;margin-top:6px">ULMS Field</div>
+          <p class="muted" style="margin-top:3px">ABC Bank · e-KYC & collections</p>
+          <div class="btnP" style="margin-top:26px;padding:14px 26px">Sign in with bank account</div>
+          <p class="hint" style="margin-top:14px">Keycloak PKCE · redirected via the bank identity provider</p>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 2 · PIN LOCK -->
+    <div class="shot">
+      <h2>2 · App lock — PIN</h2>
+      <p>4–6 digit PIN after bank sign-in on every cold start (08 §A2); 30s lockout per 3 misses. Biometric at the EAS build.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad" style="text-align:center">
+          <div style="font-size:21px;font-weight:800;margin-top:40px">Enter PIN</div>
+          <div class="input mono" style="width:190px;margin:14px auto 0;text-align:center;font-size:19px;letter-spacing:8px">••••</div>
+          <div class="btnP" style="margin-top:14px;padding:12px 30px">Unlock</div>
+          <p class="err" style="margin-top:12px;min-height:16px">Locked — retry in 27s</p>
+          <p class="hint" style="margin-top:18px">Biometric unlock joins at the managed (EAS/MDM) build</p>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 3 · TODAY -->
+    <div class="shot">
+      <h2>3 · Today's visits</h2>
+      <p>Collections worklist with DPD/class/priority; call-log and PTP capture (queued offline) per loan.</p>
+      <div class="phone"><div class="notch"></div><div class="scr gray">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div class="h1" style="margin-top:12px">Today's visits · offline</div>
+          <div class="card" style="margin-top:12px">
+            <div class="mono" style="font-weight:700">LN-300002</div>
+            <div class="meta">DPD 22 · STD-1 · P1</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <span class="btnOut">Log call</span><span class="btnP">Promise to Pay</span>
+            </div>
+            <div class="input ph" style="margin-top:10px">Promised (৳ Lakh)</div>
+            <div class="input ph" style="margin-top:6px">Promise date</div>
+            <div class="btnP" style="margin-top:8px;text-align:center;display:block">Record promise (queued)</div>
+          </div>
+          <div class="card">
+            <div class="mono" style="font-weight:700">LN-300004</div>
+            <div class="meta">DPD 78 · SMA · P1</div>
+            <div style="display:flex;gap:8px;margin-top:8px"><span class="btnOut">Log call</span><span class="btnP">Promise to Pay</span></div>
+          </div>
+        </div>
+        <div class="tabs">
+          <div class="tab on"><span class="ico">📋</span>Today</div><div class="tab"><span class="ico">✅</span>CPV tasks</div>
+          <div class="tab"><span class="ico">🗺</span>Map</div><div class="tab"><span class="ico">🗂</span>Proof</div>
+          <div class="tab"><span class="ico">🆘</span>SOS</div><div class="tab"><span class="ico">🔄</span>Sync</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 4 · CPV FORM -->
+    <div class="shot">
+      <h2>4 · CPV form</h2>
+      <p>Gates before enqueue: GPS &lt;10m, ≥1 photo, person met. Voice note ≤5 min (300s cap), signature canvas, idempotent visit submit.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div style="font-size:20px;font-weight:800;margin-top:12px">Residence verification</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+            <span style="font-size:13px">Person met</span><span class="switch"></span>
+          </div>
+          <p class="hint">Acquiring GPS (<10m)… (6m)</p>
+          <p class="hint">Photos (min 1): 2</p>
+          <div class="input ph" style="min-height:54px">মন্তব্য</div>
+          <span class="btnOut" style="margin-top:10px;display:block;text-align:center">Record voice note (≤5 min)</span>
+          <p class="hint" style="margin-top:10px">Borrower signature — Signature captured</p>
+          <div class="sigbox">
+            <svg class="sigpath" viewBox="0 0 200 50"><path d="M5 38 C 30 8, 55 46, 80 26 S 130 8, 150 32 S 185 40, 196 20" fill="none" stroke="#0B0E1A" stroke-width="2.2" stroke-linecap="round"/></svg>
+          </div>
+          <div class="btnBig full">Submit (queued offline)</div>
+        </div>
+        <div class="tabs">
+          <div class="tab"><span class="ico">📋</span>Today</div><div class="tab on"><span class="ico">✅</span>CPV tasks</div>
+          <div class="tab"><span class="ico">🗺</span>Map</div><div class="tab"><span class="ico">🗂</span>Proof</div>
+          <div class="tab"><span class="ico">🆘</span>SOS</div><div class="tab"><span class="ico">🔄</span>Sync</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 5 · MAP -->
+    <div class="shot">
+      <h2>5 · Field map</h2>
+      <p>Borrower task pins on a schematic board (normalized to the Bangladesh bbox); unpinned tasks list below. Native tiles at the EAS build.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div style="font-size:20px;font-weight:800;margin-top:12px">Field map</div>
+          <div class="board" style="margin-top:10px">
+            <div class="gridH" style="top:25%"></div><div class="gridH" style="top:50%"></div><div class="gridH" style="top:75%"></div>
+            <div class="gridV" style="left:25%"></div><div class="gridV" style="left:50%"></div><div class="gridV" style="left:75%"></div>
+            <div class="pin" style="top:34%;left:58%">300002</div>
+            <div class="pin" style="top:52%;left:41%">300004</div>
+            <div class="pin" style="top:68%;left:66%">300005</div>
+          </div>
+          <p class="hint" style="margin-top:6px">Schematic pin board — native tiles arrive with the EAS build</p>
+          <div style="font-size:14px;font-weight:600;margin-top:8px">Needs geocoding</div>
+          <div class="card" style="margin-top:6px;display:flex;justify-content:space-between">
+            <span class="mono" style="font-weight:600">LN-300006</span><span style="font-size:12px;color:#996a00">no coordinates on task</span>
+          </div>
+        </div>
+        <div class="tabs">
+          <div class="tab"><span class="ico">📋</span>Today</div><div class="tab"><span class="ico">✅</span>CPV tasks</div>
+          <div class="tab on"><span class="ico">🗺</span>Map</div><div class="tab"><span class="ico">🗂</span>Proof</div>
+          <div class="tab"><span class="ico">🆘</span>SOS</div><div class="tab"><span class="ico">🔄</span>Sync</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 6 · PROOF GALLERY -->
+    <div class="shot">
+      <h2>6 · Proof gallery</h2>
+      <p>Every queued and synced evidence item with its integrity checksum — photos, GPS fixes, notes, signatures, voice.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div style="font-size:20px;font-weight:800;margin-top:12px">Proof gallery</div>
+          <p class="hint">Every queued and synced evidence item, with integrity sha</p>
+          <div class="card" style="margin-top:10px;display:flex;gap:10px;align-items:center">
+            <span style="font-size:20px">📍</span>
+            <div style="flex:1"><div class="mono" style="font-size:11.5px">gps:23.7936,90.4043</div><div class="hint" style="margin:2px 0">2026-10-04 08:12 · sha 4f2a91c8b0…</div></div>
+            <span class="pill ok">Synced</span>
+          </div>
+          <div class="card" style="display:flex;gap:10px;align-items:center">
+            <span style="font-size:20px">✍</span>
+            <div style="flex:1"><div class="mono" style="font-size:11.5px">sig:ft-1</div><div class="hint" style="margin:2px 0">2026-10-04 08:13 · sha 9d37e5…</div></div>
+            <span class="pill warn">Pending</span>
+          </div>
+          <div class="card" style="display:flex;gap:10px;align-items:center">
+            <span style="font-size:20px">🎙</span>
+            <div style="flex:1"><div class="mono" style="font-size:11.5px">voice:ft-1:214s</div><div class="hint" style="margin:2px 0">2026-10-04 08:16 · sha c011b7…</div></div>
+            <span class="pill warn">Pending</span>
+          </div>
+          <div class="card" style="display:flex;gap:10px;align-items:center">
+            <span style="font-size:20px">🖼</span>
+            <div style="flex:1"><div class="mono" style="font-size:11.5px">photo:IMG_4471.jpg</div><div class="hint" style="margin:2px 0">2026-10-04 08:11 · sha 77a3f0…</div></div>
+            <span class="pill ok">Synced</span>
+          </div>
+        </div>
+        <div class="tabs">
+          <div class="tab"><span class="ico">📋</span>Today</div><div class="tab"><span class="ico">✅</span>CPV tasks</div>
+          <div class="tab"><span class="ico">🗺</span>Map</div><div class="tab on"><span class="ico">🗂</span>Proof</div>
+          <div class="tab"><span class="ico">🆘</span>SOS</div><div class="tab"><span class="ico">🔄</span>Sync</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 7 · SOS -->
+    <div class="shot">
+      <h2>7 · SOS — escalation</h2>
+      <p>Two-step arm→send; captures GPS but never blocks on it; durable alert + SOS_RAISED outbox event (branch security + SMS). Retries with backoff.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div style="font-size:21px;font-weight:800;margin-top:16px">SOS escalation</div>
+          <p class="hint" style="font-size:12.5px">One tap alerts branch security and sends your location by SMS</p>
+          <div class="input ph" style="min-height:64px">Note (optional)</div>
+          <div style="background:#C50F1F;border-radius:10px;padding:16px;text-align:center;color:#fff;font-weight:700;font-size:15px;margin-top:14px">ARM SOS</div>
+          <p class="hint" style="margin-top:12px">SOS is never silently dropped — the queue retries with backoff</p>
+        </div>
+        <div class="tabs">
+          <div class="tab"><span class="ico">📋</span>Today</div><div class="tab"><span class="ico">✅</span>CPV tasks</div>
+          <div class="tab"><span class="ico">🗺</span>Map</div><div class="tab"><span class="ico">🗂</span>Proof</div>
+          <div class="tab on"><span class="ico">🆘</span>SOS</div><div class="tab"><span class="ico">🔄</span>Sync</div>
+        </div>
+      </div></div>
+    </div>
+
+    <!-- 8 · SYNC -->
+    <div class="shot">
+      <h2>8 · Sync center</h2>
+      <p>The offline queue with per-op state and the drain summary — server-wins conflicts, append-only evidence, backoff deferrals.</p>
+      <div class="phone"><div class="notch"></div><div class="scr">
+        <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+        <div class="pad">
+          <div style="font-size:20px;font-weight:800;margin-top:12px">Sync</div>
+          <div class="btnP" style="display:block;text-align:center;margin-top:10px;padding:10px">Sync now</div>
+          <p class="ok" style="margin-top:8px">synced 3 · conflicts(server-wins) 1 · appended 1 · deferred 1 · failed 0</p>
+          <div class="card" style="margin-top:10px">
+            <div class="mono" style="font-weight:600;font-size:12.5px">visit · ft-1</div>
+            <div class="meta">Synced · attempts 1</div>
+          </div>
+          <div class="card">
+            <div class="mono" style="font-weight:600;font-size:12.5px">sos · sos-1728…</div>
+            <div class="meta">Pending · attempts 1 · HTTP 0 (offline)</div>
+          </div>
+          <div class="card">
+            <div class="mono" style="font-weight:600;font-size:12.5px">ptp-create · l-2</div>
+            <div class="meta">Conflict — server wins · attempts 2 · appended evidence</div>
+          </div>
+        </div>
+        <div class="tabs">
+          <div class="tab"><span class="ico">📋</span>Today</div><div class="tab"><span class="ico">✅</span>CPV tasks</div>
+          <div class="tab"><span class="ico">🗺</span>Map</div><div class="tab"><span class="ico">🗂</span>Proof</div>
+          <div class="tab"><span class="ico">🆘</span>SOS</div><div class="tab on"><span class="ico">🔄</span>Sync</div>
+        </div>
+      </div></div>
+    </div>
+
+  </div>
+</body>
+</html>

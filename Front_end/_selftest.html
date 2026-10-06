@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ULMS prototype — route self-test</title>
+<link rel="stylesheet" href="css/tokens.css?v=16">
+<link rel="stylesheet" href="css/app.css?v=16">
+</head>
+<body>
+<div id="app-root"></div><div id="lms-modal"></div>
+<script src="js/nav_data.js?v=16"></script>
+<script src="js/demo_data.js?v=16"></script>
+<script src="js/i18n.js?v=16"></script>
+<script src="js/i18n_data.js?v=16"></script>
+<script src="js/charts.js?v=16"></script>
+<script src="js/shell.js?v=16"></script>
+<script src="js/app.js?v=16"></script>
+<script>
+/* ============================================================
+   ULMS self-test — boots the REAL shell, then walks every route
+   family (bespoke + one screen per module + freg + reports +
+   records), capturing errors. Replaces the page with PASS/FAIL
+   evidence and sets document.title accordingly.
+   ============================================================ */
+(function(){
+"use strict";
+var routes=[];
+routes.push("#/home","#/pipeline","#/apply","#/approvals","#/disburse","#/collections",
+  "#/classification","#/analytics","#/regcon","#/reports","#/writer","#/audit","#/settings",
+  "#/designsystem","#/coverage","#/directory","#/search","#/shortcuts","#/notifications","#/nonsense-404");
+Object.keys(LMS_MODULES).forEach(function(mid){
+  routes.push("#/workspace/"+mid);
+  routes.push("#/freg/"+mid);
+  routes.push("#/report/"+mid+"/0");
+  routes.push("#/form/"+mid+"/New%20record");
+  LMS_MODULES[mid].groups.forEach(function(g){ g.screens.forEach(function(s){
+    var r=s.route||("#/screen/"+s.id);
+    if(r.charAt(0)==="#") routes.push(r); // .html links are page navigations
+  });});
+});
+LMS_D.customers.slice(0,4).forEach(function(c){ routes.push("#/cust/"+c.cif); routes.push("#/cib/"+c.cif); });
+LMS_D.loans.slice(0,4).forEach(function(l){ routes.push("#/loan/"+l.id); });
+routes.push("#/record/A1-s1/0","#/record/B1-s1/3");
+
+var results=[], errors=0, i=0;
+window.onerror=function(msg,src,line){ errors++; results.push({r:routes[i]||"?",ok:false,note:msg+" @"+line}); return true; };
+
+LMSRenderShell(document.getElementById("app-root"));
+location.replace("#/home");
+
+function step(){
+  if(i>=routes.length) return finish();
+  var r=routes[i];
+  var errBefore=errors;
+  try{
+    if(location.hash===r) LMSRoute(); else location.hash=r;
+  }catch(e){ errors++; results.push({r:r,ok:false,note:e.message}); }
+  var page=document.getElementById("page");
+  var title=(page.querySelector(".page-title")||{}).textContent||"";
+  var empty=/Screen not found/.test(page.innerHTML);
+  var expect404=/nonsense/.test(r);
+  var ok;
+  if(expect404){ ok=empty; }
+  else { ok=!!title && !empty; }
+  if(errors>errBefore) ok=false;
+  results.push({r:r,ok:ok,note:title.slice(0,64)});
+  i++;
+  setTimeout(step,12);
+}
+function finish(){
+  var pass=results.filter(function(x){return x.ok;}).length, fail=results.length-pass;
+  var rows=results.map(function(x){
+    return "<tr><td>"+(x.ok?"✅":"❌")+"</td><td class='mono'>"+x.r+"</td><td>"+(x.note||"")+"</td></tr>";
+  }).join("");
+  var okAll = (fail===0 && errors===0);
+  document.title = "SELFTEST "+(okAll?"ALL PASS":"FAIL")+" — "+pass+"/"+results.length;
+  document.body.innerHTML =
+    '<div style="max-width:900px;margin:32px auto;padding:0 16px;font-family:var(--font-ui)">'+
+    '<h1>'+(okAll?"✅ SELFTEST ALL PASS":"⚠ SELFTEST — FAILURES")+'</h1>'+
+    '<p>'+pass+" / "+results.length+" routes rendered"+(errors?" · "+errors+" window errors":"")+
+    ' · shell modules '+LMS_COUNTS.modules+' · screens '+LMS_COUNTS.screens+' · reports '+LMS_COUNTS.reports+' · forms '+LMS_COUNTS.forms+'</p>'+
+    '<table class="usl-grid" style="background:#fff;border:1px solid #ddd"><thead><tr><th>OK</th><th>Route</th><th>Page title</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<p style="margin-top:16px"><button onclick="location.href=\'app.html\'">← Back to app</button></p></div>';
+}
+setTimeout(step,300);
+})();
+</script>
+</body>
+</html>

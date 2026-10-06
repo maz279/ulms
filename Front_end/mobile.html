@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ULMS Field · CPV & Collection Officer App (Android 10+)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="css/tokens.css?v=16">
+<link rel="stylesheet" href="css/app.css?v=16">
+<style>
+.page-wrap{min-height:100vh;background:linear-gradient(160deg,var(--navy-950),var(--brand-30));display:flex;gap:40px;align-items:center;justify-content:center;padding:40px;flex-wrap:wrap}
+.spec{max-width:380px;color:#D6DCF2}
+.spec h2{color:#fff;margin-bottom:8px}
+.spec li{margin:6px 0 6px 18px;font-size:13px}
+.spec .btn{margin-top:14px}
+.spec .lp-lang{position:static;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+  <aside class="spec">
+    <div class="lp-lang flex" role="group" aria-label="Language / ভাষা" style="gap:6px">
+      <button id="lang-en" onclick="setLang('en')" style="border:1px solid rgba(233,236,248,.4);background:rgba(233,236,248,.08);color:#E9ECF8;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer">English</button>
+      <button id="lang-bn" onclick="setLang('bn')" style="border:1px solid rgba(233,236,248,.4);background:rgba(233,236,248,.08);color:#E9ECF8;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer">বাংলা</button>
+    </div>
+    <h2 data-en="ULMS Field — offline-first" data-bn="ইউএলএমএস ফিল্ড — অফলাইন-প্রথম">ULMS Field — offline-first</h2>
+    <p style="font-size:13px" data-en="CPV &amp; collection officers work beyond network coverage. This is the Android 10+ app (React Native · Expo 50) shown in a device frame." data-bn="সিপিভি ও আদায় কর্মকর্তারা নেটওয়ার্ক কভারেজের বাইরে কাজ করেন। এটি অ্যান্ড্রয়েড ১০+ অ্যাপ (React Native · Expo 50), ডিভাইস ফ্রেমে দেখানো হয়েছে।">CPV &amp; collection officers work beyond network coverage. This is the Android 10+ app (React Native · Expo 50) shown in a device frame.</p>
+    <ul>
+      <li data-en="<b>Fully offline</b> — queue visits, photos, signatures; auto-sync with conflict resolution" data-bn="<b>সম্পূর্ণ অফলাইন</b> — ভিজিট, ছবি, স্বাক্ষর সারিবদ্ধ; কনফ্লিক্ট নিষ্পত্তিসহ অটো-সিঙ্ক"><b>Fully offline</b> — queue visits, photos, signatures; auto-sync with conflict resolution</li>
+      <li data-en="<b>GPS auto-capture &lt; 10 m</b> — geo-stamped evidence, no manual pin" data-bn="<b>জিপিএস অটো-ক্যাপচার &lt; ১০ মি</b> — জিও-স্ট্যাম্পড প্রমাণ, ম্যানুয়াল পিন নেই"><b>GPS auto-capture &lt; 10 m</b> — geo-stamped evidence, no manual pin</li>
+      <li data-en="<b>Photo + voice note (≤5 min)</b> + digital customer signature" data-bn="<b>ছবি + ভয়েস নোট (≤৫ মিনিট)</b> + ডিজিটাল গ্রাহক স্বাক্ষর"><b>Photo + voice note (≤5 min)</b> + digital customer signature</li>
+      <li data-en="<b>Auto report generation</b> → manager review queue" data-bn="<b>অটো রিপোর্ট জেনারেশন</b> → ব্যবস্থাপকের পর্যালোচনা কিউ"><b>Auto report generation</b> → manager review queue</li>
+      <li data-en="<b>Bangla-first UI</b> — built for field officers" data-bn="<b>বাংলা-প্রথম ইউআই</b> — ফিল্ড কর্মকর্তাদের জন্য তৈরি"><b>Bangla-first UI</b> — built for field officers</li>
+      <li data-en="<b>SOS</b> — one-tap escalation to branch security" data-bn="<b>এসওএস</b> — এক ট্যাপে শাখা নিরাপত্তায় এসকালেশন"><b>SOS</b> — one-tap escalation to branch security</li>
+    </ul>
+    <button class="btn btn-primary" onclick="location.href='app.html'" data-en="← Back to staff console" data-bn="← স্টাফ কনসোলে ফিরুন">← Back to staff console</button>
+  </aside>
+
+  <div class="phone" role="img" aria-label="Mobile app screen">
+    <div class="notch"></div>
+    <div class="p-status"><span>9:41</span><span>▮▮▮ ⌁ 84% · LTE</span></div>
+    <div class="p-appbar">
+      <h3 data-en="Today's visits" data-bn="আজকের সফর">Today's visits</h3>
+      <p data-en="Tahmina Akter · CPV Officer · Gulshan zone" data-bn="তাহমিনা আক্তার · সিপিভি কর্মকর্তা · গুলশান জোন">Tahmina Akter · CPV Officer · Gulshan zone</p>
+      <span class="gps-pill" data-en="📍 GPS locked ±6m · offline pack 12" data-bn="📍 জিপিএস লকড ±৬মি · অফলাইন প্যাক ১২">📍 GPS locked ±6m · offline pack 12</span>
+    </div>
+    <div class="p-body">
+      <div class="p-card">
+        <div class="p-kv"><b>APP-7248 · CPV</b><span class="chip chip-warn" style="height:18px;font-size:10px" data-en="due 4h" data-bn="বাকি ৪ঘা">due 4h</span></div>
+        <div class="p-kv"><span data-en="Nusrat Jahan · Banani" data-bn="নুসরাত জাহান · বনানী">Nusrat Jahan · Banani</span><span class="small">1.8 km</span></div>
+        <div class="flex" style="gap:6px;margin-top:8px">
+          <button class="btn btn-sm btn-primary" style="flex:1;justify-content:center" onclick="alert('Visit form (prototype) — photos, checklist, signature')" data-en="Start visit" data-bn="ভিজিট শুরু">Start visit</button>
+          <button class="btn btn-sm btn-2nd" onclick="alert('Map view (prototype)')">🗺</button>
+          <button class="btn btn-sm btn-2nd" onclick="alert('Calling borrower (prototype)')">📞</button>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-kv"><b>LN-40139 · Collection</b><span class="chip chip-err" style="height:18px;font-size:10px">DPD 74</span></div>
+        <div class="p-kv"><span data-en="Md. Rafiqul Islam · Mohakhali" data-bn="মোঃ রফিকুল ইসলাম · মহাখালী">Md. Rafiqul Islam · Mohakhali</span><span class="small">3.2 km</span></div>
+        <div class="p-kv"><span data-en="PTP ৳12,000 · 05 Oct" data-bn="পিটিপি ৳১২,০০০ · ০৫ অক্টো">PTP ৳12,000 · 05 Oct</span><span>prop. 82%</span></div>
+        <div class="flex" style="gap:6px;margin-top:8px">
+          <button class="btn btn-sm btn-primary" style="flex:1;justify-content:center" onclick="alert('Log outcome (prototype)')" data-en="Log outcome" data-bn="ফলাফল লিখুন">Log outcome</button>
+          <button class="btn btn-sm btn-2nd" onclick="alert('Photo evidence captured offline')">📷</button>
+        </div>
+      </div>
+      <div class="p-card">
+        <div class="p-kv"><b>APP-7257 · CPV</b><span class="chip chip-ok" style="height:18px;font-size:10px" data-en="done ✓" data-bn="সম্পন্ন ✓">done ✓</span></div>
+        <div class="p-kv"><span data-en="Salma Khatun · Uttara" data-bn="সালমা খাতুন · উত্তরা">Salma Khatun · Uttara</span><span class="small" data-en="synced 09:12" data-bn="সিঙ্কড ০৯:১২">synced 09:12</span></div>
+        <div class="small" style="margin-top:6px;color:var(--ok)" data-en="✓ 4 photos · signature · GPS ±8m · report auto-generated" data-bn="✓ ৪টি ছবি · স্বাক্ষর · জিপিএস ±৮মি · রিপোর্ট স্বয়ংক্রিয়ভাবে তৈরি">✓ 4 photos · signature · GPS ±8m · report auto-generated</div>
+      </div>
+      <div class="p-card">
+        <div class="p-kv"><b data-en="Offline queue" data-bn="অফলাইন কিউ">Offline queue</b><span data-en="2 items" data-bn="২টি আইটেম">2 items</span></div>
+        <div class="small" style="margin-top:6px" data-en="Will sync automatically on network — conflict-safe (server timestamps win, photos checksummed)." data-bn="নেটওয়ার্ক পেলেই স্বয়ংক্রিয় সিঙ্ক হবে — কনফ্লিক্ট-নিরাপদ (সার্ভার টাইমস্ট্যাম্প প্রাধান্য পায়, ছবি চেকসামকৃত)।">Will sync automatically on network — conflict-safe (server timestamps win, photos checksummed).</div>
+      </div>
+    </div>
+    <button class="p-fab" title="New visit" onclick="alert('New visit (prototype)')">＋</button>
+    <div class="p-nav">
+      <button class="p-tab on"><span>🕘</span><span data-en="Today" data-bn="আজ">Today</span></button>
+      <button class="p-tab"><span>🗺</span><span data-en="Map" data-bn="ম্যাপ">Map</span></button>
+      <button class="p-tab"><span>▤</span><span data-en="Queue" data-bn="কিউ">Queue</span></button>
+      <button class="p-tab"><span>📷</span><span data-en="Proof" data-bn="প্রমাণ">Proof</span></button>
+      <button class="p-tab"><span>⚙</span><span data-en="Sync" data-bn="সিঙ্ক">Sync</span></button>
+    </div>
+  </div>
+</div>
+<script>
+function setLang(lang){
+  try{ localStorage.setItem("lms-lang",'"'+lang+'"'); }catch(e){}
+  applyLang(lang);
+}
+function applyLang(lang){
+  document.documentElement.setAttribute("lang",lang);
+  document.documentElement.classList.toggle("lang-bn",lang==="bn");
+  document.querySelectorAll("[data-en]").forEach(function(el){
+    var v=lang==="bn"?el.getAttribute("data-bn"):el.getAttribute("data-en");
+    if(v!=null) el.innerHTML=v;
+  });
+  document.getElementById("lang-en").style.background = lang==="bn"?"rgba(233,236,248,.08)":"#E9ECF8";
+  document.getElementById("lang-en").style.color = lang==="bn"?"#E9ECF8":"var(--navy-900,#0D1233)";
+  document.getElementById("lang-bn").style.background = lang==="bn"?"#E9ECF8":"rgba(233,236,248,.08)";
+  document.getElementById("lang-bn").style.color = lang==="bn"?"var(--navy-900,#0D1233)":"#E9ECF8";
+}
+(function(){
+  var lang="en";
+  try{ lang=(localStorage.getItem("lms-lang")||'"en"').replace(/"/g,"")==="bn"?"bn":"en"; }catch(e){}
+  applyLang(lang);
+})();
+</script>
+</body>
+</html>

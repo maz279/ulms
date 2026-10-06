@@ -1,0 +1,503 @@
+{
+  "migrations": [
+    {
+      "file": "V10__regcon_reporting.sql",
+      "tables_created": [
+        "ulms.regulatory_return",
+        "ulms.ecl_snapshot"
+      ],
+      "lines": 44
+    },
+    {
+      "file": "V11__regcon_audit_g.sql",
+      "tables_created": [
+        "ulms.provision_jv",
+        "ulms.report_definition"
+      ],
+      "lines": 36
+    },
+    {
+      "file": "V12__r3_r4_r5_modules.sql",
+      "tables_created": [
+        "ulms.loan_product",
+        "ulms.loan_product_charge",
+        "ulms.bocc_meeting",
+        "ulms.bocc_agenda_item",
+        "ulms.bocc_attendance",
+        "ulms.bocc_vote",
+        "ulms.write_off",
+        "ulms.recovery_entry",
+        "ulms.guarantor",
+        "ulms.notification_template",
+        "ulms.notification_delivery",
+        "ulms.str_report",
+        "ulms.partner_channel"
+      ],
+      "lines": 231
+    },
+    {
+      "file": "V13__loan_stage_width.sql",
+      "tables_created": [],
+      "lines": 3
+    },
+    {
+      "file": "V14__r10_business_logic.sql",
+      "tables_created": [
+        "ulms.dunning_step",
+        "ulms.sla_policy",
+        "ulms.rate_card",
+        "ulms.ctr_report",
+        "ulms.monitoring_alert",
+        "ulms.otp_request",
+        "ulms.blr_rate",
+        "ulms.risk_weight",
+        "ulms.capital_base"
+      ],
+      "lines": 144
+    },
+    {
+      "file": "V15__q3_uat_flips.sql",
+      "tables_created": [
+        "ulms.goaml_submission",
+        "ulms.basel_parallel_run"
+      ],
+      "lines": 30
+    },
+    {
+      "file": "V16__q1_workflow_depth.sql",
+      "tables_created": [
+        "ulms.approval_condition"
+      ],
+      "lines": 16
+    },
+    {
+      "file": "V17__q1_collections_depth.sql",
+      "tables_created": [
+        "ulms.watchlist_entry",
+        "ulms.auction_entry"
+      ],
+      "lines": 39
+    },
+    {
+      "file": "V18__field_gateway.sql",
+      "tables_created": [
+        "ulms.field_visit",
+        "ulms.sos_alert"
+      ],
+      "lines": 32
+    },
+    {
+      "file": "V1__init.sql",
+      "tables_created": [
+        "ulms.customer",
+        "ulms.audit_entry",
+        "ulms.outbox_event"
+      ],
+      "lines": 46
+    },
+    {
+      "file": "V2__origination_workflow.sql",
+      "tables_created": [
+        "ulms.application",
+        "ulms.application_document",
+        "ulms.sanction_letter",
+        "ulms.workflow_definition",
+        "ulms.workflow_instance",
+        "ulms.workflow_task",
+        "ulms.workflow_transition",
+        "ulms.approval_band"
+      ],
+      "lines": 124
+    },
+    {
+      "file": "V3__customer_compliance.sql",
+      "tables_created": [
+        "ulms.kyc_check",
+        "ulms.screening_hit",
+        "ulms.idempotency_key"
+      ],
+      "lines": 32
+    },
+    {
+      "file": "V4__actor_width.sql",
+      "tables_created": [],
+      "lines": 8
+    },
+    {
+      "file": "V5__credit_approval.sql",
+      "tables_created": [
+        "ulms.cib_report",
+        "ulms.cib_facility",
+        "ulms.score_result",
+        "ulms.collateral",
+        "ulms.disbursement",
+        "ulms.dual_authorization",
+        "ulms.loan",
+        "ulms.provision_run",
+        "ulms.classification_history",
+        "ulms.compliance_alert"
+      ],
+      "lines": 151
+    },
+    {
+      "file": "V6__cib_compliance.sql",
+      "tables_created": [],
+      "lines": 13
+    },
+    {
+      "file": "V7__concurrency_audit.sql",
+      "tables_created": [
+        "ulms.collateral_valuation"
+      ],
+      "lines": 21
+    },
+    {
+      "file": "V8__servicing_collections.sql",
+      "tables_created": [
+        "ulms.payment",
+        "ulms.payment_intent",
+        "ulms.statement_run",
+        "ulms.reschedule_request",
+        "ulms.settlement_quote",
+        "ulms.collection_action",
+        "ulms.ptp",
+        "ulms.field_task"
+      ],
+      "lines": 113
+    },
+    {
+      "file": "V9__collections_parity.sql",
+      "tables_created": [
+        "ulms.legal_case"
+      ],
+      "lines": 23
+    }
+  ],
+  "entities": [
+    {
+      "class": "CtrReport",
+      "table": "ctr_report",
+      "package": "aml"
+    },
+    {
+      "class": "GoamlSubmission",
+      "table": "goaml_submission",
+      "package": "aml"
+    },
+    {
+      "class": "Guarantor",
+      "table": "guarantor",
+      "package": "aml"
+    },
+    {
+      "class": "MonitoringAlert",
+      "table": "monitoring_alert",
+      "package": "aml"
+    },
+    {
+      "class": "StrReport",
+      "table": "str_report",
+      "package": "aml"
+    },
+    {
+      "class": "ApprovalBand",
+      "table": "approval_band",
+      "package": "approval"
+    },
+    {
+      "class": "Disbursement",
+      "table": "disbursement",
+      "package": "approval"
+    },
+    {
+      "class": "DualAuthorization",
+      "table": "dual_authorization",
+      "package": "approval"
+    },
+    {
+      "class": "CibFacility",
+      "table": "cib_facility",
+      "package": "assessment"
+    },
+    {
+      "class": "CibReport",
+      "table": "cib_report",
+      "package": "assessment"
+    },
+    {
+      "class": "Collateral",
+      "table": "collateral",
+      "package": "assessment"
+    },
+    {
+      "class": "CollateralValuation",
+      "table": "collateral_valuation",
+      "package": "assessment"
+    },
+    {
+      "class": "ScoreResult",
+      "table": "score_result",
+      "package": "assessment"
+    },
+    {
+      "class": "BoccAgendaItem",
+      "table": "bocc_agenda_item",
+      "package": "bocc"
+    },
+    {
+      "class": "BoccMeeting",
+      "table": "bocc_meeting",
+      "package": "bocc"
+    },
+    {
+      "class": "BoccVote",
+      "table": "bocc_vote",
+      "package": "bocc"
+    },
+    {
+      "class": "AuctionEntry",
+      "table": "auction_entry",
+      "package": "collections"
+    },
+    {
+      "class": "CollectionAction",
+      "table": "collection_action",
+      "package": "collections"
+    },
+    {
+      "class": "DunningStep",
+      "table": "dunning_step",
+      "package": "collections"
+    },
+    {
+      "class": "FieldTask",
+      "table": "field_task",
+      "package": "collections"
+    },
+    {
+      "class": "FieldVisit",
+      "table": "field_visit",
+      "package": "collections"
+    },
+    {
+      "class": "LegalCase",
+      "table": "legal_case",
+      "package": "collections"
+    },
+    {
+      "class": "Ptp",
+      "table": "ptp",
+      "package": "collections"
+    },
+    {
+      "class": "RecoveryEntry",
+      "table": "recovery_entry",
+      "package": "collections"
+    },
+    {
+      "class": "SosAlert",
+      "table": "sos_alert",
+      "package": "collections"
+    },
+    {
+      "class": "WatchlistEntry",
+      "table": "watchlist_entry",
+      "package": "collections"
+    },
+    {
+      "class": "WriteOff",
+      "table": "write_off",
+      "package": "collections"
+    },
+    {
+      "class": "BaselParallelRun",
+      "table": "basel_parallel_run",
+      "package": "compliance"
+    },
+    {
+      "class": "CapitalBase",
+      "table": "capital_base",
+      "package": "compliance"
+    },
+    {
+      "class": "ClassificationHistory",
+      "table": "classification_history",
+      "package": "compliance"
+    },
+    {
+      "class": "ComplianceAlert",
+      "table": "compliance_alert",
+      "package": "compliance"
+    },
+    {
+      "class": "EclSnapshot",
+      "table": "ecl_snapshot",
+      "package": "compliance"
+    },
+    {
+      "class": "ProvisionJv",
+      "table": "provision_jv",
+      "package": "compliance"
+    },
+    {
+      "class": "ProvisionRun",
+      "table": "provision_run",
+      "package": "compliance"
+    },
+    {
+      "class": "RegulatoryReturn",
+      "table": "regulatory_return",
+      "package": "compliance"
+    },
+    {
+      "class": "ReportDefinition",
+      "table": "report_definition",
+      "package": "compliance"
+    },
+    {
+      "class": "RiskWeight",
+      "table": "risk_weight",
+      "package": "compliance"
+    },
+    {
+      "class": "Customer",
+      "table": "customer",
+      "package": "customer"
+    },
+    {
+      "class": "KycCheck",
+      "table": "kyc_check",
+      "package": "customer"
+    },
+    {
+      "class": "ScreeningHit",
+      "table": "screening_hit",
+      "package": "customer"
+    },
+    {
+      "class": "NotificationDelivery",
+      "table": "notification_delivery",
+      "package": "notification"
+    },
+    {
+      "class": "NotificationTemplate",
+      "table": "notification_template",
+      "package": "notification"
+    },
+    {
+      "class": "Application",
+      "table": "application",
+      "package": "origination"
+    },
+    {
+      "class": "ApplicationDocument",
+      "table": "application_document",
+      "package": "origination"
+    },
+    {
+      "class": "RateCard",
+      "table": "rate_card",
+      "package": "origination"
+    },
+    {
+      "class": "PartnerChannel",
+      "table": "partner_channel",
+      "package": "partner"
+    },
+    {
+      "class": "AuditEntry",
+      "table": "audit_entry",
+      "package": "platform.audit"
+    },
+    {
+      "class": "IdempotencyKey",
+      "table": "idempotency_key",
+      "package": "platform.idempotency"
+    },
+    {
+      "class": "OutboxEvent",
+      "table": "outbox_event",
+      "package": "platform.outbox"
+    },
+    {
+      "class": "ApprovalCondition",
+      "table": "approval_condition",
+      "package": "platform.workflow"
+    },
+    {
+      "class": "SlaPolicy",
+      "table": "sla_policy",
+      "package": "platform.workflow"
+    },
+    {
+      "class": "WorkflowDefinition",
+      "table": "workflow_definition",
+      "package": "platform.workflow"
+    },
+    {
+      "class": "WorkflowInstance",
+      "table": "workflow_instance",
+      "package": "platform.workflow"
+    },
+    {
+      "class": "WorkflowTask",
+      "table": "workflow_task",
+      "package": "platform.workflow"
+    },
+    {
+      "class": "WorkflowTransition",
+      "table": "workflow_transition",
+      "package": "platform.workflow"
+    },
+    {
+      "class": "OtpRequest",
+      "table": "otp_request",
+      "package": "portal"
+    },
+    {
+      "class": "LoanProduct",
+      "table": "loan_product",
+      "package": "product"
+    },
+    {
+      "class": "SanctionLetter",
+      "table": "sanction_letter",
+      "package": "sanction"
+    },
+    {
+      "class": "BlrRate",
+      "table": "blr_rate",
+      "package": "servicing"
+    },
+    {
+      "class": "Loan",
+      "table": "loan",
+      "package": "servicing"
+    },
+    {
+      "class": "Payment",
+      "table": "payment",
+      "package": "servicing"
+    },
+    {
+      "class": "PaymentIntent",
+      "table": "payment_intent",
+      "package": "servicing"
+    },
+    {
+      "class": "RescheduleRequest",
+      "table": "reschedule_request",
+      "package": "servicing"
+    },
+    {
+      "class": "SettlementQuote",
+      "table": "settlement_quote",
+      "package": "servicing"
+    },
+    {
+      "class": "StatementRun",
+      "table": "statement_run",
+      "package": "servicing"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ULMS Field — Working Prototype</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="stage">
+    <aside class="side">
+      <h1>ULMS Field</h1>
+      <p class="tag">ফিল্ড অ্যাপ · ১০০% কার্যকর প্রোটোটাইপ</p>
+      <ul class="notes">
+        <li>ব্যাংক PKCE লগইন → পিন লক (bank PKCE login → PIN lock)</li>
+        <li>সিপিভি ফর্ম: গেইটসহ সত্যিকারের <b>স্বাক্ষর আঁকা</b> যায় (draw a real signature on canvas)</li>
+        <li>সব মিউটেশন অফলাইন কিউতে যায় (every mutation enqueues offline)</li>
+        <li>সিঙ্ক সেন্টার: ড্রেইন করলে সিঙ্কড হয়, একটি সার্ভার-জয়ী দ্বন্দ্বও দেখায় (sync drain incl. a server-wins conflict)</li>
+        <li>এসওএস দুই-ধাপ; GPS সংগ্রহ (two-step SOS with GPS)</li>
+      </ul>
+      <p class="hint">Simulates the /field API (delta pull, idempotent visits, SOS ledger) with the same contract as the shipped app. State persists per browser.</p>
+    </aside>
+
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="status"><span>9:41</span><span>▮▮▮ ⌁ 84%</span></div>
+      <main id="screen" class="screen"></main>
+      <nav id="tabs" class="tabs hidden"></nav>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

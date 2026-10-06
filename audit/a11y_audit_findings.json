@@ -1,0 +1,234 @@
+[
+  {
+    "file": "LMS_CODEBASE/apps/web/src/auth/LoginPage.tsx",
+    "line": 135,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<input value={user} onChange={(e) => setUser(e.target.value)} autoComplete=\"username\""
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/auth/LoginPage.tsx",
+    "line": 141,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<input type=\"password\" value={pass} onChange={(e) => setPass(e.target.value)} autoComplete=\"current-password\""
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/auth/LoginPage.tsx",
+    "line": 197,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<input value={mfa} onChange={(e) => setMfa(e.target.value)} autoFocus"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/origination/DocumentPanel.tsx",
+    "line": 47,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<input ref={inputRef} type=\"file\" hidden onChange={onPick} />"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/InsightPages.tsx",
+    "line": 159,
+    "rule": "WCAG 4.1.2 Name, Role, Value",
+    "severity": "Moderate",
+    "detail": "Interactive <div> lacks role='button' and tabIndex",
+    "snippet": "<div style={{ marginTop: 8 }}><Btn label=\"Open BRPD board\" variant=\"btn-sm btn-2nd\" onClick={() => nav(\"/classification\")} /></div>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/R3R4Pages.tsx",
+    "line": 225,
+    "rule": "WCAG 4.1.2 Name, Role, Value",
+    "severity": "Moderate",
+    "detail": "Interactive <div> lacks role='button' and tabIndex",
+    "snippet": "<div key={m.id} className=\"ck-row\" style={{ cursor: \"pointer\" }} onClick={() => setSelected(m)}>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/ReportPages.tsx",
+    "line": 55,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<input placeholder=\"e.g. CL-1, aging, branch\u2026\" value={q} onChange={(e) => setQ(e.target.value)} />"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/ReportPages.tsx",
+    "line": 184,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<input value={name} onChange={(e) => setName(e.target.value)} /></div>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/ScreenPages.tsx",
+    "line": 120,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<label className=\"fp-item\"><input type=\"radio\" name={`sv-${scr.id}`} checked={view === \"all\"} onChange={() => setView(\"all\")} /> All records <span className=\"fp-n\">{rows.length}</span></label>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/ScreenPages.tsx",
+    "line": 121,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<label className=\"fp-item\"><input type=\"radio\" name={`sv-${scr.id}`} checked={view === \"large\"} onChange={() => setView(\"large\")} /> Large (\u2265 \u09f350 L)</label>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/ScreenPages.tsx",
+    "line": 122,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<label className=\"fp-item\"><input type=\"radio\" name={`sv-${scr.id}`} checked={view === \"flag\"} onChange={() => setView(\"flag\")} /> \u26a0 Exceptions</label>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/ScreenPages.tsx",
+    "line": 213,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": ": <input type=\"text\" placeholder={/date/i.test(f) ? \"YYYY-MM-DD\" : /amount|\u09f3/i.test(f) ? \"0.00\" : /NID/i.test(f) ? \"auto-verified from NIDW\" : \"\"}"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/SystemPages.tsx",
+    "line": 75,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<div className=\"field\" data-req=\"1\"><label>Timezone<span className=\"req\">*</span></label><input readOnly defaultValue=\"Asia/Dhaka (GMT+6)\" /></div>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/SystemPages.tsx",
+    "line": 83,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "{[\"Sun\", \"Mon\", \"Tue\", \"Wed\", \"Thu\"].map((d) => <label key={d} className=\"check\"><input type=\"checkbox\" defaultChecked /> {d}</label>)}"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/SystemPages.tsx",
+    "line": 84,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "{[\"Fri\", \"Sat\"].map((d) => <label key={d} className=\"check\"><input type=\"checkbox\" /> {d}</label>)}"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/SystemPages.tsx",
+    "line": 87,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<div className=\"field\"><label>Holiday calendar</label><input readOnly defaultValue=\"BB + lunar 2026 (loaded \u2713)\" /></div>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/SystemPages.tsx",
+    "line": 95,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<div className=\"field\"><label>Sender mask</label><input defaultValue=\"ABCBANK\" /></div>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/SystemPages.tsx",
+    "line": 166,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<div className=\"field\"><label>Amount (\u09f3)<span className=\"req\">*</span></label><input defaultValue=\"1,500,000\" className=\"num\" /><span className=\"help\">Lakh/Crore display per system setting</span></div>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/SystemPages.tsx",
+    "line": 167,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<div className=\"field invalid\"><label>Required demo<span className=\"req\">*</span></label><input value=\"\" readOnly /><span className=\"err-msg\">Required field</span></div>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/SystemPages.tsx",
+    "line": 255,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<input placeholder=\"e.g. CIB, collections, e-KYC, H4\u2026\" value={q} onChange={(e) => setQ(e.target.value)} />"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/SystemPages.tsx",
+    "line": 323,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder=\"Search everything\u2026\" />"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/features/proto/SystemPages.tsx",
+    "line": 337,
+    "rule": "WCAG 4.1.2 Name, Role, Value",
+    "severity": "Moderate",
+    "detail": "Interactive <div> lacks role='button' and tabIndex",
+    "snippet": "<div key={i} className=\"mi\" style={{ cursor: \"pointer\" }} onClick={() => go(r.route)}>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/shell/AppShell.tsx",
+    "line": 345,
+    "rule": "WCAG 4.1.2 Name, Role, Value",
+    "severity": "Moderate",
+    "detail": "Interactive <div> lacks role='button' and tabIndex",
+    "snippet": "<div className=\"tb-brand\" style={{ cursor: \"pointer\" }} onClick={() => nav(\"/home\")}>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/shell/AppShell.tsx",
+    "line": 608,
+    "rule": "WCAG 4.1.2 Name, Role, Value",
+    "severity": "Moderate",
+    "detail": "Interactive <div> lacks role='button' and tabIndex",
+    "snippet": "<div key={x.id} className={`rp-item${x.id === activeTab ? \" on\" : \"\"}`} onClick={() => { openTabRoute(x); setRailPanel(null); }}>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/shell/AppShell.tsx",
+    "line": 614,
+    "rule": "WCAG 4.1.2 Name, Role, Value",
+    "severity": "Moderate",
+    "detail": "Interactive <div> lacks role='button' and tabIndex",
+    "snippet": "<div key={x.id} className={`rp-item${x.id === activeTab ? \" on\" : \"\"}`} onClick={() => { openTabRoute(x); setRailPanel(null); }}>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/shell/AppShell.tsx",
+    "line": 631,
+    "rule": "WCAG 4.1.2 Name, Role, Value",
+    "severity": "Moderate",
+    "detail": "Interactive <div> lacks role='button' and tabIndex",
+    "snippet": "<div key={mid} className=\"rp-item\" onClick={() => { go(`/workspace/${mid}`); setRailPanel(null); }}>"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/shell/ui.tsx",
+    "line": 244,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<input type=\"checkbox\" checked={checked} onChange={(e) => onChange?.(e.target.checked)} /> {children}"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/shell/ui.tsx",
+    "line": 288,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": ": <input type={type} className={mono ? \"mono\" : undefined} placeholder={placeholder}"
+  },
+  {
+    "file": "LMS_CODEBASE/apps/web/src/shell/ui.tsx",
+    "line": 395,
+    "rule": "WCAG 1.3.1 Info and Relationships",
+    "severity": "Moderate",
+    "detail": "<input> element lacks accessible label or id association",
+    "snippet": "<tr key={i}><td>{i}</td><td><input defaultValue={`Line ${i}`} /></td><td><input className=\"num\" defaultValue={i * 250000} /></td><td><input /></td></tr>"
+  }
+]

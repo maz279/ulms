@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ULMS Mobile UX Previews</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #E9ECF8; font-family: "Segoe UI", "Noto Sans Bengali", system-ui, sans-serif;
+         min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 32px; }
+  .wrap { max-width: 760px; }
+  h1 { color: #0D1233; font-size: 26px; margin-bottom: 6px; }
+  .sub { color: #555e77; font-size: 14px; margin-bottom: 30px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  a.card { display: block; text-decoration: none; background: #fff; border: 1px solid #d6dcf2;
+           border-radius: 14px; padding: 22px; color: inherit;
+           box-shadow: 0 6px 18px rgba(13,18,51,.08); }
+  a.card:hover { border-color: #3F51B5; }
+  .app { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: #3F51B5; text-transform: uppercase; }
+  .name { font-size: 19px; font-weight: 800; color: #1E2660; margin: 6px 0 4px; }
+  .name .bn { font-size: 15px; color: #555e77; font-weight: 600; }
+  .desc { font-size: 12.5px; color: #667; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>ULMS Mobile UX Previews</h1>
+    <p class="sub">1:1 visual references of the two native apps as built — English and বাংলা versions separately. (Serve this folder with <code>python -m http.server 8791</code> if opening from the in-app browser.)</p>
+    <a class="card" href="prototype/" style="margin-bottom:18px;display:block;border-color:#107C10">
+      <div class="app" style="color:#107C10">▶ Working prototype</div>
+      <div class="name">Borrower app — 100% interactive</div>
+      <div class="desc">OTP login · apply · pay with checkout · real CSV download · live বাংলা⇄English · payoff calculator — fully clickable in the browser</div>
+    </a>
+    <a class="card" href="prototype/field/" style="margin-bottom:18px;display:block;border-color:#C50F1F">
+      <div class="app" style="color:#C50F1F">▶ Working prototype</div>
+      <div class="name">Field app — 100% interactive</div>
+      <div class="desc">PKCE login → PIN lock · visits + PTP · CPV form with real signature drawing · map pins · proof gallery · two-step SOS · sync drain with server-wins conflict</div>
+    </a>
+    <div class="grid">
+      <a class="card" href="borrower-english.html">
+        <div class="app">Borrower app · 6 screens</div>
+        <div class="name">English</div>
+        <div class="desc">OTP login · home EMI cards · tracker + apply · bKash/Nagad pay · statements · payoff calculator</div>
+      </a>
+      <a class="card" href="borrower-bangla.html">
+        <div class="app">গ্রহীতা অ্যাপ · ৬টি স্ক্রিন</div>
+        <div class="name">বাংলা <span class="bn">(Bangla-first, as shipped)</span></div>
+        <div class="desc">ওটিপি লগইন · হোম কিস্তি কার্ড · আবেদন ট্র্যাকার · পরিশোধ · স্টেটমেন্ট · ক্যালকুলেটর</div>
+      </a>
+      <a class="card" href="field-english.html">
+        <div class="app">Field app · 8 screens</div>
+        <div class="name">English</div>
+        <div class="desc">Bank PKCE login · PIN lock · visits + PTP · CPV form (voice/signature/GPS) · map · proof gallery · SOS · sync</div>
+      </a>
+      <a class="card" href="field-bangla.html">
+        <div class="app">ফিল্ড অ্যাপ · ৮টি স্ক্রিন</div>
+        <div class="name">বাংলা <span class="bn">(Bangla-first, as shipped)</span></div>
+        <div class="desc">লগইন · পিন · আজকের ভিজিট · সিপিভি ফর্ম · মানচিত্র · প্রমাণ · এসওএস · সিঙ্ক</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

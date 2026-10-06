@@ -1,0 +1,51 @@
+# ===== ULMS repository — root .gitignore =====
+# LMS_CODEBASE/ and mobile_app/ were developed as standalone repositories and
+# their histories were absorbed via git subtree; their own .gitignore rules
+# already applied to their tracked trees. Rules below cover the parent repo.
+
+# --- secrets & env (rule: values only via environment or secret service, never committed) ---
+.env
+.env.*
+!.env.example
+*.env
+secrets/
+*.pem
+*.key
+*.keystore
+*.jks
+
+# --- local tool / agent state ---
+.mimosa/
+.v2c/
+.video_agent/
+.claude/settings.local.json
+
+# --- dependency dirs & build artifacts ---
+node_modules/
+dist/
+build/
+.gradle/
+.expo/
+.eas/
+web-build/
+coverage/
+htmlcov/
+test-results/
+playwright-report/
+allure-results/
+allure-report/
+android/
+ios/
+mobileapp_apk/
+*.tsbuildinfo
+*.eslintcache
+*.apk
+
+# --- logs ---
+*.log
+
+# --- OS / office junk ---
+~$*
+Thumbs.db
+.DS_Store
+desktop.ini

@@ -1,0 +1,154 @@
+/* ============================================================
+   USL DESIGN SYSTEM — Token layer (usl-design-system v3 / USL-ULMS-UXD-2026)
+   "INDIGO-FLUENT" — Fluent-2 token architecture on the UniSoft
+   indigo brand ramp, extended with a REAL dark theme, REAL
+   density modes, motion and focus tokens for ULMS v2.0.
+
+   Layer order:  tokens.css  →  app.css
+   WCAG 2.1 AA contrast pairs verified for light + dark.
+   Gold is reserved for marketing surfaces (landing / login).
+   ============================================================ */
+
+:root{
+  /* ---------- Brand ramp (16 indigo steps) ---------- */
+  --brand-10:#0D1233; --brand-20:#131A45; --brand-30:#1A2260;
+  --brand-40:#232D7F; --brand-50:#2B3A9C; --brand-60:#3344B0;
+  --brand-70:#303F9F; --brand-80:#3F51B5; --brand-90:#5C6BC0;
+  --brand-100:#7986CB; --brand-110:#9FA8DA; --brand-120:#B3BCE4;
+  --brand-130:#C5CAE9; --brand-140:#D6DCF2; --brand-150:#E8EAF6;
+  --brand-160:#F0F2FB;
+
+  /* ---------- Primary interaction aliases (light) ---------- */
+  --primary:#3F51B5;          /* brand-80 */
+  --primary-hover:#303F9F;    /* brand-70 */
+  --primary-press:#232D7F;    /* brand-40 */
+  --primary-dark:#3344B0;     /* brand-60 */
+  --primary-tint:#E8EAF6;     /* selected row / chip fill */
+  --primary-wash:#F0F2FB;     /* hover fill */
+
+  /* ---------- Marketing-only (landing / login brand panel) ---------- */
+  --navy-950:#0B0F2A; --navy-900:#0E1A3C; --navy-800:#131A45;
+  --gold-500:#C8952F; --gold-300:#E8BC5E; --gold-100:#F5E7C6;
+  --gold-050:#FBF3E0; --paper:#FBF9F5; --paper-2:#F3EFE7;
+
+  /* ---------- Neutrals (Fluent-2 canonical greys) ---------- */
+  --grey-2:#050505;  --grey-8:#141414;  --grey-12:#1F1F1F; --grey-14:#242424;
+  --grey-16:#292929; --grey-20:#333333; --grey-24:#3D3D3D; --grey-26:#424242;
+  --grey-32:#525252; --grey-38:#616161; --grey-44:#707070; --grey-50:#808080;
+  --grey-68:#ADADAD; --grey-74:#BDBDBD; --grey-82:#D1D1D1; --grey-88:#E0E0E0;
+  --grey-90:#E6E6E6; --grey-92:#EBEBEB; --grey-94:#F0F0F0; --grey-96:#F5F5F5;
+  --grey-98:#FAFAFA; --grey-99:#FCFCFC;
+
+  --canvas:#FAFAFA;           /* page background */
+  --surface:#FFFFFF;          /* cards */
+  --surface-2:#F5F5F5;
+  --surface-3:#F0F0F0;
+  --stroke:#E0E0E0;
+  --stroke-strong:#D1D1D1;
+  --stroke-accessible:#616161;/* 3:1 control border (Fluent input rule) */
+  --ink-900:#242424; --ink-700:#424242; --ink-500:#616161; --ink-300:#BDBDBD;
+
+  /* ---------- Status quadruplets: fg / bold / bg / border ---------- */
+  --ok:#0E700E;        --ok-bold:#107C10;   --ok-bg:#F1FAF1;   --ok-border:#C9EAC9;
+  --warn:#BC4B09;      --warn-bold:#F7630C; --warn-bg:#FFF9F5; --warn-border:#FEE5D7;
+  --severe:#A62D01;    --severe-bold:#DA3B01;--severe-bg:#F4BFAB;--severe-border:#F4BFAB;
+  --err:#B10E1C;       --err-bold:#C50F1F;  --err-bg:#FDF3F4;  --err-border:#F6D1D5;
+  --info:#3F51B5;      --info-bold:#3F51B5; --info-bg:#E8EAF6; --info-border:#B3BCE4;
+  --neutral-fg:#424242; --neutral-bg:#F5F5F5;
+
+  /* ---------- Chart palette (8, directly labelled) ---------- */
+  --chart-1:#3F51B5; --chart-2:#C8952F; --chart-3:#0F9C8E; --chart-4:#6A4C93;
+  --chart-5:#B23A2E; --chart-6:#2E9BD6; --chart-7:#12885E; --chart-8:#8A8A8A;
+
+  /* ---------- Module identity rails (decorative left borders) ---------- */
+  --rail-customer:#0F9C8E;  --rail-origination:#3F51B5; --rail-credit:#C8952F;
+  --rail-approval:#6A4C93;  --rail-servicing:#2E9BD6;  --rail-collections:#B23A2E;
+  --rail-insight:#7986CB;   --rail-platform:#6B7280;
+
+  /* ---------- Typography ----------
+     Fluid (responsive) type via clamp(): scales from 360px → 1920px viewports.
+     All sizes in rem so browser text-resize (WCAG 1.4.4) propagates. */
+  --font-ui:"Inter","Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,"Helvetica Neue",sans-serif;
+  --font-bn:"Noto Sans Bengali","SolaimanLipi","Kalpurush","Nikosh",var(--font-ui);
+  --font-mono:"JetBrains Mono","Cascadia Mono",Consolas,"Liberation Mono",monospace;
+
+  --fs-100:0.625rem;  --lh-100:0.875rem;   /* 10/14 captions   */
+  --fs-200:0.75rem;   --lh-200:1rem;       /* 12/16 secondary  */
+  --fs-300:0.875rem;  --lh-300:1.25rem;    /* 14/20 body-ui    */
+  --fs-400:1rem;      --lh-400:1.375rem;   /* 16/22 large      */
+  --fs-500:clamp(1.0625rem,1rem + .25vw,1.25rem);   --lh-500:1.625rem;
+  --fs-600:clamp(1.25rem,1.125rem + .5vw,1.5rem);   --lh-600:1.875rem;
+  --fs-700:clamp(1.5rem,1.3rem + .75vw,1.875rem);   --lh-700:2.25rem;
+
+  --fw-regular:400; --fw-medium:500; --fw-semibold:600; --fw-bold:700;
+
+  /* ---------- Space (4px grid) ---------- */
+  --s-1:4px;  --s-2:8px;  --s-3:12px; --s-4:16px; --s-5:20px;
+  --s-6:24px; --s-8:32px; --s-10:40px; --s-12:48px;
+
+  /* ---------- Radius / shadow / z ---------- */
+  --r-small:2px; --r-ctl:4px; --r-surface:8px; --r-flyout:12px; --r-pill:999px;
+  --shadow-2:0 0 2px rgba(13,18,51,.10),0 1px 2px rgba(13,18,51,.14);
+  --shadow-4:0 0 2px rgba(13,18,51,.10),0 2px 4px rgba(13,18,51,.14);
+  --shadow-8:0 0 2px rgba(13,18,51,.10),0 4px 8px rgba(13,18,51,.16);
+  --shadow-16:0 0 2px rgba(13,18,51,.10),0 8px 16px rgba(13,18,51,.18);
+  --shadow-64:0 0 2px rgba(13,18,51,.12),0 16px 40px rgba(13,18,51,.22);
+  --z-sticky:10; --z-flyout:100; --z-dialog:200; --z-toast:300;
+
+  /* ---------- Shell geometry ---------- */
+  --topbar-h:48px; --sitemap-w:248px; --sitemap-w-collapsed:48px;
+  --tabrail-w:48px; --factbox-w:304px; --statusbar-h:28px;
+
+  /* ---------- Density: REAL row-height control (light default = comfortable) ---------- */
+  --row-h:40px;      /* comfortable */
+  --ctl-h:32px;      /* control height */
+  --ctl-h-lg:36px;
+}
+
+/* Compact density — power users, 1366×768 laptops */
+[data-density="compact"]{ --row-h:32px; --ctl-h:28px; --ctl-h-lg:32px; --s-4:12px; --s-6:20px; }
+
+/* Spacious density — touchscreen kiosks / branch counters */
+[data-density="spacious"]{ --row-h:48px; --ctl-h:38px; --ctl-h-lg:42px; --s-4:20px; --s-6:28px; }
+
+/* ============================================================
+   REAL DARK THEME — alias-token remap (Fluent dark-mode strategy:
+   keep brand hue, invert neutral ramp, soften elevation shadows).
+   Enabled by  <html data-theme="dark">  from the status bar toggle.
+   ============================================================ */
+[data-theme="dark"]{
+  --canvas:#1F1F1F;  --surface:#292929;  --surface-2:#242424;  --surface-3:#333333;
+  --stroke:#3D3D3D;  --stroke-strong:#424242;  --stroke-accessible:#ADADAD;
+  --ink-900:#FFFFFF; --ink-700:#F3F3F3;  --ink-500:#D1D1D1;  --ink-300:#616161;
+
+  --primary:#7986CB; --primary-hover:#9FA8DA; --primary-press:#5C6BC0; --primary-dark:#B3BCE4;
+  --primary-tint:#2B2B46; --primary-wash:#24243A;
+
+  --ok:#6CCB5F;      --ok-bold:#9FD977;    --ok-bg:#12310F;    --ok-border:#2E5B24;
+  --warn:#F9B25C;    --warn-bold:#FCBF6E;  --warn-bg:#3B2110;  --warn-border:#6E441F;
+  --severe:#F08A6B;  --severe-bold:#F5A186;--severe-bg:#432114;--severe-border:#7A3A1D;
+  --err:#F4949C;     --err-bold:#F8AEB4;  --err-bg:#401418;   --err-border:#75262C;
+  --info:#9FA8DA;    --info-bold:#B3BCE4;  --info-bg:#262A4A;  --info-border:#474E86;
+  --neutral-fg:#D1D1D1; --neutral-bg:#333333;
+
+  --chart-1:#9FA8DA; --chart-2:#E8BC5E; --chart-3:#4FC3B5; --chart-4:#A98BD0;
+  --chart-5:#E08075; --chart-6:#6FC0EA; --chart-7:#4CBF8F; --chart-8:#ADADAD;
+
+  --shadow-2:0 0 2px rgba(0,0,0,.45),0 1px 2px rgba(0,0,0,.45);
+  --shadow-4:0 0 2px rgba(0,0,0,.50),0 2px 4px rgba(0,0,0,.50);
+  --shadow-8:0 0 2px rgba(0,0,0,.55),0 4px 8px rgba(0,0,0,.55);
+  --shadow-16:0 0 2px rgba(0,0,0,.60),0 8px 16px rgba(0,0,0,.60);
+  --shadow-64:0 0 2px rgba(0,0,0,.65),0 16px 40px rgba(0,0,0,.70);
+}
+
+/* ============================================================
+   Motion + focus tokens (accessibility exceeds reference)
+   ============================================================ */
+:root{
+  --motion-fast:120ms; --motion-med:200ms;
+  --ease:cubic-bezier(.33,0,.67,1);
+  --focus-ring:0 0 0 1px var(--surface),0 0 0 3px var(--primary); /* Fluent double-ring */
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+}
