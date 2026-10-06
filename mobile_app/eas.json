@@ -1,0 +1,24 @@
+{
+  "cli": { "version": ">= 13.0.0", "appVersionSource": "remote" },
+  "build": {
+    "production": {
+      "description": "Store-ready binaries — both platforms from this one codebase",
+      "autoIncrement": true
+    },
+    "preview": {
+      "distribution": "internal",
+      "description": "Internal distribution builds for bank UAT (APK + iOS ad-hoc)"
+    },
+    "test": {
+      "distribution": "internal",
+      "android": { "buildType": "apk" },
+      "description": "Device-farm / Detox candidates"
+    }
+  },
+  "submit": {
+    "production": {
+      "android": { "track": "internal" },
+      "ios": { "appleId": "set-at-bank-account-time", "ascAppId": "set-at-bank-account-time" }
+    }
+  }
+}

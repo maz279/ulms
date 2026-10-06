@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "ULMS Borrower",
+    "slug": "ulms-borrower",
+    "version": "0.1.0",
+    "scheme": "ulmsborrower",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "com.uslbd.ulmsborrower",
+      "supportsTablet": false,
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": ["bkash", "nagad"],
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": false
+        }
+      }
+    },
+    "android": {
+      "package": "com.uslbd.ulmsborrower",
+      "permissions": ["INTERNET"]
+    }
+  }
+}
