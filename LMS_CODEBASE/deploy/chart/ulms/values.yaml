@@ -1,0 +1,78 @@
+# ULMS Helm values (R8, audit/plan/phases/R8_deployment_observability.md)
+# ALL credentials reference existing secrets — never literals (06 §1).
+
+global:
+  imageRegistry: ""            # set per environment (bank mirror)
+  pullSecrets: []
+
+api:
+  image: ulms-api
+  tag: ""                      # defaults to .Chart.AppVersion
+  replicas: 2
+  resources:
+    requests: { cpu: 500m, memory: 1Gi }
+    limits: { cpu: "2", memory: 2Gi }
+  env:
+    ULMS_DB_URL: jdbc:postgresql://postgresql:5432/ulms
+    ULMS_DB_USER: ulms
+    ULMS_OIDC_ISSUER: http://keycloak:8080/realms/ulms
+    FINERACT_URL: https://fineract:8443/fineract-provider/api/v1
+    ULMS_MINIO_ENDPOINT: http://minio:9000
+    ULMS_MINIO_BUCKET: ulms-documents
+    # R7 live-integration window (cib-live profile): mTLS client cert path +
+    # endpoint; the passphrase comes from the existing secret below
+    ULMS_CIB_BASE_URL: ""
+    ULMS_CIB_KEYSTORE: ""                     # mounted PKCS12 path, e.g. /ulms/certs/cib.p12
+  existingSecret: ulms-api-secrets       # keys: ULMS_DB_PASSWORD, FINERACT_DB_PASSWORD, FINERACT_USER, FINERACT_PASSWORD, ULMS_MINIO_ACCESS_KEY, ULMS_MINIO_SECRET_KEY, ULMS_RAILS_WEBHOOK_SECRET, ULMS_CIB_KEYSTORE_PASSWORD (cib-live window)
+  probes:
+    path: /actuator/health
+    initialDelaySeconds: 60
+    periodSeconds: 10
+
+web:
+  image: ulms-web
+  tag: ""
+  replicas: 2
+  resources:
+    requests: { cpu: 100m, memory: 128Mi }
+    limits: { cpu: 500m, memory: 256Mi }
+
+postgresql:
+  external: false               # true → use the bank's managed PG (host+credentials below)
+  image: postgres:17-alpine
+  persistence: { size: 100Gi, storageClass: "" }
+  existingSecret: ulms-pg-secrets       # key: POSTGRES_PASSWORD
+
+keycloak:
+  enabled: true
+  image: quay.io/keycloak/keycloak:26.0
+  realmImportConfigMap: ulms-realm       # create from deploy/seed/realm-ulms.json
+  existingSecret: ulms-keycloak-secrets # keys: KC_BOOTSTRAP_ADMIN_USERNAME, KC_BOOTSTRAP_ADMIN_PASSWORD
+
+fineract:
+  enabled: true
+  image: apache/fineract:fd01236df6     # pinned SHA (R1)
+  persistence: { size: 20Gi, storageClass: "" }
+  existingSecret: ulms-fineract-secrets
+
+minio:
+  enabled: true
+  image: quay.io/minio/minio:latest
+  persistence: { size: 200Gi, storageClass: "" }
+  existingSecret: ulms-minio-secrets
+
+ingress:
+  enabled: true
+  className: traefik                # k3s default
+  host: ulms.bank.local
+  tls:
+    enabled: true
+    secretName: ulms-tls            # cert-manager or bank CA
+
+observability:
+  prometheus: { enabled: true, retention: 15d }
+  grafana: { enabled: true, adminSecret: ulms-grafana-secrets }
+
+networkPolicy:
+  enabled: true
+  allowNamespaces: [ulms, monitoring]

@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "ULMS Field",
+    "slug": "ulms-field",
+    "version": "0.1.0",
+    "scheme": "ulmsfield",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": { "bundleIdentifier": "com.uslbd.ulmsfield", "supportsTablet": false },
+    "android": { "package": "com.uslbd.ulmsfield" }
+  }
+}

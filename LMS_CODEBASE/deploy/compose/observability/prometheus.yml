@@ -1,0 +1,25 @@
+# ULMS Prometheus — compose stack scrape config (audit R1)
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: ulms-api
+    metrics_path: /actuator/prometheus
+    # metrics live on the dedicated management port (9977) where Boot's
+    # management-endpoint security permits scraping — the main API port keeps
+    # /actuator/prometheus admin-JWT-gated per P5 F6
+    static_configs:
+      - targets: ["api:9977"]
+
+  - job_name: fineract
+    metrics_path: /fineract-provider/actuator/prometheus
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true   # dev self-signed (06 note; prod mounts CA)
+    static_configs:
+      - targets: ["fineract:8083"]

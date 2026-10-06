@@ -1,0 +1,13 @@
+# ULMS web image — keep the build context lean (audit R1 hardening)
+node_modules
+dist
+test-results
+playwright-report
+coverage
+.mimosa
+*.log
+.env
+.env.*
+!.env.example
+Dockerfile
+.dockerignore

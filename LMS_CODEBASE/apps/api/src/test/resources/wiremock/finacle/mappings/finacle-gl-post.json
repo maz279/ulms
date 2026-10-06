@@ -1,0 +1,17 @@
+{
+  "name": "finacle-gl-post",
+  "request": {
+    "method": "POST",
+    "urlPath": "/finconnector/gl"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "reference": "FIN-GL-{{randomValue length=12 type='NUMERIC'}}",
+      "status": "POSTED"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "sms-gateway-send",
+  "request": {
+    "method": "POST",
+    "urlPath": "/smsapi"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "status": "SENT",
+      "reference": "SMS-{{randomValue length=14 type='NUMERIC'}}"
+    },
+    "fixedDelayMilliseconds": 50,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

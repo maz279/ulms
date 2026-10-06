@@ -1,0 +1,12 @@
+# ULMS api image — keep the Gradle build context lean (audit R1 hardening)
+build
+.gradle
+out
+test-results
+.mimosa
+*.log
+.env
+.env.*
+!.env.example
+Dockerfile
+.dockerignore

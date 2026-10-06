@@ -1,0 +1,48 @@
+# ULMS monorepo — layered gitignore
+
+# secrets & env (rule: ENV only — never commit values)
+.env
+*.env
+!.env.example
+secrets/
+*.pem
+*.key
+*.keystore
+*.jks
+
+build/
+
+# java / gradle
+apps/api/build/
+apps/api/.gradle/
+apps/api/out/
+apps/api/.java-version
+*.class
+*.jar
+!apps/api/gradle/wrapper/gradle-wrapper.jar
+apps/api/gradle/wrapper/gradle-wrapper.properties
+
+# node
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+.eslintcache
+coverage/
+playwright-report/
+test-results/
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# docker / local data volumes
+deploy/compose/volumes/
+
+# Windows redirect accidents + local tooling state (audit R1)
+nul
+.mimosa/
+build/

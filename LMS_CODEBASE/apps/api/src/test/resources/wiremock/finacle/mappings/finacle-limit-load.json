@@ -1,0 +1,17 @@
+{
+  "name": "finacle-limit-load",
+  "request": {
+    "method": "POST",
+    "urlPath": "/finconnector/limits"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "reference": "FIN-LIMIT-{{randomValue length=10 type='NUMERIC'}}",
+      "status": "ACTIVE"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

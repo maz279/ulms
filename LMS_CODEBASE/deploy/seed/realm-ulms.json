@@ -1,0 +1,53 @@
+{
+  "realm": "ulms",
+  "enabled": true,
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": false,
+  "resetPasswordAllowed": false,
+  "bruteForceProtected": true,
+  "passwordPolicy": "length(12) and notUsername and specialChars(1) and digits(1)",
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyDigits": 6,
+  "accessTokenLifespan": 900,
+  "ssoSessionIdleTimeout": 900,
+  "ssoSessionMaxLifespan": 28800,
+  "accessTokenLifespanForImplicitFlow": 900,
+  "roles": {
+    "realm": [
+      { "name": "md", "description": "Managing Director (L7)" },
+      { "name": "ho-credit", "description": "Head of Credit (L5)" },
+      { "name": "credit-committee", "description": "Credit Committee (L6)" },
+      { "name": "divisional-head", "description": "Divisional Head (L4)" },
+      { "name": "branch-officer", "description": "Branch loan officer" },
+      { "name": "branch-manager", "description": "Branch Manager (L2)" },
+      { "name": "regional-manager", "description": "Regional Manager (L3)" },
+      { "name": "credit-analyst", "description": "HO credit analyst" },
+      { "name": "collections", "description": "CPV / collections officer" },
+      { "name": "compliance", "description": "Compliance officer" },
+      { "name": "admin", "description": "Platform administrator" }
+    ]
+  },
+  "users": [
+    {
+      "username": "svc-ci",
+      "enabled": true,
+      "serviceAccountClientId": "ulms-web",
+      "realmRoles": ["branch-officer"],
+      "clientRoles": { "ulms-web": ["uma_protection"] }
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "ulms-web",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["http://localhost:5173/*", "http://localhost:4173/*"],
+      "webOrigins": ["http://localhost:5173", "http://localhost:4173"],
+      "attributes": { "pkce.code.challenge.method": "S256" }
+    }
+  ],
+  "requiredActions": [{ "alias": "CONFIGURE_TOTP", "defaultAction": true }]
+}

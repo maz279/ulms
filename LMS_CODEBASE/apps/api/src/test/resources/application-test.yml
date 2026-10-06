@@ -1,0 +1,47 @@
+# Test profile: Testcontainers supplies the DB via @ServiceConnection.
+# Fineract/OIDC are stubbed at port boundaries — no external deps in unit CI.
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${ULMS_OIDC_ISSUER:http://localhost:8082/realms/ulms}
+ulms:
+  fineract:
+    username: ${FINERACT_USER:test}
+    password: ${FINERACT_PASSWORD:test}
+  minio:
+    endpoint: ${ULMS_MINIO_ENDPOINT:http://localhost:9000}
+    bucket: ${ULMS_MINIO_BUCKET:ulms-documents-test}
+    access-key: ${ULMS_MINIO_ACCESS_KEY:test}
+    secret-key: ${ULMS_MINIO_SECRET_KEY:test}
+  # R7 live-adapter endpoints — inert stubs so *-live profile flips boot in
+  # tests without external services (port 9 = discard; nothing listens there).
+  # Credentials below are non-usable literals for wiring tests only.
+  cib:
+    base-url: ${ULMS_CIB_BASE_URL:http://localhost:9}
+  nidw:
+    base-url: ${ULMS_NIDW_BASE_URL:http://localhost:9}
+  screening:
+    lists-dir: ${ULMS_SCREENING_LISTS_DIR:src/test/resources}   # exists, holds no CSVs → zero entries
+  rails:
+    bkash:
+      base-url: ${ULMS_BKASH_BASE_URL:http://localhost:9}
+      username: ${ULMS_BKASH_USERNAME:test}
+      password: ${ULMS_BKASH_PASSWORD:test}
+      app-key: ${ULMS_BKASH_APP_KEY:test}
+      app-secret: ${ULMS_BKASH_APP_SECRET:test}
+  sms:
+    base-url: ${ULMS_SMS_BASE_URL:http://localhost:9}
+    api-key: ${ULMS_SMS_API_KEY:test}
+  cbs:
+    base-url: ${ULMS_CBS_BASE_URL:http://localhost:9}
+    token: ${ULMS_CBS_TOKEN:test}
+  av:
+    base-url: ${ULMS_AV_BASE_URL:http://localhost:9}
