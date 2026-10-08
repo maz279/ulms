@@ -24,7 +24,7 @@ target_audience: [account_executive, solution_architect, sales_director, pre_sal
 | Parameter | Temenos Transact / Lending | Unisoft ULMS v2.0 |
 |---|---|---|
 | **Headquarters & Origin** | Geneva, Switzerland | Dhaka, Bangladesh (Smart Technologies Group) |
-| **Bangladesh Footprint** | Agrani Bank, Janata Bank, City Bank (Core Banking) | 150+ Enterprise Deployments, National Banking Footprint |
+| **Bangladesh Footprint** | leading state-owned and private banks (verify current references before live use) | 150+ Enterprise Deployments, National Banking Footprint |
 | **Primary Architecture** | Proprietary TAFJ/jBASE Runtime, Heavy Enterprise Monolith | Modular Monolith (Spring Boot 4, PostgreSQL 17, React 19) |
 | **Average Deal Size** | $2.5M – $5.0M USD (৳30 – ৳60 Crore BDT) | BDT 4.00 Crore Turnkey (License + Impl + Training) |
 | **Implementation Horizon**| 18 to 24 Months | 12 Weeks (Guaranteed Pilot Go-Live) |
@@ -69,7 +69,7 @@ flowchart TD
 
 ### 2. Astronomical Foreign Currency Total Cost of Ownership:
 * **The Reality:** Temenos contracts are denominated in US Dollars or Swiss Francs. Under Bangladesh Bank foreign exchange rationing, remitting millions of dollars abroad requires central bank approval and creates heavy forex depreciation losses.
-* **The Pitch:** *"ULMS is 100% invoiced in Bangladeshi Taka (BDT) with full NBR VAT compliance. You eliminate all forex risk, avoid Bangladesh Bank remittance delays, and save over ৳85 Crore over 5 years."*
+* **The Pitch:** *"ULMS is 100% invoiced in Bangladeshi Taka (BDT) with full NBR VAT compliance. You eliminate all forex risk, avoid Bangladesh Bank remittance delays, and save ৳89.30 Crore over 5 years (DOC-32 TCO variance)."*
 
 ### 3. Lack of Native Bangladesh Bank Regulatory Automation:
 * **The Reality:** Temenos requires expensive external system integrators to write custom code for Bangladesh Bank BRPD Circular 15/2024 (7-stage classification), CIB Online REST inquiries, and BFIU e-KYC guidelines.
@@ -87,7 +87,7 @@ flowchart TD
 | **Islamic Shariah Modes (Murabaha, Ijara)**| Complex Module Upgrade ($300k+) | **Native Multi-Asset Shariah Engine** | **ULMS Decisive Win** |
 | **Field Collection Offline Mobile App** | Basic / Third-party Dependent | **Native Expo 54+ App with GPS Geotagging** | **ULMS Decisive Win** |
 | **Time to Market** | 18–24 Months | **12 Weeks Turnkey Pilot** | **ULMS Decisive Win** |
-| **5-Year Total Cost of Ownership** | ৳90+ Crore BDT equivalent | **৳7.50 Crore BDT (incl. AMC)** | **ULMS Saves ৳82+ Cr** |
+| **5-Year Total Cost of Ownership** | ৳89.30 Crore BDT equivalent | **৳7.50 Crore BDT (incl. AMC)** | **ULMS saves ৳89.30 Cr** |
 
 ---
 
@@ -104,7 +104,7 @@ Arm your internal champion (CIO, CRO, or Head of Procurement) with these mandato
    *(Temenos cannot do this natively).*
 
 3. **For the Tender & Commercial Committee:**
-   > *"Is the vendor willing to execute a 100% BDT-denominated contract with a fixed-fee implementation warranty, guaranteeing zero foreign currency outflow and on-site engineering SLA within 2 hours in Dhaka?"*  
+   > *"Is the vendor willing to execute a 100% BDT-denominated contract with a fixed-fee implementation warranty, guaranteeing zero foreign currency outflow and 30-minute metro on-site SLA (2-hour nationwide)?"*  
    *(Temenos will refuse foreign exchange indemnification).*
 
 ---

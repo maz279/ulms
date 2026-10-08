@@ -26,8 +26,8 @@ document_id: DOC-04-DEP-07
 
 ```mermaid
 flowchart LR
-    DEV["Git Commit & Push"] --> BUILD["Maven Build & Unit Tests<br/>(JDK 21)"]
-    BUILD --> SCAN["Static Analysis<br/>(SonarQube & Trivy)"]
+    DEV["Git Commit & Push"] --> BUILD["Gradle Build & Unit Tests<br/>(JDK 21)"]
+    BUILD --> SCAN["Static Analysis<br/>(SonarQube, Trivy & gitleaks secret scanning)"]
     SCAN --> DOCKER["Container Build & Sign<br/>(Cosign)"]
     DOCKER --> GITOPS["ArgoCD Sync to k3s<br/>(Declarative GitOps)"]
 ```
@@ -41,3 +41,10 @@ Every build must pass 4 mandatory quality gates before artifact release:
 2. **SAST Security Gate:** Zero critical or high vulnerabilities detected by SonarQube.
 3. **Container CVE Scan:** Zero unpatched CVEs in base images via Trivy.
 4. **GitOps Canary Validation:** Automatic rollback if HTTP 5xx errors $> 0.1\%$ within 5 minutes.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- CI truth (v3.1.0): the build is Gradle (gradlew, build.gradle.kts); the repository's real secret-scanning gate is gitleaks (.gitlab-ci.yml) — it must run in every pipeline; SonarQube/Trivy/Cosign/ArgoCD describe the target-state toolchain. See .gitlab-ci.yml for the authoritative stage list.

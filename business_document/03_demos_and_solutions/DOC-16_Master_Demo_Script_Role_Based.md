@@ -52,10 +52,10 @@ A software demonstration to a bank evaluation committee is not a technical tutor
 |---|---|---|---|
 | **Branch Credit Officer** | `branch.officer` | `Demo@Ulms2026!` | Onboarding, BOCC Memo, CIB Trigger |
 | **Field Collection Agent** | `field.agent` | `Demo@Ulms2026!` | Mobile Verification, Geo-Tagging, Photos |
-| **Credit Risk Underwriter** | `risk.analyst` | `Demo@Ulms2026!` | Credit Scoring (0–1000), DBR Analysis |
-| **Branch Credit Head (L1 Approval)**| `branch.credit_head`| `Demo@Ulms2026!`| Initial Review & Sanction up to ৳5 Lakh |
+| **Credit Risk Underwriter** | `credit-analyst` | `Demo@Ulms2026!` | Credit Scoring (0–1000), DBR Analysis |
+| **Branch Credit Head (L1 Approval)**| `branch-manager`| `Demo@Ulms2026!`| Initial Review & Sanction up to ৳5 Lakh |
 | **Branch Manager (L2 Approval)**| `branch.manager` | `Demo@Ulms2026!` | Branch Sanction up to ৳10 Lakh |
-| **Regional Manager (L3 Approval)**| `regional.manager`| `Demo@Ulms2026!`| Regional Sanction up to ৳25 Lakh |
+| **Regional Manager (L3 Approval)**| `regional-manager`| `Demo@Ulms2026!`| Regional Sanction up to ৳25 Lakh |
 | **Head of Credit (L4 Approval)** | `head.credit` | `Demo@Ulms2026!` | Division Sanction up to ৳1 Crore |
 | **Credit Committee (L5 Approval)**| `credit.committee`| `Demo@Ulms2026!`| Committee Sanction up to ৳5 Crore |
 | **Managing Director / Board (L7)** | `md.executive` | `Demo@Ulms2026!` | High-Value Corporate Approval (> ৳10 Crore) |
@@ -133,24 +133,24 @@ sequenceDiagram
 ### ACT 3: AI-Assisted Credit Underwriting & DBR Engine (Minutes 18–30)
 * **Goal:** Show the Chief Risk Officer and Head of Credit how ULMS prevents bad loans through mathematical scoring.
 * **Screen:** Underwriting & Risk Assessment (`/assessment/:applicationId`)
-* **Login:** `risk.analyst`
+* **Login:** `credit-analyst`
 * **Narrative Script:**
   > *"We are now logged in as Ms. Farhana in the Credit Risk Management division at Head Office. The application has arrived in her digital queue.*
   > 
   > *Look at the Risk Assessment screen. Ms. Farhana does not need to build an Excel model from scratch. ULMS has already calculated the borrower’s Debt Burden Ratio (DBR).*
   > 
-  > *The borrower earns BDT 1,80,000 monthly salary. Between their existing City Bank card and this proposed loan installment of BDT 38,500, their calculated DBR is exactly 34.2%—comfortably below the Bangladesh Bank regulatory ceiling of 50%.*
+  > *The borrower earns BDT 1,80,000 monthly salary. Between their existing City Bank card and this proposed loan installment of BDT 38,500, their calculated DBR is 21.4% on stated obligations (EMI ÷ salary); 34.2% including card obligations—comfortably below the Bangladesh Bank regulatory ceiling of 50%.*
   > 
   > *Next, look at the ULMS Credit Scorecard: The algorithm evaluates 42 risk factors across demographic stability, CIB track record, banking behavior, and income stability. The applicant scores **782 out of 1000**—categorized as 'Low Risk / Recommended'.*
   > 
-  > *Notice this one-click action: 'Generate BOCC Credit Memo'. In your bank today, junior officers spend 4 hours typing this document in Microsoft Word. Watch: Mr. Rafiq clicks generate, and the complete, standardized Branch Officers Credit Committee memo is produced automatically, complete with financial ratios, CIB summary, collateral appraisal, and digital risk tags. It is ready for committee approval."*
+  > *Notice this one-click action: 'Generate BOCC Credit Memo'. In your bank today, junior officers spend 4 hours typing this document in Microsoft Word. Watch: Ms. Farhana clicks generate, and the complete, standardized Branch Officers Credit Committee memo is produced automatically, complete with financial ratios, CIB summary, collateral appraisal, and digital risk tags. It is ready for committee approval."*
 
 ---
 
 ### ACT 4: Multi-Level Approval Hierarchy & Digital Signatures (Minutes 30–42)
 * **Goal:** Demonstrate institutional governance, four-eye maker-checker enforcement, and multi-level approval hierarchies.
 * **Screen:** Approval Queue (`/approvals`)
-* **Login:** `branch.credit_head` (L1) → `branch.manager` (L2) → `regional.manager` (L3 Escalation Demo)
+* **Login:** `branch-manager` (L1) → `branch.manager` (L2) → `regional-manager` (L3 Escalation Demo)
 * **Narrative Script:**
   > *"Now let us look at the approval workflow. In your bank, physical paper files sit on managers' desks for days waiting for signatures.*
   > 
@@ -228,3 +228,10 @@ sequenceDiagram
 ---
 
 *Unisoft Systems Limited — Pre-Sales & Solutions Engineering Division.*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Demo logins aligned to the shipped realm roles (branch-officer, branch-manager, regional-manager, credit-analyst, ho-credit, credit-committee, md, collections, compliance, divisional-head, admin).

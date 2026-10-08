@@ -52,3 +52,10 @@ public ApprovalTier determineRequiredTier(long requestedAmountMinor, LoanProduct
     return approvalBandRepository.findByAmountRange(requestedAmountMinor);
 }
 ```
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Canonical ladder (v3.1.0): the seeded 7-level ulms.approval_band (V2) governs — L1 Branch Officer ≤৳5L, L2 Branch Manager ≤৳10L, L3 Regional Manager ≤৳25L, L4 Divisional Head ≤৳50L, L5 Head of Credit ≤৳2.5Cr, L6 Credit Committee ≤৳10Cr, L7 MD >৳10Cr. Any divergent threshold tables in earlier drafts are superseded.

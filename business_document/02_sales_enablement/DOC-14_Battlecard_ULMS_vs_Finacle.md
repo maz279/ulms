@@ -21,7 +21,7 @@ target_audience: [account_executive, solution_architect, sales_director, pre_sal
 
 ## 1. Executive Context: The "Finacle Account" Dynamic
 
-In Bangladesh, Infosys Finacle is a dominant incumbent Core Banking System (CBS) across major institutions including Dutch-Bangla Bank, Eastern Bank, Sonali Bank, and Trust Bank.
+In Bangladesh, Infosys Finacle is a dominant incumbent Core Banking System (CBS) across major institutions including several leading conventional and Islamic banks (verify current CBS references before live use).
 
 When a bank running Finacle CBS looks to modernize its lending, Infosys attempts to sell the **Finacle Lending / Origination Module** as an "add-on". However, banks consistently face three critical pain points:
 1. **Exorbitant Change Order Costs:** Modifying a simple Finacle loan origination workflow requires costly Finacle Scripting or engagement with Infosys Bangalore consulting teams.

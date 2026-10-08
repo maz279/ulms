@@ -1,6 +1,6 @@
 ---
 document_id: DOC-26-RFP-04
-title: 100% Functional Compliance Response Matrix Library
+title: Functional Compliance Response Matrix (N = 100) Library
 version: 2.0.0
 date: 2026-10-08
 classification: Confidential Commercial Bid Asset
@@ -8,7 +8,7 @@ diataxis_type: reference
 target_audience: [bid_manager, technical_evaluation_committee, solution_architect, it_auditor]
 ---
 
-# 100% Functional Compliance Response Matrix Library
+# Functional Compliance Response Matrix (N = 100) Library
 ## Master RFP Technical Bid Response Matrix for Scheduled Commercial Banks in Bangladesh
 
 **Document Identifier:** DOC-26-RFP-04  
@@ -56,8 +56,8 @@ In accordance with standard Public Procurement Rules (PPR 2008) and commercial b
 | Ref # | RFP Requirement Clause | Support | Architectural Evidence & ULMS Capability |
 |---|---|---|---|
 | **REQ-1.1** | Support digital customer onboarding with automated National ID (NID) biometric verification via Election Commission NIDW. | **FS** | Pre-integrated REST gateway verifying 10-digit smart NID and 17-digit legacy NID with sub-2-second response. |
-| **REQ-1.2** | Facial recognition with liveness detection and automated photograph match against NID database. | **FS** | Embedded neural liveness check exceeding 85% facial confidence threshold per BFIU guidelines. |
-| **REQ-1.3** | Automated Optical Character Recognition (OCR) extraction from utility bills, trade licenses, and TIN certificates. | **FS** | Native Tesseract/PDF OCR pipeline populating application forms with 99.2% field accuracy. |
+| **REQ-1.2** | Facial recognition with liveness detection and automated photograph match against NID database. | **FS** | Embedded neural liveness check exceeding the configured facial-match threshold (95%) with NIDW liveness checks. |
+| **REQ-1.3** | Automated Optical Character Recognition (OCR) extraction from utility bills, trade licenses, and TIN certificates. | **FS** | Native Tesseract/PDF OCR pipeline populating application forms with high field accuracy (see QA evidence). |
 | **REQ-1.4** | Multi-borrower support including co-applicants, personal guarantors, and corporate beneficial owners. | **FS** | Unlimited relational linking of co-borrowers and corporate group entities in PostgreSQL 17 schema. |
 
 ### Domain 2: Loan Origination & BOCC Credit Memo Workflow
@@ -93,7 +93,7 @@ In accordance with standard Public Procurement Rules (PPR 2008) and commercial b
 ### Domain 6: Core Banking Limit Loading & Automated Disbursement
 | Ref # | RFP Requirement Clause | Support | Architectural Evidence & ULMS Capability |
 |---|---|---|---|
-| **REQ-6.1** | Automated handoff to Core Banking System (Finacle, T24, FLEXCUBE, Flora Bank, PC-Bank) for account opening. | **FS** | Pre-built bi-directional connectors supporting REST, SOAP Web Services, and direct ISO-20022 staging tables. |
+| **REQ-6.1** | Automated handoff to Core Banking System (Finacle, T24, FLEXCUBE, Flora Bank, BankUltimus) for account opening. | **FS** | Pre-built bi-directional connectors supporting REST, SOAP Web Services, and direct ISO-20022 staging tables. |
 | **REQ-6.2** | Generation of repayment amortization schedules supporting Equal Monthly Installment (EMI) and Rule of 78. | **FS** | High-precision arithmetic engine computing interest, principal repayment, and odd-day interest. |
 | **REQ-6.3** | Multi-channel disbursement: direct customer CASA credit, pay-order issuance, or MFS wallet push (bKash/Nagad). | **FS** | Integrated disbursement hub executing automated API disbursement pushes upon sanction verification. |
 

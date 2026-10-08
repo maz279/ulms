@@ -74,7 +74,7 @@ Phone: +880 1709-642404 | Email: office@uslbd.com | Web: www.uslbd.com
 │ On-Time Project Delivery Rate │ 98% Across Public and Private Sectors       │
 │ Regulatory Accreditations     │ NBR-Approved UniVAT™ System Developer       │
 │ Physical Headquarters         │ Youth Tower, Begum Rokeya Sarani, Dhaka     │
-│ Quality & Security Standards  │ ISO 9001:2015 · ISO/IEC 27001:2022 Certified│
+│ Quality & Security Standards  │ ISO 9001, ISO 27001 & CMMI-aligned engineering lifecycle (certification program in progress)│
 └───────────────────────────────┴─────────────────────────────────────────────┘
 ```
 
@@ -160,7 +160,7 @@ flowchart TD
 | **Primary Database** | PostgreSQL Enterprise | PostgreSQL 17 | Robust ACID compliance, native JSONB support, zero licensing fees |
 | **In-Memory Cache** | Redis Enterprise | Redis 7.2+ | Sub-millisecond session caching and real-time score computation |
 | **Identity & Access** | Keycloak | Keycloak 26 | Certified OAuth 2.0 / OIDC, Multi-Factor Authentication, Single Sign-On |
-| **Document Storage** | MinIO Enterprise Object Store | Latest Stable | S3-compatible, on-premises private datacenter, AES-256 encrypted |
+| **Document Storage** | SeaweedFS/MinIO-compatible object storage (open source) | Latest Stable | S3-compatible, on-premises private datacenter, AES-256 encrypted |
 | **Containerization** | Docker / Lightweight Kubernetes| k3s / K8s 1.30+ | Lightweight on-premise container orchestration with automated failover |
 
 ---
@@ -293,3 +293,10 @@ Detailed Curricula Vitae (CVs) with verified project credentials are provided in
 ---
 
 *Unisoft Systems Limited — Enterprise Bid Management Directorate.*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Architecture disclosure (v3.1.0): the platform's core lending ledger is Apache Fineract Community Edition (Apache License 2.0) — an open-source component, disclosed here for tender completeness and consistent with the Master Software License Agreement's OSS schedule (DOC-40).

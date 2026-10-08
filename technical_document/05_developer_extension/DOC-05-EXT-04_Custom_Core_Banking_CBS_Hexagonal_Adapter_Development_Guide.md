@@ -24,7 +24,7 @@ document_id: DOC-05-EXT-04
 
 ## 1. Hexagonal Port Architecture Overview
 
-ULMS v2.0 is completely decoupled from specific CBS platforms (e.g., Finacle, Temenos Transact, TCS BaNCS, or Flora Bank). All interactions flow through the clean hexagonal domain port `com.uslbd.ulms.integration.fineract.FinacleCbsAdapter`:
+ULMS v2.0 is completely decoupled from specific CBS platforms (e.g., Finacle, Temenos Transact, TCS BaNCS, or Flora Bank). All interactions flow through the clean hexagonal domain port `com.uslbd.ulms.integration.cbs.FinacleCbsAdapter (implements the CBS port)`:
 
 ```mermaid
 flowchart LR

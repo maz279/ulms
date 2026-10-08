@@ -22,7 +22,7 @@ target_audience: [legal_counsel, cfo, managing_director, head_of_procurement]
 
 ## 1. Parties & Recitals
 
-This Master Software License Agreement ("**Agreement**") is entered into as of this [___] day of [_______], 2026 ("**Effective Date**"), by and between:
+This Master Software License Agreement ("**Agreement**") is entered into as of this [___] day of [_______], 20____ ("**Effective Date**"), by and between:
 
 1. **UNISOFT SYSTEMS LIMITED**, a private limited company incorporated under the Companies Act 1994 of Bangladesh, having its corporate headquarters at Youth Tower, Begum Rokeya Sarani, Dhaka-1216, Bangladesh (hereinafter referred to as the "**Licensor**", which expression shall unless repugnant to the context include its successors and permitted assigns); and
 
@@ -41,7 +41,7 @@ This Master Software License Agreement ("**Agreement**") is entered into as of t
 
 1. **Scope of Grant:** Subject to the payment of the agreed Perpetual Software License Fee (Schedule A of `DOC-24`), Licensor hereby grants to Licensee a perpetual, irrevocable, non-exclusive, non-transferable enterprise license to install, operate, and utilize ULMS v2.0.
 2. **Authorized Environment:** Licensee is authorized to run the software on its primary on-premise datacenter, secondary disaster recovery (DR) site, and internal development/UAT environments located within the sovereign territory of the People's Republic of Bangladesh.
-3. **Usage Volume:** The license permits unlimited staff user seats and unlimited branch processing across Licensee's domestic branch and agent banking network.
+3. **Usage Volume:** The license permits the staff-seat and branch caps of the licensed tier per DOC-31 (e.g., Tier-3: up to 250 seats, up to 40 branches) across Licensee's domestic branch and agent banking network.
 
 ---
 
@@ -113,3 +113,11 @@ Witness 2: __________________________         Witness 2: _______________________
 ---
 
 *Unisoft Systems Limited — Corporate Legal Directorate & Enterprise Contracts.*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Open-Source Software Schedule (added v3.1.0): ULMS v2.0 embeds Apache Fineract Community Edition (Apache License 2.0) as its core lending ledger, together with other open-source components (Spring Boot, PostgreSQL, Keycloak, React, Expo). Nothing in this Agreement transfers or diminishes licensor ownership of Unisoft's proprietary modules; Schedule C (to be attached at signature) lists each embedded OSS component, its license, and source-availability obligations. Apache-2.0 components carry no royalty or fee obligations.
+- Clause stubs REQUIRED before signature (added v3.1.0): (8) Confidentiality — mutual, five-year survival; (9) Delivery & Acceptance — 30-day acceptance window with signed UAT protocol; (10) Term, Termination & Suspension — 90-day cure period, full data export on exit; (11) Force Majeure — standard carve-outs with 30-day notice; (12) Execution & notarization per the Companies Act 1994.

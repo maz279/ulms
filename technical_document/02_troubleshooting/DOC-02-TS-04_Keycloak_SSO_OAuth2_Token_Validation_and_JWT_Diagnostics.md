@@ -26,7 +26,7 @@ document_id: DOC-02-TS-04
 
 Users attempting to access the ULMS Staff Portal or API experience unexpected authentication failures:
 - HTTP 401 Unauthorized with response `Bearer error="invalid_token", error_description="The Token's Signature resulted in an error"`.
-- Browser redirect loop between `http://lms.bank.local/auth` and Keycloak realm login.
+- Browser redirect loop between `http://lms.bank.local/realms/ulms` and Keycloak realm login.
 - Clock skew errors: `JwtValidationException: An error occurred while attempting to decode the Jwt: The JWT is not yet valid (nbf)`.
 - Keycloak container log: `WARN [org.keycloak.events] (executor-thread-1) type=LOGIN_ERROR, error=invalid_user_credentials`.
 
@@ -44,8 +44,8 @@ flowchart TD
     CHECK_ISS -->|Mismatch| FIX_ENV["Fix `SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI`<br/>Must match container vs external DNS"]
     CHECK_ISS -->|Match| CHECK_SIG{"Is Public JWKS reachable from API container?"}
     
-    CHECK_SIG -->|No| FIX_NET["Verify port 8080 routing to keycloak from ulms-api pod"]
-    CHECK_SIG -->|Yes| CHECK_ROLES["Verify user has role `ROLE_BRANCH_OFFICER` or required ladder claim"]
+    CHECK_SIG -->|No| FIX_NET["Verify port 8082 routing to keycloak from ulms-api pod"]
+    CHECK_SIG -->|Yes| CHECK_ROLES["Verify user has role `branch-officer` or required ladder claim"]
 ```
 
 ---
@@ -53,11 +53,11 @@ flowchart TD
 ## 3. High-Frequency Root Causes & Solutions
 
 ### 3.1 Docker / Kubernetes Issuer URI Mismatch
-- **Root Cause:** When accessing via browser, issuer is `http://keycloak.local/realms/ulms`, but Spring Boot container resolves `http://keycloak:8080/realms/ulms`.
+- **Root Cause:** When accessing via browser, issuer is `http://keycloak.local/realms/ulms`, but Spring Boot container resolves `https://lms.bank.local (external issuer URL)/realms/ulms`.
 - **Solution:** Configure Keycloak frontend URL in `deploy/compose/docker-compose.yml`:
   ```yaml
-  KC_HOSTNAME_URL: "http://keycloak:8080"
-  KC_HOSTNAME_ADMIN_URL: "http://keycloak:8080"
+  KC_HOSTNAME: "https://lms.bank.local (external issuer URL)"
+  KC_HOSTNAME_ADMIN: "https://lms.bank.local (external issuer URL)"
   KC_HOSTNAME_STRICT: "false"
   ```
 
@@ -67,3 +67,10 @@ Spring Boot allows a default 60-second leeway. If host servers drift by $> 60$ s
 # Sync NTP on all host nodes
 sudo chronyc -a makestep
 ```
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Keycloak 26 corrections (v3.1.0): hostname v2 uses KC_HOSTNAME / KC_HOSTNAME_ADMIN (KC_HOSTNAME_URL was removed); the hostname must be the EXTERNAL issuer URL, matching the API's issuer-uri; the legacy /auth context path was removed in Keycloak 17+ — the proxy path is /realms/. Token validation checklist must include audience (aud=account, azp=ulms-web) in addition to iss/exp/signature/roles.

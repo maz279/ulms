@@ -55,7 +55,7 @@ Content-Type: application/json
 
 ---
 
-## 3. Comprehensive Subsystem Endpoint Catalog (285 Total Endpoints)
+## 3. Comprehensive Subsystem Endpoint Catalog (140 paths / 166 operations)
 
 ### 3.1 Customer Management Subsystem (`/api/v1/customers`)
 | Method | Endpoint Path | Summary & Purpose | Required Roles |
@@ -124,15 +124,15 @@ Content-Type: application/json
 {
   "customerId": "8f3b2e10-4c28-4e89-a29d-d82047392104",
   "productId": "PRD-RET-HOME-001",
-  "requestedAmount": 3500000.00,
+  "requestedAmountMinor": 350000000,
   "tenorMonths": 60,
   "interestRate": 9.00,
   "disbursementChannel": "CBS_ACCOUNT_TRANSFER",
   "repaymentFrequency": "MONTHLY",
   "collateral": {
     "collateralType": "IMMOVABLE_REAL_ESTATE",
-    "marketValue": 5500000.00,
-    "forcedSaleValue": 4400000.00,
+    "marketValueMinor": 550000000,
+    "forcedSaleValueMinor": 440000000,
     "propertyAddress": "Plot 42, Road 11, Dhanmondi, Dhaka-1209"
   }
 }
@@ -144,7 +144,7 @@ Content-Type: application/json
   "applicationId": "c928410b-11cc-429a-b456-9902b3c4d511",
   "applicationNumber": "APP-2026-DHN-00421",
   "status": "ASSESSMENT_PENDING",
-  "calculatedEmi": 72658.42,
+  "calculatedEmiMinor": 7265424,
   "calculatedDbr": 42.15,
   "dbrStatus": "COMPLIANT",
   "ltvRatio": 63.64,
@@ -180,3 +180,10 @@ When a request violates business rules or security constraints, the API returns 
 ---
 
 *— End of REST API Reference & RFC 9457 Problem Details Specification —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Money invariant enforced (v3.1.0): all API examples rewritten in integer minor units (poisha) per the platform-wide zero-decimal rule — the 60-month EMI for BDT 3,500,000 @ 9% is 7,265,424 poisha (BDT 72,654.24). Idempotency semantics: DB-backed key table, 48-hour replay window, 409 on concurrent duplicates (no Redis, no 425).

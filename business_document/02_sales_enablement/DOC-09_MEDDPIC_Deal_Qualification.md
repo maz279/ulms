@@ -52,7 +52,7 @@ Enterprise banking software deals in Bangladesh have long gestation cycles (6 to
   * Direct staffing cost allocated to branch credit memos and BOCC paper preparation.
 * **Our Benchmark Metric Target:**
   * Can we demonstrate an 85% TAT reduction (from 21 days to 48 hours)?
-  * Can we show a 0.5%–1.0% reduction in portfolio loss through automated CIB deduplication?
+  * Can we show a 0.75% modeled reduction in portfolio NPLs (DOC-32 base case) through automated CIB deduplication?
   * Can we prove full capital payback in under 9 months?
 
 ### E — Economic Buyer (The Ultimate Decision Authority)
@@ -187,7 +187,7 @@ Before committing senior engineering and pre-sales resources to an RFP response 
 │ PILLAR  │ RED (Unqualified)    │ AMBER (Conditional) │ GREEN (Fully Ready) │
 ├─────────┼──────────────────────┼──────────────────────┼─────────────────────┤
 │ METRICS │ No clear TAT or NPL  │ High-level pain but  │ Hard metrics agreed:│
-│         │ data; "just looking" │ unquantified costs   │ 21d TAT, 12% NPLs   │
+│         │ data; "just looking" │ unquantified costs   │ 21d TAT, 12.5% NPLs   │
 ├─────────┼──────────────────────┼──────────────────────┼─────────────────────┤
 │ ECONOMIC│ No access to MD/CFO; │ Meeting with Head of │ Direct access to MD,│
 │ BUYER   │ dealing only with IT │ Retail or Head of IT │ CFO, or Board Chair │

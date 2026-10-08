@@ -35,10 +35,10 @@ During borrower onboarding and loan appraisal:
 
 | Error Code | Source | Root Cause | Immediate Action |
 |---|---|---|---|
-| `CIB-504` | BB CIB API | CIB Server maintenance window (often 18:00 - 20:00). | Retry in off-peak window; activate manual XML upload queue. |
-| `CIB-401` | CIB Gateway | Expired CIB certificate or changed IP address. | Verify bank static IP registered with BB CIB Department. |
-| `NIDW-500` | NIDW Portal | Server maintenance at Bangladesh Election Commission. | Trigger fallback to manual NID physical copy upload with Maker-Checker override. |
-| `CIB-INVALID-DOB` | Data Entry | DOB does not match NID registered record. | Request original NID card and correct date format (`DD/MM/YYYY`). |
+| `ULMS-INT-0001` | BB CIB API | CIB Server maintenance window (often 18:00 - 20:00). | Retry in off-peak window; activate manual XML upload queue. |
+| `ULMS-AUTH-0003` | CIB Gateway | Expired CIB certificate or changed IP address. | Verify bank static IP registered with BB CIB Department. |
+| `ULMS-INT-0002` | NIDW Portal | Server maintenance at Bangladesh Election Commission. | Trigger fallback to manual NID physical copy upload with Maker-Checker override. |
+| `ULMS-VAL-0002` | Data Entry | DOB does not match NID registered record. | Request original NID card and correct date format (`DD/MM/YYYY`). |
 
 ---
 
@@ -49,3 +49,10 @@ Under Bangladesh Bank regulations, an automated CIB failure cannot simply be ign
 2. Uploads PDF into ULMS document store via `POST /api/v1/applications/{id}/documents`.
 3. Selects **"Manual CIB Report Override"** which requires Branch Manager dual-authorization.
 4. An immutable audit record is logged in `ulms.audit_entry` capturing the override justification and attached PDF hash.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Error codes unified (v3.1.0) to the RFC 9457 ULMS-* registry (TS-02): ULMS-INT-0001 CIB timeout, ULMS-INT-0002 NIDW unavailable, ULMS-AUTH-0003 CIB credential rejection, ULMS-VAL-0002 identity-data mismatch.

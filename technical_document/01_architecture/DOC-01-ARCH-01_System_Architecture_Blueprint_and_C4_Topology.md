@@ -34,7 +34,7 @@ The architecture is designed to resolve the primary failure modes of legacy core
 
 ### Key Architectural Invariants
 - **Modular Monolith Core (ADR-001):** Single Spring Boot 4 application on Java 21 LTS with code-enforced module boundaries via Spring Modulith.
-- **Immutable Lending Ledger (ADR-002):** Apache Fineract 1.12.x Community Edition operates as the underlying accounting engine accessed strictly via REST behind `FineractPort`.
+- **Immutable Lending Ledger (ADR-002):** Apache Fineract CE (digest-pinned) Community Edition operates as the underlying accounting engine accessed strictly via REST behind `FineractPort`.
 - **Database-Backed Workflows (ADR-003):** Zero external Camunda BPM licensing cost; approval ladders and state transitions run on PostgreSQL relational state with ShedLock SLA timers.
 - **Transactional Outbox Messaging (ADR-004):** Event rows committed within the same database transaction as domain entity updates; zero message loss without operating a day-one Kafka cluster.
 - **Strict Minor-Units Currency Invariant:** All financial values are stored and transferred as `BIGINT` poisha ($1\text{ BDT} = 100\text{ poisha}$). IEEE 754 floating-point numbers are strictly forbidden in monetary calculations.
@@ -101,25 +101,25 @@ flowchart TD
 
     subgraph App_Tier ["Application Tier"]
         API["ULMS Modular Monolith API<br/><b>Spring Boot 4.0.x / Java 21 LTS</b><br/>Virtual Threads, Spring Modulith<br/>Port 8081 (API), Port 9977 (Actuator)"]
-        FINERACT["Core Lending Engine<br/><b>Apache Fineract 1.12.x CE</b><br/>Port 8083 (Mutual TLS)"]
+        FINERACT["Core Lending Engine<br/><b>Apache Fineract CE (digest-pinned) CE</b><br/>Port 8083 (Mutual TLS)"]
         KEYCLOAK["Identity & Access Management<br/><b>Keycloak 26.x</b><br/>OIDC / OAuth 2.0 PKCE, Port 8082"]
     end
 
     subgraph Data_Tier ["Data & Storage Tier"]
-        POSTGRES[("Relational Database<br/><b>PostgreSQL 17</b><br/>Schemas: 'ulms', 'fineract_tenants'<br/>Port 5432")]
+        POSTGRES[("Relational Database<br/><b>PostgreSQL 17</b><br/>Schemas: 'ulms', 'fineract_default'<br/>Port 5433 (host-mapped)")]
         MINIO[("Document & Object Storage<br/><b>SeaweedFS S3 / MinIO</b><br/>AES-256 Document Store<br/>Port 8333 / 9002")]
     end
 
     subgraph Observability_Tier ["Observability & Metrics"]
         PROM["Prometheus v3.5<br/>Scrapes :9977/actuator/prometheus"]
         GRAF["Grafana 11.6<br/>Financial & SRE Dashboards"]
-        LOKI["Loki Log Aggregator<br/>PII-Masked Audit Logs"]
+        LOKI["(Deferred) ELK/Loki log aggregation — v3 ships structured JSON logs"]
     end
 
     WEB -->|"HTTPS / REST / JWT"| NGINX
     MOBILE -->|"HTTPS / REST / PKCE"| NGINX
     NGINX -->|"Proxies /api to :8081"| API
-    NGINX -->|"Proxies /auth to :8082"| KEYCLOAK
+    NGINX -->|"Proxies /realms/ to :8082"| KEYCLOAK
 
     API -->|"Validates JWT tokens via JWKS"| KEYCLOAK
     API -->|"REST commands over mTLS"| FINERACT
@@ -209,7 +209,7 @@ This cryptographic chain guarantees tamper-evident logging conforming to **Bangl
 | Component | Code Artifact | Standard / Circular |
 |---|---|---|
 | **Modular Core** | `apps/api/src/main/java/com/uslbd/ulms/UlmsApplication.java` | ADR-001, Spring Boot 4.0 |
-| **Lending Engine** | `apps/api/src/main/java/com/uslbd/ulms/integration/fineract/` | ADR-002, Apache Fineract 1.12.x |
+| **Lending Engine** | `apps/api/src/main/java/com/uslbd/ulms/integration/fineract/` | ADR-002, Apache Fineract CE (digest-pinned) |
 | **7-Stage Classifier** | `apps/api/src/main/java/com/uslbd/ulms/compliance/BrpdClassifier.java` | BRPD Circular 15/2024 |
 | **DBR Cap ($\le 50\%$)** | `apps/api/src/main/java/com/uslbd/ulms/platform/MoneyMath.java` | BB PPG Guideline No. 15 |
 | **STR Alert ($\ge 10\text{L}$)** | `apps/api/src/main/java/com/uslbd/ulms/aml/AmlService.java` | BFIU Circular 25/26 |

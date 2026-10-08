@@ -76,12 +76,12 @@ To eliminate subjective debate, the evaluation shall be judged strictly against 
 
 | Scenario # | Lending Workflow Tested | Step-by-Step Test Execution | Expected Objective Result | Pass / Fail |
 |---|---|---|---|---|
-| **TEST-01** | **Customer e-KYC Onboarding** | Enter synthetic NID (`1985012345678`) and birthdate; trigger verification. | System connects to e-KYC simulator, populates name/photo/address in <2.0 seconds. | [ ] PASS<br/>[ ] FAIL |
+| **TEST-01** | **Customer e-KYC Onboarding** | Enter synthetic NID (`1985012345`) and birthdate; trigger verification. | System connects to e-KYC simulator, populates name/photo/address in <2.0 seconds. | [ ] PASS<br/>[ ] FAIL |
 | **TEST-02** | **Automated CIB Online Inquiry** | Ingest applicant credit profile; click 'Execute CIB Inquiry'. | System returns structured CIB history, credit score, and dedupe tags in <3.0 seconds. | [ ] PASS<br/>[ ] FAIL |
 | **TEST-03** | **Debt Burden Ratio (DBR) Engine** | Enter BDT 1,50,000 net income and BDT 35,000 liabilities; propose BDT 20,000 EMI. | System accurately calculates DBR = 36.67%; validates against 50% central bank cap. | [ ] PASS<br/>[ ] FAIL |
 | **TEST-04** | **AI Credit Scorecard Calculation** | Run scorecard on clean borrower profile vs. delinquent borrower profile. | Clean borrower scores >700 (Approved); delinquent profile scores <450 (Rejected). | [ ] PASS<br/>[ ] FAIL |
 | **TEST-05** | **BOCC Credit Memo Generation** | Click 'Generate BOCC Credit Memo' on completed underwriting file. | Complete standardized credit memo is compiled automatically with zero manual typing. | [ ] PASS<br/>[ ] FAIL |
-| **TEST-06** | **Multi-Level Approval Delegation** | Submit BDT 25 Lakh loan requiring L1 (Branch Manager) and L2 (Regional Head). | System routes file sequentially; enforces digital signature and updates to 'Sanctioned'. | [ ] PASS<br/>[ ] FAIL |
+| **TEST-06** | **Multi-Level Approval Delegation** | Submit BDT 25 Lakh loan routing through L1 Branch Officer → L2 Branch Manager → L3 Regional Manager approval (seeded 7-level approval_band ladder). | System routes file sequentially; enforces digital signature and updates to 'Sanctioned'. | [ ] PASS<br/>[ ] FAIL |
 | **TEST-07** | **CBS Limit Loading & Disbursement** | Click 'Disburse via CBS Gateway' on sanctioned loan. | Mock CBS receives authenticated REST call, loads credit limit, posts fee vouchers in <2 sec. | [ ] PASS<br/>[ ] FAIL |
 | **TEST-08** | **Amortization Schedule Accuracy** | Verify 36-month BDT 15 Lakh EMI schedule at 11.5% interest rate. | Principal and interest breakdown matches standard actuarial reducing balance formula. | [ ] PASS<br/>[ ] FAIL |
 | **TEST-09** | **BRPD 15/2024 Automated Staging** | Run EOD batch on test portfolio with 0 DPD, 45 DPD, 120 DPD, and 400 DPD accounts. | Accounts stage accurately to STD-0, STD-2, SS, and B/L with exact statutory provisions. | [ ] PASS<br/>[ ] FAIL |

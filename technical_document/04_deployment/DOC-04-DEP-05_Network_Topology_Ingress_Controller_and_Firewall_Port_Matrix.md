@@ -37,7 +37,14 @@ ULMS requires strict 3-tier DMZ isolation:
 |---|---|---|---|---|
 | Bank LAN / Branches | Perimeter DMZ | TCP | 443 | HTTPS to Staff Web Portal |
 | Mobile Gateways | Perimeter DMZ | TCP | 443 | HTTPS to Mobile Field API |
-| Perimeter DMZ | Application Zone | TCP | 8080 | HTTP REST to `apps/api` |
-| Application Zone | Database Zone | TCP | 5432 | PostgreSQL 17 Database Connections |
-| Application Zone | Core Banking Zone | TCP | 8443 / 9090 | Core Banking Bridge / Fineract REST |
+| Perimeter DMZ | Application Zone | TCP | 8081 — ULMS REST API | HTTP REST to `apps/api` |
+| Application Zone | Database Zone | TCP | 5433 — PostgreSQL 17 (host-mapped) | PostgreSQL 17 Database Connections |
+| Application Zone | Core Banking Zone | TCP | 8083 — Fineract CE / 9090 — Prometheus | Core Banking Bridge / Fineract REST |
 | Application Zone | Bangladesh Bank CIB | TCP | 443 | Outbound CIB Online SSL connection |
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Full port matrix (v3.1.0, matches deploy/compose): 4173 staff web (nginx, same-origin proxy for /realms and /api) · 8082 Keycloak · 8081 ULMS API · 9977 actuator/management · 8083 Apache Fineract CE · 5433 PostgreSQL 17 · 9002 object storage (SeaweedFS S3) · 9090 Prometheus · 3000 Grafana. 8080 is container-internal only; nothing publishes 5432/8443 on the host.

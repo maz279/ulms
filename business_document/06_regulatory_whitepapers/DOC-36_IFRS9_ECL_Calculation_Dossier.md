@@ -102,7 +102,7 @@ Where:
 * For amortizing installment loans: EAD equals the remaining principal plus accrued interest at period $t$.
 * For revolving limits and overdrafts: EAD includes an automated Credit Conversion Factor (CCF) applied to undrawn sanctioned limits:
   $$\text{EAD} = \text{Drawn Balance} + (\text{Undrawn Limit} \times \text{CCF})$$
-  *(Default CCF = 20% for retail lines, 50% for corporate limits per Basel III guidelines).*
+  *(Default CCF = 20% for retail lines, 50% for corporate limits per the bank's IFRS-9 policy calibration (Basel reference CCFs range 40–75%)).*
 
 ---
 

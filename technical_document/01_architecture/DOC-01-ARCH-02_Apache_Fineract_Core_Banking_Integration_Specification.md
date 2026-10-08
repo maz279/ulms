@@ -6,13 +6,13 @@ version: 2026.10
 document_id: DOC-01-ARCH-02
 ---
 
-# DOC-01-ARCH-02: Apache Fineract 1.12.x Core Banking Integration Specification
+# DOC-01-ARCH-02: Apache Fineract CE (digest-pinned) Core Banking Integration Specification
 
 **Document Control**
 
 | Field | Value |
 |---|---|
-| **Document Title** | Apache Fineract 1.12.x Core Banking Integration & REST Adapter Specification |
+| **Document Title** | Apache Fineract CE (digest-pinned) Core Banking Integration & REST Adapter Specification |
 | **Project Name** | Unisoft Loan Management System (ULMS v2.0) |
 | **Document Version** | 3.0.0 |
 | **Date** | 2026-10-07 |
@@ -25,19 +25,19 @@ document_id: DOC-01-ARCH-02
 
 ## 1. Architectural Strategy & Decision Rationale (ADR-002)
 
-ULMS v2.0 integrates with **Apache Fineract 1.12.x Community Edition (CE)** as its underlying core lending ledger. To insulate the commercial bank deployment from upstream release churn and maintain strict adherence to Bangladesh Bank accounting standards, the integration strictly enforces **ADR-002**:
+ULMS v2.0 integrates with **Apache Fineract CE (digest-pinned) Community Edition (CE)** as its underlying core lending ledger. To insulate the commercial bank deployment from upstream release churn and maintain strict adherence to Bangladesh Bank accounting standards, the integration strictly enforces **ADR-002**:
 
 ```mermaid
 flowchart LR
     subgraph ULMS_Domain ["ULMS Custom Domain Layer"]
         APP["ULMS Loan Application<br/>State: SANCTIONED"]
         PORT["FineractPort (Hexagonal Interface)"]
-        CLIENT["FineractClient (REST Adapter)"]
-        OUTBOX["Transactional Outbox<br/>(ulms_app.outbox_events)"]
+        CLIENT["FineractRestAdapter (REST Adapter)"]
+        OUTBOX["Transactional Outbox<br/>(ulms.outbox_event)"]
     end
 
-    subgraph Fineract_Ledger ["Apache Fineract 1.12.x Core Engine"]
-        REST_API["Fineract REST API (:8443)<br/>Mutual TLS / Basic Auth"]
+    subgraph Fineract_Ledger ["Apache Fineract CE Core Engine (digest-pinned)"]
+        REST_API["Fineract REST API (:8083)<br/>Mutual TLS / Basic Auth"]
         LEDGER["Fineract Loan Ledger Engine<br/>m_loan / m_loan_transaction"]
     end
 
@@ -50,9 +50,9 @@ flowchart LR
 ```
 
 ### The Three Absolute Rules of Fineract Integration:
-1. **Zero Upstream Schema Alterations:** ULMS **MUST NEVER** alter, patch, add triggers to, or create foreign keys against Fineract database tables (`fineract_tenants` or `mifostenant-default`).
+1. **Zero Upstream Schema Alterations:** ULMS **MUST NEVER** alter, patch, add triggers to, or create foreign keys against Fineract database tables (`fineract_default` or `fineract_default`).
 2. **REST-Only Data Mutation:** All lending operations (client registration, loan creation, approval, disbursal, repayment, and write-off) **MUST** execute strictly via Fineract's authenticated REST endpoints. Direct SQL `INSERT` or `UPDATE` statements into Fineract tables are strictly prohibited.
-3. **Digest-Pinned Upstream Containers:** Production deployments pin the exact immutable commit-SHA container digest (`apache/fineract:1.12.0@sha256:7f9...`) to prevent breaking changes from upstream release train movements.
+3. **Digest-Pinned Upstream Containers:** Production deployments pin the exact immutable commit-SHA container digest (`apache/fineract@fd01236df6`) to prevent breaking changes from upstream release train movements.
 
 ---
 
@@ -62,9 +62,9 @@ ULMS and Apache Fineract co-exist within the same PostgreSQL 17 cluster but are 
 
 | Schema Name | Owner Role | Purpose & Contents |
 |---|---|---|
-| **`ulms_app`** | `ulms` | Custom loan origination, BRPD 15/2024 classification, CIB/NID cache, collections worklist, and mirror tables. |
-| **`fineract_tenants`** | `fineract` | Tenant metadata, tenant connection pools, server configuration, and tenant license state. |
-| **`mifostenant-default`** | `fineract` | The core double-entry accounting ledger, chart of accounts (`acc_gl_account`), client profiles (`m_client`), and loans (`m_loan`). |
+| **`ulms`** | `ulms` | Custom loan origination, BRPD 15/2024 classification, CIB/NID cache, collections worklist, and mirror tables. |
+| **`fineract_default`** | `fineract` | Tenant metadata, tenant connection pools, server configuration, and tenant license state. |
+| **`fineract_default`** | `fineract` | The core double-entry accounting ledger, chart of accounts (`acc_gl_account`), client profiles (`m_client`), and loans (`m_loan`). |
 
 ```mermaid
 erDiagram
@@ -189,7 +189,7 @@ ULMS stores all monetary amounts as **64-bit integer minor currency units (poish
 To guarantee 100% balance consistency between ULMS mirror tables and Fineract ledger accounts:
 
 ### 5.1 Automated Nightly Balance Audit
-The nightly EOD batch executes a SQL reconciliation probe comparing `ulms_app.loans.outstanding_minor` against Fineract's `m_loan.total_outstanding_derived`:
+The nightly EOD batch executes a SQL reconciliation probe comparing `ulms.loan.outstanding_minor` against Fineract's `m_loan.total_outstanding_derived`:
 ```sql
 SELECT 
     u.id AS ulms_loan_id,
@@ -197,8 +197,8 @@ SELECT
     u.outstanding_minor,
     ROUND(f.total_outstanding_derived * 100) AS fineract_minor,
     ABS(u.outstanding_minor - ROUND(f.total_outstanding_derived * 100)) AS variance_poisha
-FROM ulms_app.loans u
-JOIN mifostenant-default.m_loan f ON f.id = u.fineract_loan_id
+FROM ulms.loan u
+JOIN fineract_default.m_loan f ON f.id = u.fineract_loan_id
 WHERE ABS(u.outstanding_minor - ROUND(f.total_outstanding_derived * 100)) > 0;
 ```
 
@@ -206,9 +206,16 @@ WHERE ABS(u.outstanding_minor - ROUND(f.total_outstanding_derived * 100)) > 0;
 If any variance is detected ($> 0\text{ poisha}$), the system raises Prometheus alert `FineractReconMismatch` and executes the automated resync reconciliation API:
 ```bash
 curl -s -X POST -H "Authorization: Bearer $TOKEN" \
-  http://localhost:8081/api/v1/servicing/reconcile-ledger
+  http://localhost:8081/api/v1/loans/payments/reconcile
 ```
 
 ---
 
-*— End of Apache Fineract 1.12.x Core Banking Integration Specification —*
+*— End of Apache Fineract CE (digest-pinned) Core Banking Integration Specification —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0): the truncated digest placeholder replaced by the real pin (apache/fineract@fd01236df6); Fineract port 8083; SQL schema references renamed to the real dual schema (ulms + fineract_default) with the Fineract ledger correctly modeled as fineract_default.m_loan; the adapter class renamed FineractRestAdapter (FineractClient is the port-nested request record).

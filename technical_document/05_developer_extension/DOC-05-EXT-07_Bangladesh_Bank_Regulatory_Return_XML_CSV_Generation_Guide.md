@@ -39,7 +39,7 @@ public interface RegulatoryReportBuilder {
 
 ---
 
-## 2. Adding a New Return (e.g. SBS-3 SME Portfolio Return)
+## 2. Adding a New Return (e.g. the SBS-3 Scheduled Bank Statistics return)
 
 1. Implement `Sbs3ReportBuilder.java` in `com.uslbd.ulms.compliance.reports`.
 2. Extract aggregated loan exposure by industrial sector from `ulms.loan`.

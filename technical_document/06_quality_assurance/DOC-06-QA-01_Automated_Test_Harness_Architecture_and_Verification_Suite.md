@@ -30,9 +30,9 @@ ULMS v2.0 enforces a multi-tier automated test harness that guarantees bank-grad
 ```mermaid
 flowchart TD
     subgraph Test_Pyramid ["ULMS Multi-Tier Verification Pyramid"]
-        E2E["Tier 4: End-to-End Journeys & Accessibility (Playwright)<br/>12 Spec Suites | 35 Full-Lifecycle Tests | Real UI & Mock API | axe-core WCAG 2.1 AA"]
+        E2E["Tier 4: End-to-End Journeys & Accessibility (Playwright)<br/>12 Spec Suites | 44 full-lifecycle tests | Real UI & Mock API | axe-core WCAG 2.1 AA"]
         INT["Tier 3: External Integration Contracts & Fault Injections (WireMock)<br/>CIB mTLS, NIDW e-KYC, MFS Webhooks, Resilience4j Circuit Breakers"]
-        MOD["Tier 2: Module & Database Slices (Testcontainers PG17)<br/>149 Tests across 38 Suites | Zero H2 Mocks | Dual-Schema Flyway Validations"]
+        MOD["Tier 2: Module & Database Slices (Testcontainers PG17)<br/>189 tests across 55 test classes | Zero H2 Mocks | Dual-Schema Flyway Validations"]
         UNIT["Tier 1: Fast Mathematical Oracles & Pure Units (JUnit 5 + Vitest)<br/>MoneyMath EMI Parity, Zod Validation, BRPD Classifier, Day-Count Oracles"]
     end
     UNIT --> MOD --> INT --> E2E
@@ -59,7 +59,7 @@ cd c:\software_project\mim_project\LMS\LMS_CODEBASE\apps\api
 ./gradlew test --tests com.uslbd.ulms.ModularityTest --info
 
 # Run financial arithmetic oracle verification
-./gradlew test --tests com.uslbd.ulms.assessment.MoneyMathTest
+./gradlew test --tests com.uslbd.ulms.assessment.AssessmentServiceTest
 
 # Run regulatory classification boundary lock tests
 ./gradlew test --tests com.uslbd.ulms.compliance.BrpdBoundaryLockTest
@@ -210,7 +210,7 @@ The automated CI pipeline (`.gitlab-ci.yml`) enforces the following mandatory qu
 ```mermaid
 flowchart LR
     G1["Gate 1: Static Analysis<br/>Checkstyle, ESLint, ArchUnit"] --> G2["Gate 2: Unit Oracles<br/>JUnit 5 & Vitest (100% Pass)"]
-    G2 --> G3["Gate 3: Data Slices<br/>Testcontainers PG17 (149 Tests)"]
+    G2 --> G3["Gate 3: Data Slices<br/>Testcontainers PG17 (189 tests)"]
     G3 --> G4["Gate 4: E2E Journeys<br/>Playwright (12 Suites, 0 Failures)"]
     G4 --> G5["Gate 5: Coverage Ceilings<br/>Line > 85%, MoneyMath = 100%"]
 ```
@@ -226,3 +226,10 @@ flowchart LR
 ---
 
 *— End of Automated Test Harness Architecture & Verification Specification —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0): backend suite = 189 tests across 55 test classes (MoneyMath is exercised via AssessmentServiceTest/ServicingJourneyTest/ProductServiceTest — there is no MoneyMathTest class); e2e = 12 Playwright suites, 44 tests. Accessibility evidence chain: automated axe-core covers the 9 primary workspace views; the 166-screen WCAG 2.1 AA claim rests on the design system plus targeted audits — full per-screen automation is not yet in place, and the color-contrast rule must be enabled in the release gate.

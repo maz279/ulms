@@ -71,7 +71,7 @@ For banks procuring modular capabilities or specialized subsystem add-ons:
 | **MOD-04** | **BRPD 15/2024 & IFRS-9 ECL Engine:** Automated 7-stage classifier & CL-1..5 exporter | ৳ 45,00,000 |
 | **MOD-05** | **Real-Time CIB Online REST Gateway:** Automated parser & multi-facility deduplication | ৳ 25,00,000 |
 | **MOD-06** | **Election Commission NIDW / e-KYC Module:** Facial liveness & biometric OCR | ৳ 15,00,000 |
-| **MOD-07** | **Islamic Shariah Multi-Asset Engine:** Murabaha, Ijara, Bai-Muajjal accounting rules | ৳ 25,00,000 |
+| **MOD-07** | **Islamic Shariah Multi-Asset Engine:** Murabaha, Ijara, Bai-Muajjal accounting rules | ৳ 15,00,000 |
 | **MOD-08** | **Field Officer Mobility App (Expo 54+):** Offline GPS collection, receipts & sync | ৳ 20,00,000 |
 
 ---
@@ -107,9 +107,16 @@ For bespoke software customizations beyond the baseline Statement of Work (SOW):
 | **Principal Banking Solutions Architect** | ৳ 45,000 | ৳ 8,50,000 | 5 Days |
 | **Senior Spring Boot / Fineract Engineer** | ৳ 32,000 | ৳ 6,00,000 | 10 Days |
 | **Senior React 19 Frontend Engineer** | ৳ 28,000 | ৳ 5,20,000 | 10 Days |
-| **Senior Database & PostgreSQL DBA** | ৳ 30,00,000 | ৳ 5,50,000 | 5 Days |
+| **Senior Database & PostgreSQL DBA** | ৳ 30,000 | ৳ 5,50,000 | 5 Days |
 | **Quality Assurance & Automation Engineer**| ৳ 20,000 | ৳ 3,80,000 | 10 Days |
 
 ---
 
 *Unisoft Systems Limited — Commercial Operations & Enterprise Pricing Directorate.*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Rate corrections: Senior PostgreSQL DBA daily rate ৳30,000 (the printed ৳30,00,000 was a 1,000× typo); Islamic Shariah Multi-Asset Engine aligned to DOC-24 Schedule A.7 at ৳15,00,000 (was inconsistently ৳25,00,000).

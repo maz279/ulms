@@ -55,3 +55,10 @@ spec:
         type: Utilization
         averageUtilization: 70
 ```
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Expansion pending (flagged): add the values.yaml parameter matrix from deploy/chart/ulms/values.yaml, chart structure, and helm lint/template verification; reconcile the sample HPA floor (minReplicas 3) with the Small-Bank sizing row (2 replicas).

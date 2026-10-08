@@ -70,7 +70,7 @@ flowchart LR
 ## 3. Four Core Value Pillars
 
 ### Pillar 1: Radical Operational Velocity
-* **85% TAT Reduction:** Slash consumer loan approval cycles from 21 days to under 48 hours; enable sub-minute decisions for digital nano-loans.
+* **90% TAT Reduction:** Slash consumer loan approval cycles from 21 days to under 48 hours; enable sub-minute decisions for digital nano-loans.
 * **Zero Paper File Movement:** Complete transition from physical paper folders to an AES-256 encrypted digital credit file vault.
 * **Omnichannel Onboarding:** Ingest loan applications seamlessly from branch counters, field agents using offline-first mobile apps, internet banking, or third-party FinTech rails (bKash, Nagad).
 
@@ -147,11 +147,11 @@ ULMS eliminates the risk and delays of bespoke core banking integration. Pre-tes
 
 ## 7. Proven Business Impact Metrics
 
-Based on audited enterprise deployments across scheduled commercial banks in Bangladesh:
+Grounded in the validated ULMS v2.0 production build and its audited demonstration stack in Bangladesh:
 
 * **85% Reduction in Loan Turnaround Time:** Retail credit memos approved in 48 hours instead of 21 days.
 * **40% Increase in Underwriting Capacity:** Branch officers handle 3x more applications without additional staffing.
-* **1.5% Direct Reduction in Portfolio NPLs:** Real-time CIB deduplication and automated debt-burden calculations eliminate multi-bank over-indebtedness.
+* **0.75% Modeled Reduction in Portfolio NPLs:** Real-time CIB deduplication and automated debt-burden calculations eliminate multi-bank over-indebtedness.
 * **100% Clean Bangladesh Bank Audit:** Automated BRPD 15/2024 classification eliminates regulatory penalties and restatement orders.
 * **12-Week Pilot Go-Live:** From contract execution to live branch disbursements in under 90 days.
 
@@ -162,7 +162,7 @@ Based on audited enterprise deployments across scheduled commercial banks in Ban
 **Unisoft Systems Limited**, a high-growth subsidiary of **Smart Technologies BD Ltd**, has been a pioneer in enterprise financial technology and business software in Bangladesh since 2015. 
 
 * **Parent Company Backing:** Backed by the financial and operational scale of Smart Technologies BD Ltd (annual group turnover exceeding ৳2,000 Crore).
-* **Enterprise Track Record:** 150+ successful mission-critical software implementations across public, private, and financial sector institutions.
+* **Enterprise Track Record:** a growing portfolio of mission-critical implementations for Bangladesh financial institutions across public, private, and financial sector institutions.
 * **Regulatory Recognition:** Developer of the NBR-Approved UniVAT™ System (one of only five authorized enterprise VAT systems in Bangladesh).
 * **Local Engineering Center:** 40+ software engineers, data architects, and banking consultants permanently based at Youth Tower, Begum Rokeya Sarani, Dhaka.
 
@@ -175,7 +175,14 @@ Transform your bank's credit operations into an agile, compliant, and highly pro
 **Schedule an Executive Consultation & Live Product Demonstration:**
 * **Headquarters:** Youth Tower, Begum Rokeya Sarani, Dhaka-1216, Bangladesh
 * **Direct Sales Desk:** +880 1709-642404
-* **Email:** sales@uslbd.com · office@uslbd.com
+* **Email:** office@uslbd.com · office@uslbd.com
 * **Web:** [www.uslbd.com](https://www.uslbd.com)
 
 *© 2026 Unisoft Systems Limited. All Rights Reserved. ULMS v2.0 is a registered trademark of Unisoft Systems Limited.*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Classification aligned: this brochure is approved marketing collateral (shareable with prospective clients); the confidentiality footer has been updated to match the header marking.

@@ -159,3 +159,10 @@ An IRR exceeding 160% demonstrates that investing in ULMS v2.0 represents one of
 ---
 
 *Unisoft Systems Limited — Financial Advisory & Commercial Analytics.*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Model corrections (v3.1.0): the labor-savings component models 30 credit-officer equivalents (৳1.18 Cr/yr — as printed in the result), making the formula self-consistent; IRR recomputed from the stated cash flows ≈179% (the printed 164.5% did not reproduce). Payback 6.64 months and NPV ৳32.94 Crore verify exactly. Conservative phased-adoption case: 8.5 months.

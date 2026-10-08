@@ -54,10 +54,10 @@ Follow this 5-step tutorial to define, configure, register, and verify a new cre
 ### Step 1: Database Seed Migration
 Create migration `apps/api/src/main/resources/db/migration/V18__field_gateway.sql` (baseline migration preceding product seed):
 ```sql
--- Migration: V020__seed_murabaha_sme_product.sql
+-- Migration: V20__seed_murabaha_sme_product.sql
 -- Purpose: Register Bai-Murabaha SME Working Capital product catalog entry
 
-INSERT INTO ulms_app.loan_products (
+INSERT INTO ulms.loan_products (
     id,
     product_code,
     product_name,
@@ -99,7 +99,7 @@ Create the Shariah-compliant pricing calculator in `apps/api/src/main/java/com/u
 ```java
 package com.uslbd.ulms.product.pricing;
 
-import com.uslbd.ulms.assessment.MoneyMath;
+import com.uslbd.ulms.platform.MoneyMath;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -137,9 +137,9 @@ public class MurabahaPricingStrategy implements PricingStrategy {
 ### Step 3: Apache Fineract Loan Product Registration Bridge
 Configure the upstream Fineract core banking product template via REST API:
 ```bash
-curl -s -k -X POST https://localhost:8443/fineract-provider/api/v1/loanproducts \
+curl -s -X POST http://localhost:8083/fineract-provider/api/v1/loanproducts \
   -H "Fineract-Platform-TenantId: default" \
-  -H "Authorization: Basic bWlmb3M6cGFzc3dvcmQ=" \
+  -H "Authorization: Basic ${FINERACT_BASIC_AUTH}"  # from .env — never commit credentials \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Bai-Murabaha SME Working Capital",
@@ -216,3 +216,10 @@ void testMurabahaProfitAndInstallmentCalculation() {
 ---
 
 *— End of New Loan Product Definition & Pricing Extension Guide —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Money rule (v3.1.0): the sample pricing strategy shown in BigDecimal/setScale(2, HALF_UP) form violates the platform invariant. Canonical pattern: integer poisha (long) end-to-end with com.uslbd.ulms.platform.MoneyMath (HALF_EVEN) — compute profit and installments in minor units and convert for display only. The migration must be a NEW file (V20+); ulms.loan_product is the catalog table.

@@ -25,7 +25,7 @@ document_id: DOC-05-EXT-01
 
 ## 1. Welcome to the ULMS v2.0 Engineering Team
 
-Welcome to the **Unisoft Loan Management System (ULMS v2.0)** core engineering group. ULMS is an enterprise-grade core lending platform engineered for scheduled commercial banks in Bangladesh, built upon Spring Boot 4, Apache Fineract 1.12.x Community Edition, PostgreSQL 17, and React 19.
+Welcome to the **Unisoft Loan Management System (ULMS v2.0)** core engineering group. ULMS is an enterprise-grade core lending platform engineered for scheduled commercial banks in Bangladesh, built upon Spring Boot 4, Apache Fineract CE (digest-pinned) Community Edition, PostgreSQL 17, and React 19.
 
 ### The 3-Developer Core Principles
 Because our team operates with high velocity and precision, every engineer adheres to three non-negotiable engineering laws:
@@ -76,8 +76,8 @@ LMS_CODEBASE/
 ├── packages/
 │   └── openapi/         # Authoritative REST API Specifications (ulms-api.yaml)
 ├── deploy/
-│   ├── compose/         # Docker Compose local stack (Postgres, Keycloak, Redis, Fineract)
-│   └── k3s/             # Production Kubernetes Helm charts and manifests
+│   ├── compose/         # Docker Compose local stack (Postgres, Keycloak, Fineract, MinIO, Prometheus, Grafana)
+│   └── k3s/             # Production Helm chart lives at deploy/chart/ulms
 └── e2e/                 # Playwright End-to-End Test Harness (12 journey suites)
 ```
 
@@ -92,7 +92,7 @@ Use this when modifying cross-service integrations, authentication flows, or dat
 ```bash
 # 1. Start the supporting infrastructure stack
 cd deploy/compose
-docker compose up -d postgres redis keycloak fineract
+docker compose up -d postgres keycloak fineract minio
 
 # 2. Run backend API from IDE or terminal
 cd ../../apps/api
@@ -113,10 +113,10 @@ npm install
 # Start standalone contract mock API server (Port 8081)
 npm run mock:api &
 
-# Start Vite 7 development server with HMR (Port 3000)
+# Start Vite 7 development server with HMR (Port 5173)
 npm run dev
 ```
-The staff web application will launch at `http://localhost:3000` connected to the OpenAPI-compliant mock API.
+The staff web application will launch at `http://localhost:5173` connected to the OpenAPI-compliant mock API.
 
 ---
 
@@ -135,14 +135,14 @@ Create a new migration file in `apps/api/src/main/resources/db/migration/V18__fi
 -- Migration: V019__add_customer_tin.sql
 -- Purpose: Add statutory Tax Identification Number (TIN) field to Customer entity
 
-ALTER TABLE ulms_app.customers
+ALTER TABLE ulms.customer
 ADD COLUMN IF NOT EXISTS tax_identification_number VARCHAR(32);
 
-COMMENT ON COLUMN ulms_app.customers.tax_identification_number IS 
+COMMENT ON COLUMN ulms.customer.tax_identification_number IS 
 'National Board of Revenue (NBR) 12-digit Taxpayer Identification Number (TIN)';
 
 CREATE INDEX IF NOT EXISTS idx_customers_tin 
-ON ulms_app.customers (tax_identification_number) 
+ON ulms.customer (tax_identification_number) 
 WHERE tax_identification_number IS NOT NULL;
 ```
 
@@ -242,3 +242,10 @@ All commit messages must adhere to the **Conventional Commits** specification:
 ---
 
 *— End of Developer Onboarding & Local Workspace Quickstart Guide —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0): Vite dev server is :5173 (3000 is Grafana); there is no Redis service; the Helm chart is deploy/chart/ulms; migration guidance fixed to create the next free version (V19+) — never recreate V18.

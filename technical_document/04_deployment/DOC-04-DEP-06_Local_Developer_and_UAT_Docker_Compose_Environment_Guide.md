@@ -31,26 +31,26 @@ The ULMS v2.0 local development environment is orchestrated via **Docker Compose
 flowchart TD
     subgraph Host ["Developer Workstation / UAT Host"]
         subgraph Web_Tier ["Frontend Channels"]
-            WEB["ulms-web (:3000)<br/>React 19 / MUI v7 / Vite 7"]
-            MOCK["mock-api (:8081)<br/>Contract-Compliant Node Server"]
+            WEB["ulms-web (:4173)<br/>React 19 / MUI v7 / Vite 7"]
+            MOCK["mock API — npm run mock:api (dev-only, in-process :5173)"]
         end
         subgraph Core_Tier ["Core Banking & App Services"]
             API["ulms-api (:8081)<br/>Spring Boot 4 Modular Monolith"]
-            FIN["fineract-server (:8443)<br/>Apache Fineract 1.12.x CE"]
+            FIN["fineract-server (:8083)<br/>Apache Fineract CE (digest-pinned) CE"]
         end
         subgraph Infra_Tier ["Data & Identity Infrastructure"]
-            PG["postgres (:5432)<br/>PostgreSQL 17 (Dual-Schema)"]
-            RD["redis (:6379)<br/>Redis 7 (Session & Idempotency)"]
+            PG["postgres (:5433)<br/>PostgreSQL 17 (Dual-Schema)"]
+            RD["(no Redis — deferred by Tech Stack v3)"]
             KC["keycloak (:8082)<br/>Keycloak 26 (OAuth2 / OIDC)"]
         end
     end
     WEB -->|REST / JWT| API
     WEB -.->|Mock Mode| MOCK
     API -->|JDBC / Flyway| PG
-    API -->|Cache / Locks| RD
+    API -.->|no external cache in v3| RD
     API -->|Token Validation| KC
     API -->|Accounting REST| FIN
-    FIN -->|mifostenant-default| PG
+    FIN -->|fineract_default| PG
 ```
 
 ---
@@ -59,12 +59,12 @@ flowchart TD
 
 | Service Name | Container Image | Host Port | Memory Limit | Healthcheck Probe | Purpose |
 |---|---|---|---|---|---|
-| **`postgres`** | `postgres:17-alpine` | `5432` | 2.0 GB | `pg_isready -U ulms -d ulms` | Relational store for `ulms_app` and `mifostenant-default`. |
-| **`redis`** | `redis:7.2-alpine` | `6379` | 512 MB | `redis-cli ping` | Distributed idempotency locks, token blacklist, and caching. |
+| **`postgres`** | `postgres:17-alpine` | `5433` | 2.0 GB | `pg_isready -U ulms -d ulms` | Relational store for `ulms` and `fineract_default`. |
+| **`(no redis service in the binding stack)`** | `(removed)` | `6379` | 512 MB | `(removed)` | Distributed idempotency locks, token blacklist, and caching. |
 | **`keycloak`** | `quay.io/keycloak/keycloak:26.0` | `8082` | 1.5 GB | `curl -f http://localhost:8082/health/ready` | Identity provider, OAuth2/OIDC token issuer, RBAC realm. |
-| **`fineract`** | `apache/fineract:1.12.0` | `8443` | 2.5 GB | `curl -f -k https://localhost:8443/fineract-provider/actuator/health` | Double-entry accounting, loan schedules, interest accrual. |
-| **`mock-api`** | `node:20-alpine` | `8081` | 512 MB | `curl -f http://localhost:8081/health` | Fast OpenAPI contract mock server for frontend UI work. |
-| **`ulms-web`** | `node:20-alpine` | `3000` | 512 MB | `curl -f http://localhost:3000` | React 19 staff operations web application. |
+| **`fineract`** | `apache/fineract@fd01236df6` | `8443` | 2.5 GB | `curl -f http://localhost:8083/fineract-provider/actuator/health` | Double-entry accounting, loan schedules, interest accrual. |
+| **`ulms-api`** | `node:20-alpine` | `8081` | 512 MB | `curl -f http://localhost:8081/actuator/health` | Fast OpenAPI contract mock server for frontend UI work. |
+| **`ulms-web`** | `node:20-alpine` | `4173` | 512 MB | `curl -f http://localhost:4173` | React 19 staff operations web application. |
 
 ---
 
@@ -82,13 +82,13 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: ulms
-      POSTGRES_PASSWORD: ulms_dev_password_2026
+      POSTGRES_PASSWORD: ${ULMS_DB_PASSWORD}
       POSTGRES_DB: ulms
     ports:
-      - "5432:5432"
+      - "5433:5433"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./init-dual-schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ../../seed/00-finerract-db.sh:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ulms -d ulms"]
       interval: 5s
@@ -96,7 +96,7 @@ services:
       retries: 5
 
   redis:
-    image: redis:7.2-alpine
+    image: (removed)
     container_name: ulms-redis
     restart: unless-stopped
     ports:
@@ -113,15 +113,15 @@ services:
     command: start-dev --import-realm
     environment:
       KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin_password_2026
-      KC_DB: postgres-vendor
-      KC_DB_URL: jdbc:postgresql://postgres:5432/ulms
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5433/ulms
       KC_DB_USERNAME: ulms
-      KC_DB_PASSWORD: ulms_dev_password_2026
+      KC_DB_PASSWORD: ${ULMS_DB_PASSWORD}
     ports:
       - "8082:8080"
     volumes:
-      - ./ulms-realm.json:/opt/keycloak/data/import/ulms-realm.json:ro
+      - ../../seed/realm-ulms.json:/opt/keycloak/data/import/ulms-realm.json:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -139,7 +139,7 @@ volumes:
 cd LMS_CODEBASE/deploy/compose
 
 # Launch database, cache, and authentication services in the background
-docker compose up -d postgres redis keycloak
+docker compose up -d postgres keycloak fineract minio
 
 # Inspect health status of all running containers
 docker compose ps
@@ -184,9 +184,9 @@ npm run dev
 ## 6. SRE Troubleshooting & Common Local Gotchas
 
 ### Gotcha 1: Host Port Collisions
-- **Issue:** `Bind for 0.0.0.0:5432 failed: port is already allocated`.
+- **Issue:** `Bind for 0.0.0.0:5433 failed: port is already allocated`.
 - **Cause:** A local PostgreSQL service is already running on the host OS.
-- **Solution:** Stop the local PostgreSQL service (`net stop postgresql` on Windows) or map the container to an alternative port (e.g., `"5433:5432"`).
+- **Solution:** Stop the local PostgreSQL service (`net stop postgresql` on Windows) or map the container to an alternative port (e.g., `"5433:5433"`).
 
 ### Gotcha 2: Keycloak Admin Login & Token Acquisition
 To acquire a bearer token programmatically from the local Keycloak instance:
@@ -201,3 +201,10 @@ curl -s -X POST http://localhost:8082/realms/ulms/protocol/openid-connect/token 
 ---
 
 *— End of Local Developer & UAT Docker Compose Environment Guide —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Compose truth (v3.1.0): the real stack (deploy/compose/docker-compose.yml) runs eight services — postgres (5433→5432), keycloak (8082), fineract (8083, digest-pinned), minio/seaweedfs (9002), api (8081 + 9977), web (4173→80, nginx same-origin proxy), prometheus (9090), grafana (3000). No Redis service exists. Credentials come from deploy/compose/.env (never committed); the realm seed is deploy/seed/realm-ulms.json and the dual-schema init is deploy/seed/00-finerract-db.sh. The manifest fragment in this guide is an illustrative extract — always defer to the real file.

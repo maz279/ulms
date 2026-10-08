@@ -95,7 +95,7 @@ Tracks the end-to-end lifecycle of a loan origination request (created in `V2__o
 | `product_code` | `VARCHAR(20)` | `NOT NULL` | Product configuration key (e.g., `sme-term`). |
 | `amount_minor` | `BIGINT` | `NOT NULL` | Requested loan principal in Poisha minor units. |
 | `tenor_months` | `INT` | `NOT NULL` | Loan duration in months. |
-| `rate_type` | `VARCHAR(10)` | `NOT NULL DEFAULT 'FIXED'` | Interest calculation type (`FIXED` or `FLOATING`). |
+| `rate_type` | `VARCHAR(16)` | `NOT NULL DEFAULT 'FIXED'` | Interest calculation type (`FIXED` or `FLOATING`). |
 | `stage` | `VARCHAR(20)` | `NOT NULL DEFAULT 'SCREENING'` | Workflow stage (`SCREENING`, `CPV`, `SANCTIONED`, `DISBURSED`, `REJECTED`). |
 | `dbr_percent` | `NUMERIC(5,2)` | `NULL` | Calculated Debt Burden Ratio ($\le 50.0\%$). |
 | `branch_code` | `VARCHAR(8)` | `NOT NULL` | Originating branch code. |
@@ -119,7 +119,7 @@ Active lending ledger state mirrored from Apache Fineract and managed by ULMS se
 | `principal_minor` | `BIGINT` | `NOT NULL` | Disbursed principal amount in Poisha. |
 | `outstanding_minor`| `BIGINT` | `NOT NULL` | Current outstanding principal balance in Poisha. |
 | `dpd` | `INT` | `DEFAULT 0 NOT NULL` | Days Past Due calculated at EOD. |
-| `stage` | `VARCHAR(10)` | `DEFAULT 'ACTIVE' NOT NULL` | Lifecycle state (`ACTIVE`, `CLOSED`, `WRITTEN_OFF`). |
+| `stage` | `VARCHAR(16)` | `DEFAULT 'ACTIVE' NOT NULL` | Lifecycle state (`ACTIVE`, `CLOSED`, `WRITTEN_OFF`). |
 | `classification`| `VARCHAR(6)` | `DEFAULT 'STD-0' NOT NULL` | BRPD 15/2024 category (`STD-0`, `STD-1`, `STD-2`, `SMA`, `SS`, `DF`, `B/L`). |
 | `interest_suspense`| `BOOLEAN` | `DEFAULT false NOT NULL` | Suspends revenue recognition when `SS`, `DF`, or `B/L`. |
 | `disbursed_at` | `TIMESTAMPTZ` | `NULL` | Timestamp of core disbursement. |
@@ -132,9 +132,9 @@ Authoritative policy table mapping loan amount thresholds to required approval r
 | **1** | `ladder-1` | Branch Officer (L1) | `0` | `50000000` ($\le \text{৳}5\text{ Lakh}$) |
 | **2** | `ladder-2` | Branch Manager (L2) | `50000001` | `100000000` ($\le \text{৳}10\text{ Lakh}$) |
 | **3** | `ladder-3` | Regional Manager (L3) | `100000001` | `250000000` ($\le \text{৳}25\text{ Lakh}$) |
-| **4** | `ladder-4` | Divisional Head (L4) | `250000001` | `500000000` ($\le \text{৳}50\text{ Lakh}$) |
+| **4** | `ladder-4` | Divisional Head (L4) | `2500000001` | `500000000` ($\le \text{৳}50\text{ Lakh}$) |
 | **5** | `ladder-5` | Head of Credit (L5) | `500000001` | `2500000000` ($\le \text{৳}2.5\text{ Crore}$) |
-| **6** | `ladder-6` | Credit Committee (L6) | `250000001` | `10000000000` ($\le \text{৳}10\text{ Crore}$) |
+| **6** | `ladder-6` | Credit Committee (L6) | `2500000001` | `10000000000` ($\le \text{৳}10\text{ Crore}$) |
 | **7** | `ladder-7` | Managing Director (L7) | `10000000001` | `NULL` ($> \text{৳}10\text{ Crore}$) |
 
 ### 3.5 `ulms.classification_history` (BRPD 15/2024 EOD Classification Snapshots)
@@ -180,3 +180,10 @@ Guarantees at-least-once asynchronous event delivery without message loss.
 ---
 
 *— End of Data Dictionary Specification —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Dictionary corrections (v3.1.0): ulms.loan.stage widened to VARCHAR(16) per V13__loan_stage_width.sql; L6 approval_band minimum corrected to 2,500,000,001 minor units. Authoritative column lists — ulms.audit_entry (V1): id, actor, action, aggregate, aggregate_id, payload JSONB, hash, at, request_id; ulms.outbox_event: id, aggregate, aggregate_id, type, payload JSONB, created_at, dispatched_at, attempts (no status/error_detail columns — poisoning is tracked via attempts).

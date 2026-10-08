@@ -84,7 +84,7 @@ ULMS v2.0 automates the generation, validation, and encryption of both mandatory
 
 | File Code | Central Bank Statement Title | Records Captured | Validation & Export Method |
 |---|---|---|---|
-| **SUBJECT.TXT** | Master Borrower Demographic & Identity File | NID, TIN, Trade License, Address, Group Linkages | Automated Schema Validator (Checks 34 mandatory BB regex rules) |
+| **SUBJECT.TXT** | Master Borrower Demographic & Identity File | NID, TIN, Trade License, Address, Group Linkages | Automated Schema Validator (Enforces the CIB validation rule set (see the CIB validation specification)) |
 | **CONTRACT.TXT**| Monthly Credit Facility Performance File | Sanctioned Limit, Outstanding Balance, DPD, Installment Due, Classification Status | Automated Ledger Reconciliation vs. CBS General Ledger |
 
 ### Pre-Submission Error Screening Engine:

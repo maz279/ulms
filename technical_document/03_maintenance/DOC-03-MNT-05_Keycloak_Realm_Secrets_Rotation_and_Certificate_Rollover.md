@@ -26,7 +26,7 @@ document_id: DOC-03-MNT-05
 
 Under Bangladesh Bank ICT Security Guidelines, cryptographic keys must rotate on strict schedules:
 - **RS256 Realm Signing Keys:** Rotated every 180 days (Active -> Passive -> Deleted).
-- **OAuth2 Client Secrets (`ulms-api`, `fineract-client`):** Rotated every 90 days.
+- **OAuth2 client credentials (single seeded public client `ulms-web`; confidential service clients only when explicitly provisioned):** Rotated every 90 days.
 - **Database Service Accounts:** Rotated every 90 days.
 
 ---

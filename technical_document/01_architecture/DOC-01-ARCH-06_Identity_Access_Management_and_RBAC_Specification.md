@@ -62,8 +62,8 @@ The system defines 12 standard banking personas with fine-grained capability sco
 | **`teller`** | Front-desk cash & repayment | View customer balances, post cash/cheque repayment, generate mini-statement. |
 | **`loan-officer`** | Loan origination & customer onboarding | Onboard customers, initiate e-KYC, create loan drafts, enter collateral particulars. |
 | **`credit-analyst`** | Underwriting & credit assessment | Request CIB reports, execute credit scorecards, evaluate DBR, draft credit memos. |
-| **`branch-manager`** | Branch supervisory approval (Tier 1) | Approve loans up to BDT 1,000,000; refer back; sanction letters. |
-| **`regional-credit-manager`**| Regional credit approval (Tier 2) | Approve loans up to BDT 5,000,000; manage regional underwriting queues. |
+| **`branch-manager`** | Branch supervisory approval (Tier 1) | Approve loans per the seeded approval_band ladder (L2: ≤ BDT 1,000,000); refer back; sanction letters. |
+| **`regional-manager`**| Regional credit approval (Tier 2) | Approve loans per L3 band (≤ BDT 2,500,000); manage regional underwriting queues. |
 | **`head-of-credit`** | Head Office credit risk approval (Tier 3) | Approve loans up to BDT 20,000,000; policy exception management. |
 | **`md-ceo`** | Executive management sanction (Tier 4) | Approve loans up to BDT 50,000,000; executive committee escalation. |
 | **`board-member`** | Board Credit Committee (BCC) (Tier 5) | Review and sanction syndicated/large exposures exceeding BDT 50,000,000. |
@@ -93,7 +93,7 @@ Under **Bangladesh Bank ICT Security Guidelines V4.0 §3.2**, financial applicat
 {
   "iss": "https://auth.ulms.bank.com.bd/realms/ulms",
   "sub": "usr_8f2b3e4a-912c-4d8e-b567-0e12b3c4d567",
-  "aud": "ulms-api",
+  "aud": "account", "azp": "ulms-web",
   "exp": 1791389400,
   "nbf": 1791388500,
   "iat": 1791388500,
@@ -119,9 +119,16 @@ Under **Bangladesh Bank ICT Security Guidelines V4.0 §3.2**, financial applicat
 
 - **Access Token TTL:** **15 minutes** (short-lived to minimize exposure if token is intercepted).
 - **Refresh Token TTL:** **8 hours** (matches standard banking working shift).
-- **Session Revocation:** Logout or administrator revocation publishes a token invalidation event to Redis, instantly blacklisting the token across all API gateway instances.
-- **Audit Logging:** Every authorization decision (success or denial) writes an immutable record into `ulms_app.audit_entries` capturing `timestamp`, `user_id`, `client_ip`, `action`, `resource_id`, and `http_status`.
+- **Session Revocation:** Logout or administrator revocation invalidates the session server-side; access tokens are short-lived (15 minutes) and refresh is refused on revocation (Keycloak admin API) — no external broker in the binding v3 stack.
+- **Audit Logging:** Every authorization decision (success or denial) writes an immutable record into `ulms.audit_entry` capturing `timestamp`, `user_id`, `client_ip`, `action`, `resource_id`, and `http_status`.
 
 ---
 
 *— End of Identity, Authentication & Role-Based Access Control Specification —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- JWT example corrected (v3.1.0): issued access tokens carry "aud": "account" and "azp": "ulms-web" (verified against the live realm); approval limits come from the seeded approval_band ladder, not a JWT claim. Role vocabulary = the 11 seeded realm roles.

@@ -9,7 +9,7 @@ target_audience: [bank_md, ceo, board_member, cfo, cro]
 ---
 
 # Executive Decision Brief: Why ULMS v2.0
-## Empowering Bangladesh Bank Leadership with a Compliant, Sovereign Core Lending Platform
+## Empowering Bangladesh's Bank Leadership with a Compliant, Sovereign Core Lending Platform
 
 **Document Identifier:** DOC-03-MKT-03  
 **Target Audience:** Managing Directors, Chief Executive Officers, Board ICT Committee Members, Chief Financial Officers  
@@ -34,7 +34,7 @@ In 2026, scheduled commercial banks in Bangladesh face an urgent triple challeng
 
 | Decision Dimension | Foreign Global Monoliths<br/>*(Finastra, Temenos, Nucleus)* | In-House Custom Build<br/>*(Bank Internal IT Team)* | Unisoft ULMS v2.0<br/>*(Specialized Domestic Platform)* |
 |---|---|---|---|
-| **Capital Investment (CapEx)** | **Astronomical:** $2.5M to $6.0M USD<br/>(BDT 30 to 70+ Crore) | **High & Unpredictable:** ৳8 to 15 Crore in developer salaries & tools | **Radically Efficient:** ৳3 to 6 Crore all-inclusive BDT pricing |
+| **Capital Investment (CapEx)** | **Astronomical:** $3.0M to $7.0M USD (foreign-vendor band; Unisoft all-inclusive BDT ৳3–6 Crore)<br/>(BDT 30 to 70+ Crore) | **High & Unpredictable:** ৳8 to 15 Crore in developer salaries & tools | **Radically Efficient:** ৳5.80 Crore modeled Year-0 outlay (incl. ৳1.80 Crore hardware) per the DOC-32 base case |
 | **Foreign Exchange (Forex) Drain** | Severe foreign currency drain on bank reserves | Zero | **Zero:** 100% domestic billing in BDT |
 | **Time to Live Deployment** | 18 to 24+ months (historical Bangladesh average) | 24 to 36+ months (chronic scope creep & turnover) | **12 Weeks to Pilot Go-Live;**<br/>6 months full branch network |
 | **Bangladesh Bank Regulatory Alignment** | Zero out of the box; requires costly, delayed custom scripting | Hit-or-miss; dependent on individual developer skills | **100% Native & Guaranteed:**<br/>BRPD 15/2024, CIB REST, IFRS-9 |
@@ -63,9 +63,9 @@ Unisoft Systems Limited is not a startup. Backed by **Smart Technologies BD Ltd*
 ## The Financial Return: Sub-7-Month Capital Payback
 
 For a commercial bank managing a **BDT 10,000 Crore loan portfolio**:
-* **Direct Labor Savings:** 60% reduction in branch officer paper preparation time (= ৳2.4 Crore saved annually).
+* **Direct Labor Savings:** 60% reduction in branch officer paper preparation time (= ৳1.18 Crore saved annually).
 * **NPL Loss Reduction:** A modest 0.75% reduction in credit losses via automated CIB and DBR underwriting (= ৳7.5 Crore saved annually).
-* **Regulatory Compliance Savings:** Zero central bank non-compliance penalties and avoided external consulting fees (= ৳1.2 Crore saved annually).
+* **Regulatory Compliance Savings:** Zero central bank non-compliance penalties and avoided external consulting fees (= ৳0.60 Crore saved annually).
 * **Net Financial Impact:** **Full capital recovery achieved in 6.64 months (sub-7 months); 5-year cumulative net cash benefit of BDT 48.23 Crore (NPV: BDT 32.94 Crore at 12% corporate discount rate; IRR: 164.5%).**
 
 ---
@@ -76,8 +76,15 @@ Do not commit your institution to multi-million dollar foreign software contract
 
 **Commission a 45-Minute Executive Briefing & Live System Demonstration:**
 * **Direct Executive Hotline:** +880 1709-642404
-* **Email:** md@uslbd.com · sales@uslbd.com
+* **Email:** office@uslbd.com
 * **Corporate Address:** Youth Tower, Begum Rokeya Sarani, Dhaka-1216, Bangladesh
 * **Web:** [www.uslbd.com](https://www.uslbd.com)
 
 *Unisoft Systems Limited — Building Tomorrow's Banking Technology Today.*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Financial components aligned to the DOC-32 base case: labor ৳1.18 Cr/yr, compliance ৳0.60 Cr/yr, Year-0 outlay ৳5.80 Cr, gross savings ৳10.48 Cr/yr, 5-year net ৳48.23 Cr, payback 6.64 months (8.5 conservative).

@@ -54,3 +54,10 @@ flowchart LR
 1. **Heartbeat Loss Detection:** Patroni etcd cluster detects master node failure within 10 seconds.
 2. **Promote Standby:** Standby node in DR site promoted to primary automatically without split-brain risk.
 3. **DNS Cutover:** Global Server Load Balancing (GSLB) flips `lms.bank.com.bd` VIP to DR ingress within 30 seconds.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Expansion pending (flagged): add RPO/RTO commitments (canonical baseline in MNT-03), failback procedure, DR drill cadence, data-integrity verification, and object-storage replication; align DR geography with the master catalog (Jashore/Chattogram).

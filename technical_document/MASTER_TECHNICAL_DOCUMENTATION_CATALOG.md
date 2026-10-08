@@ -37,7 +37,7 @@ flowchart LR
     subgraph Operational_Objectives ["Core Operational Capabilities"]
         U["1. Deep Understanding<br/>- C4 Architecture<br/>- Fineract Integration<br/>- Data & Math Models<br/>- Keycloak 26 IAM"]
         T["2. Rapid Troubleshooting<br/>- SRE Incident Runbooks<br/>- Diagnostic Trees<br/>- RFC 9457 Errors<br/>- Rail Webhook Storms"]
-        M["3. Seamless Maintenance<br/>- Zero-Downtime Rollouts<br/>- Flyway V1-V18 Migrations<br/>- Fineract 1.12.x Patching<br/>- Nightly EOD Reruns"]
+        M["3. Seamless Maintenance<br/>- Zero-Downtime Rollouts<br/>- Flyway V1-V18 Migrations<br/>- Fineract CE (digest-pinned) Patching<br/>- Nightly EOD Reruns"]
         D["4. Resilient Deployment<br/>- On-Prem k3s / Kubernetes<br/>- Production Helm Charts<br/>- Air-Gapped Registries<br/>- mTLS Network Hardening"]
         E["5. Effortless Extension<br/>- New Loan Products<br/>- 7-Level Approval Ladders<br/>- Custom CBS Connectors<br/>- Regcon Returns & UI"]
     end
@@ -83,7 +83,7 @@ The 42 essential technical documents are structured across six operational categ
 - **Detailed Table of Contents:**
   1. Executive Architecture Summary & Design Principles (High Cohesion, Low Coupling, Zero-Trust Security)
   2. C4 Level 1: System Context Diagram (ULMS within the Bangladesh National Banking Ecosystem)
-  3. C4 Level 2: Container Topology (Spring Boot 4 API, React 19 Staff App, Fineract 1.12.x, PostgreSQL 17, Keycloak 26, MinIO, Prometheus)
+  3. C4 Level 2: Container Topology (Spring Boot 4 API, React 19 Staff App, Fineract CE (digest-pinned), PostgreSQL 17, Keycloak 26, MinIO, Prometheus)
   4. C4 Level 3: Component Diagram for `apps/api` (The 9 Core Modules: Customer, Origination, Assessment, Approval, Servicing, Collections, Compliance, Integration, Platform)
   5. Communication Protocols & Transport Security (Internal REST, Mutual TLS, SSE, Asynchronous Postgres Outbox)
   6. Distributed Monolith Anti-Pattern Avoidance & Rationale for ADR-001 (Spring Modulith boundary enforcement)
@@ -99,14 +99,14 @@ The 42 essential technical documents are structured across six operational categ
 
 ---
 
-### DOC-01-ARCH-02: Apache Fineract 1.12.x Core Banking Integration Specification
+### DOC-01-ARCH-02: Apache Fineract CE (digest-pinned) Core Banking Integration Specification
 - **Target File:** `technical_document/01_architecture/DOC-01-ARCH-02_Apache_Fineract_Core_Banking_Integration_Specification.md`
 - **Diátaxis Type:** Technical Reference & Design Explanation
 - **Target Audience:** Backend Engineers, Core Banking Integration Specialists, Ledger Accountants
-- **Operational Purpose:** Authoritative technical specification of how ULMS decouples from and communicates with the underlying Apache Fineract 1.12.x Community Edition core lending engine. Details the REST-only integration contract, the dual-schema PostgreSQL topology, the transactional outbox relay, and reconciliation mechanisms.
+- **Operational Purpose:** Authoritative technical specification of how ULMS decouples from and communicates with the underlying Apache Fineract CE (digest-pinned) Community Edition core lending engine. Details the REST-only integration contract, the dual-schema PostgreSQL topology, the transactional outbox relay, and reconciliation mechanisms.
 - **Detailed Table of Contents:**
   1. Integration Strategy & Rationale for ADR-002 (Immutable Upstream Ledger, Zero Custom Schema Patches)
-  2. Dual-Schema Database Architecture (`ulms` custom schema vs. `fineract_tenants` / `fineract_default`)
+  2. Dual-Schema Database Architecture (`ulms` custom schema vs. `fineract_default` / `fineract_default`)
   3. The `FineractPort` & `FineractClient` Abstraction Layer (Generated OpenAPI client, retry handling, timeouts)
   4. Loan Product & Account Lifecycle Mapping (ULMS Application State → Fineract Loan State Machine)
   5. Financial Transaction Mechanics:
@@ -289,7 +289,7 @@ The 42 essential technical documents are structured across six operational categ
      - Stage 1 (12-Month ECL for DPD 0–30)
      - Stage 2 (Lifetime ECL for Significant Increase in Credit Risk / DPD 31–90)
      - Stage 3 (Credit-Impaired / Default / DPD $\ge 91$)
-  6. Bangladesh Bank Regcon Portal Integration & 12-Return Catalog (CL-1, CL-2, CL-3, CL-4, CL-5, SBS, SME)
+  6. Bangladesh Bank Regcon Portal Integration & 9-return catalog (CL-1…CL-5, SBS-1/2/3, CIB Monthly)
   7. ICT Security Guidelines V4.0 Compliance Verification (Section-by-section audit scorecard)
 - **Concrete Codebase Evidence & Grounding:**
   - Compliance Matrix: `Compliance_Validation_Matrix.md`
@@ -307,7 +307,7 @@ The 42 essential technical documents are structured across six operational categ
 - **Target File:** `technical_document/01_architecture/DOC-01-ARCH-08_REST_API_Reference_and_RFC9457_Error_Model.md`
 - **Diátaxis Type:** Technical Reference
 - **Target Audience:** Frontend Developers, Third-Party Core Banking Integrators, Mobile App Developers
-- **Operational Purpose:** Exhaustive technical specification of the ULMS RESTful API surface. Covers 73 path items, 88 operations, and 44 schemas documented in OpenAPI 3.0, along with the RFC 9457 Problem Details error contract, pagination envelopes, and HTTP header conventions.
+- **Operational Purpose:** Exhaustive technical specification of the ULMS RESTful API surface. Covers 140 path items, 166 operations, and 44+ schemas documented in OpenAPI 3.0, along with the RFC 9457 Problem Details error contract, pagination envelopes, and HTTP header conventions.
 - **Detailed Table of Contents:**
   1. API Design Philosophy & Standards (RESTful conventions, JSON naming, UTC timestamps)
   2. Global HTTP Request Headers:
@@ -334,7 +334,7 @@ The 42 essential technical documents are structured across six operational categ
   - OpenAPI 3.0 Specification: `LMS_CODEBASE/packages/openapi/ulms-api.yaml` (109 KB authoritative schema)
   - Error Model Document: `LMS_CODEBASE/docs/errors.md`
   - Global Exception Handler: `LMS_CODEBASE/apps/api/src/main/java/com/uslbd/ulms/platform/GlobalExceptionHandler.java`
-  - Frontend API Client: `LMS_CODEBASE/apps/web/src/api/` (96 endpoints across 11 modules)
+  - Frontend API Client: `LMS_CODEBASE/apps/web/src/api/` (166 operations across 11 modules)
   - Contract Parity Audit Report: `audit/10_FRONTEND_BACKEND_CONTRACT_PARITY_AND_ORPHAN_AUDIT.md`
 - **Statutory & Standard Grounding:** IETF RFC 9457 (Problem Details for HTTP APIs), OpenAPI 3.0.3 Specification.
 - **Prerequisites:** RESTful API design principles, OpenAPI tooling (Swagger/Redocly).
@@ -648,7 +648,7 @@ The 42 essential technical documents are structured across six operational categ
 - **Target File:** `technical_document/03_maintenance/DOC-03-MNT-03_PostgreSQL_Backup_Point_In_Time_Recovery_and_DR_Drill.md`
 - **Diátaxis Type:** How-To Guide / Vendor Software Maintenance
 - **Target Audience:** DevOps Engineers, Integration Architects, Security Engineers
-- **Operational Purpose:** Operational procedure for maintaining and updating the upstream Apache Fineract 1.12.x Community Edition container image. Covers security CVE monitoring, Docker image digest pinning, contract test verification, and schema isolation maintenance.
+- **Operational Purpose:** Operational procedure for maintaining and updating the upstream Apache Fineract CE (digest-pinned) Community Edition container image. Covers security CVE monitoring, Docker image digest pinning, contract test verification, and schema isolation maintenance.
 - **Detailed Table of Contents:**
   1. Upstream Health Context & Why Digest Pinning is Mandatory (ADR-002 & ASF Amber status)
   2. CVE Surveillance Protocol (Monitoring SANS advisories and Apache security announcements)
@@ -658,7 +658,7 @@ The 42 essential technical documents are structured across six operational categ
      - Testing in isolated staging environment with live Fineract database upgrade scripts
   4. Running Contract Verification Tests (`FineractContractTest.java`):
      - Validating Client creation, Loan origination, Disbursal, and Repayment REST endpoints
-  5. Backing up and verifying the `fineract_tenants` and `fineract_default` schemas prior to upgrade
+  5. Backing up and verifying the `fineract_default` and `fineract_default` schemas prior to upgrade
   6. Rollback plan if an upstream patch breaks API compatibility
 - **Concrete Codebase Evidence & Grounding:**
   - Existing Runbook: `LMS_CODEBASE/docs/runbooks/RB-04_fineract_upgrade.md`
@@ -670,7 +670,7 @@ The 42 essential technical documents are structured across six operational categ
 
 ---
 
-### DOC-03-MNT-04: Apache Fineract CE 1.10/1.12 Patching, Maintenance & Database Pruning Runbook
+### DOC-03-MNT-04: Apache Fineract CE (digest-pinned) Patching, Maintenance & Database Pruning Runbook
 - **Target File:** `technical_document/03_maintenance/DOC-03-MNT-04_Apache_Fineract_CE_Patching_Maintenance_and_DB_Pruning.md`
 - **Diátaxis Type:** How-To Guide / Security Operations
 - **Target Audience:** Bank Information Security Officers (BISOs), Security Engineers, SREs
@@ -995,15 +995,15 @@ The 42 essential technical documents are structured across six operational categ
   1. Sizing Methodology & Workload Archetypes (Small Bank: 50k loans, Medium Bank: 200k loans, Large Bank: 500k+ loans)
   2. Transaction Processing System (TPS) & Throughput Baselines:
      - Peak Origination Ingestion: 50 TPS
-     - Real-Time Payment Repayment Ingestion: 150 TPS
-     - Nightly EOD Batch Processing Throughput: 1,500 loans/second
+     - Real-Time Payment Repayment Ingestion: ≥250 TPS sustained
+     - Nightly EOD Batch Processing Throughput: ≥1,000 loans/second
   3. Database Server Hardware Sizing (CPU Cores, RAM, Buffer Pool, Enterprise SSD NVMe IOPS):
      - PostgreSQL Memory Allocation (`shared_buffers = 25% RAM`, `effective_cache_size = 75% RAM`, `work_mem`)
      - IOPS requirements: Minimum 10,000 sustained write IOPS with write-ahead log (WAL) on dedicated disk
   4. Application Server Sizing (Java 21 Virtual Threads memory footprint, CPU allocation for Spring Boot 4)
   5. Document Storage Growth Projections:
      - Storage calculations: 5 MB per loan application $\times$ 500,000 loans = 2.5 TB annual growth
-     - Retention policy: 10 years statutory regulatory retention = 25 TB total raw capacity
+     - Retention policy: 12 years statutory regulatory retention (Bank Company Act 1991) = 30 TB total raw capacity
   6. Network Bandwidth Sizing (Branch-to-DC latency requirements: $< 50$ ms, bandwidth $\ge 100$ Mbps)
 - **Concrete Codebase Evidence & Grounding:**
   - Tech Stack Recommendation v3: `Technology_Stack_Recommendation_v3.md` (§3.5, §3.10)
@@ -1297,7 +1297,7 @@ The 42 essential technical documents are structured across six operational categ
      - Running `./gradlew test` (149 tests across 38 suites)
      - Testcontainers PG17 integration tests (Zero in-memory H2 mock traps)
      - Spring Modulith architectural boundary tests (`ModularityTest.java`)
-     - Mathematical oracle unit tests (`MoneyMathTest.java`, EMI parity tests)
+     - Mathematical oracle unit tests (`MoneyMath (verified via AssessmentServiceTest et al.)`, EMI parity tests)
   3. Tier 2: Integration & Contract Mock Testing:
      - WireMock mock adapters for Bangladesh Bank CIB, NIDW, and Payment Rails
      - Resiliency testing: Simulating network timeouts, 429 rate limits, and 500 error storms
@@ -1417,13 +1417,13 @@ This matrix establishes 100% deterministic traceability connecting each document
 | Document ID | Target File Name | Primary Code Modules | Database Migrations / Tables | Existing Runbooks / Plans | Regulatory / Statutory Mandate |
 |---|---|---|---|---|---|
 | **DOC-01-ARCH-01** | `DOC-01-ARCH-01_System_Architecture_Blueprint_and_C4_Topology.md` | `UlmsApplication.java`, all 9 modules | `ulms`, `fineract` schemas | `ADR-001`, `PLANNING/01` | ISO 42010, BB ICT V4.0 §3.2 |
-| **DOC-01-ARCH-02** | `DOC-01-ARCH-02_Apache_Fineract_Core_Banking_Integration_Specification.md` | `FineractPort`, `FineractClient` | `fineract_tenants`, `fineract_default` | `ADR-002`, `RB-04` | Bank Company Act §27 |
+| **DOC-01-ARCH-02** | `DOC-01-ARCH-02_Apache_Fineract_Core_Banking_Integration_Specification.md` | `FineractPort`, `FineractClient` | `fineract_default`, `fineract_default` | `ADR-002`, `RB-04` | Bank Company Act §27 |
 | **DOC-01-ARCH-03** | `DOC-01-ARCH-03_Modular_Monolith_Domain_and_Package_Architecture.md` | `com.uslbd.ulms.*` (17 packages) | All tables | `PLANNING/03`, `ModularityTest` | ISO 5055 Maintainability |
 | **DOC-01-ARCH-04** | `DOC-01-ARCH-04_Enterprise_Data_Dictionary_and_Schema_Reference.md` | All JPA Entities | `V1` to `V18` (42 tables) | `PLANNING/04`, `audit/07` | BB ICT V4.0 §4.4 |
 | **DOC-01-ARCH-05** | `DOC-01-ARCH-05_Statutory_Financial_Arithmetic_and_Ledger_Accounting.md` | `MoneyMath.java`, `BrpdClassifier.java` | `classification_history`, `loan` | `Business_logic/ULMS_...md` | BRPD 15/2024, IFRS-9 |
 | **DOC-01-ARCH-06** | `DOC-01-ARCH-06_Identity_Access_Management_and_RBAC_Specification.md` | `SecurityConfig.java`, `AuthPrincipal.java` | `realm-ulms.json` (7 roles) | `PLANNING/06`, `audit/08` | OWASP ASVS V2/V3, BFIU |
 | **DOC-01-ARCH-07** | `DOC-01-ARCH-07_Bangladesh_Banking_Regulatory_Compliance_Rulebook.md` | `RegconController`, `ReturnsService` | `regulatory_return`, `provision_run` | `Compliance_Validation_Matrix.md` | BRPD 15/2024, BFIU 25/26 |
-| **DOC-01-ARCH-08** | `DOC-01-ARCH-08_REST_API_Reference_and_RFC9457_Error_Model.md` | 26 Spring Controllers, `GlobalExceptionHandler` | `ulms-api.yaml` (73 paths) | `PLANNING/05`, `docs/errors.md` | RFC 9457, OpenAPI 3.0 |
+| **DOC-01-ARCH-08** | `DOC-01-ARCH-08_REST_API_Reference_and_RFC9457_Error_Model.md` | 30 Spring Controllers, `GlobalExceptionHandler` | `ulms-api.yaml` (73 paths) | `PLANNING/05`, `docs/errors.md` | RFC 9457, OpenAPI 3.0 |
 | **DOC-02-TS-01** | `DOC-02-TS-01_SRE_Incident_Response_and_Diagnostic_Decision_Trees.md` | Actuator probes, Docker Compose | `outbox_event`, `audit_entry` | `RB-01_incident_response.md` | BB ICT V4.0 §7 |
 | **DOC-02-TS-02** | `DOC-02-TS-02_RFC9457_Error_Code_Catalog_and_Remediation_Playbook.md` | `GlobalExceptionHandler.java` | `audit_entry` | `docs/errors.md` | RFC 9457 |
 | **DOC-02-TS-03** | `DOC-02-TS-03_External_Integration_Failure_and_Connector_Diagnostics.md` | `CibOnlineAdapter`, `NidwAdapter` | `cib_report`, `kyc_check` | `RB-05`, `RB-11` | BB CIB Guidelines |
@@ -1434,7 +1434,7 @@ This matrix establishes 100% deterministic traceability connecting each document
 | **DOC-02-TS-08** | `DOC-02-TS-08_Mobile_Offline_Sync_Conflict_and_Queue_Resolution_Guide.md` | `apps/mobile/src/sync/engine.ts` | `V18__field_gateway.sql` | `RB-09_mobile_sync_incident.md` | BB Digital Credit Guidelines |
 | **DOC-03-MNT-01** | `DOC-03-MNT-01_Zero_Downtime_Rolling_Upgrade_and_Release_Playbook.md` | Helm chart, k3s manifests | Pod probes (:9977) | `RB-08_release_and_rollback.md` | BB ICT V4.0 §6.5 |
 | **DOC-03-MNT-02** | `DOC-03-MNT-02_Flyway_Database_Migration_and_Schema_Evolution_Guide.md` | `db/migration/*.sql` | `flyway_schema_history` | `migration-rehearsal.sh` | NIST SSDF PW.4.1 |
-| **DOC-03-MNT-03** | `DOC-03-MNT-03_Apache_Fineract_Upstream_Patching_and_Maintenance_Runbook.md` | `fineract` container image | `fineract_tenants` | `RB-04_fineract_upgrade.md` | NIST SSDF RV.1.1 |
+| **DOC-03-MNT-03** | `DOC-03-MNT-03_Apache_Fineract_Upstream_Patching_and_Maintenance_Runbook.md` | `fineract` container image | `fineract_default` | `RB-04_fineract_upgrade.md` | NIST SSDF RV.1.1 |
 | **DOC-03-MNT-04** | `DOC-03-MNT-04_Cryptographic_Key_Certificate_and_Secret_Rotation_Runbook.md` | Keycloak realm, SSL keystores | Secrets vault, `.env` | `RB-06_key_secret_rotation.md` | PCI-DSS Req 3.6 |
 | **DOC-03-MNT-05** | `DOC-03-MNT-05_Disaster_Recovery_Backup_and_Point_In_Time_Recovery_Runbook.md` | Postgres WAL, MinIO replication | `pg_wal`, S3 bucket | `RB-02_restore_drill.md` | BB BCDR Guidelines |
 | **DOC-03-MNT-06** | `DOC-03-MNT-06_Nightly_EOD_Rerun_and_Historical_Correction_Procedure.md` | `EodBatchService.java` | `provision_run`, `provision_jv` | `RB-03_eod_rerun.md` | BRPD 15/2024 §6 |
@@ -1541,3 +1541,10 @@ When authoring individual technical documents from this catalog, all authors and
 ---
 
 *— End of Master Technical Documentation Catalog —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0, 8 October 2026): counts regenerated from the repository — 67 Flyway tables (V1–V18), 140 OpenAPI paths / 166 operations, 252 main-source Java files + 55 test files across 96 packages, 30 controllers, 12-year retention. Known remaining defect (documented, not auto-fixable): several category Purpose/Audience blocks are rotated by one document relative to their titles — see the forensic audit report for the mapping.

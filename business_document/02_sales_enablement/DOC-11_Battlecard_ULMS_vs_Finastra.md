@@ -11,7 +11,7 @@ target_audience: [account_executive, solution_architect, sales_director]
 # Competitive Battlecard: ULMS v2.0 vs. Finastra Fusion Loan IQ
 ## Winning Enterprise Core Lending Opportunities Against Finastra in Bangladesh
 
-**Document Identifier:** DOC-11-SALES-05  
+**Document Identifier:** DOC-11-BAT-01  
 **Target Competitor:** Finastra (London, UK) — Fusion Loan IQ / Fusion Essence  
 **Author:** Head of Business Development & Competitive Intelligence Lead  
 **Publisher:** Unisoft Systems Limited (A Subsidiary of Smart Technologies BD Ltd)  
@@ -31,7 +31,7 @@ target_audience: [account_executive, solution_architect, sales_director]
 │ Headquarters        │ London, United Kingdom                                │
 │ Core Specialty      │ Multi-currency commercial syndicated loans & agency   │
 │ Target Client Base  │ Tier-1 Global Mega-Banks (Citibank, HSBC, Barclays)   │
-│ Typical Deal Size   │ $3,000,000 to $6,000,000+ USD License + Implementation│
+│ Typical Deal Size   │ $3,000,000 to $7,000,000+ USD License + Implementation│
 │ Annual Maintenance  │ 22% to 25% USD-denominated recurring maintenance      │
 │ Deployment Timeline │ 18 to 24+ Months (Heavy external systems integration) │
 │ Bangladesh Presence │ Zero permanent engineering development center in Dhaka│
@@ -50,7 +50,7 @@ target_audience: [account_executive, solution_architect, sales_director]
 ## 3. Finastra's Critical Vulnerabilities in Bangladesh
 
 ### Vulnerability 1: Astronomical Capital & Foreign Currency Drain
-* **The Reality:** Finastra licenses start at **$3.0M to $5.0M USD (BDT 35 to 60+ Crore)** with implementation consulting adding another $1.0M to $2.0M USD.
+* **The Reality:** Finastra licenses start at **$3.0M to $7.0M USD (BDT 35 to 80+ Crore)** with implementation consulting adding another $1.0M to $2.0M USD.
 * **The Forex Penalty:** Recurring annual maintenance contracts (AMC) require substantial dollar remittances, requiring Bangladesh Bank foreign exchange approvals that face strict regulatory scrutiny in the current macroeconomic climate.
 * **The ULMS Win Theme:** ULMS v2.0 is priced at **BDT 3 to 6 Crore all-inclusive** in local currency—delivering an immediate **85% capital expenditure reduction** with zero foreign exchange liability.
 
@@ -79,7 +79,7 @@ target_audience: [account_executive, solution_architect, sales_director]
 
 | Evaluation Dimension | Finastra Fusion Loan IQ | Unisoft ULMS v2.0 | Competitive Advantage |
 |---|---|---|---|
-| **License & Implementation Cost** | $4.0M – $7.0M USD (৳45 – 80+ Cr) | ৳3.0 – 6.0 Crore BDT | **ULMS: 85% Lower TCO** |
+| **License & Implementation Cost** | $3.0M to $7.0M USD (৳35 – 80+ Crore) | ৳3.0 – 6.0 Crore BDT | **ULMS: 85% Lower TCO** |
 | **Billing Currency** | Foreign Currency (USD / GBP) | 100% Domestic Currency (BDT) | **ULMS: Zero Forex Risk** |
 | **Annual Maintenance (AMC)** | 22% – 25% (in USD) | 20% Capped (in BDT) | **ULMS: Predictable Budget** |
 | **Implementation Timeline** | 18 – 24+ Months | 12 Weeks to Pilot Go-Live | **ULMS: 6x Faster Time to Value** |

@@ -43,3 +43,10 @@ test('loan 360 page must pass zero-defect accessibility audit', async ({ page })
   expect(accessibilityScanResults.violations).toEqual([]);
 });
 ```
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Expansion pending (flagged): a screen-reader audit procedure (NVDA/JAWS steps, manual keyboard map) is still to be authored; the automated axe evidence currently covers the primary workspace views (see QA-01).

@@ -79,3 +79,10 @@ sudo -u postgres pgbackrest --stanza=ulms \
 sudo systemctl start postgresql-17
 sudo -u postgres psql -c "SELECT pg_is_in_recovery();"
 ```
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Continuity targets (v3.1.0 canonical): baseline single-node deployment = RPO ≤ 15 min (WAL archiving), RTO ≤ 60 min; the stronger RPO 0 / RTO < 15 min figures quoted elsewhere describe the aspirational synchronous-DR topology and must not be mixed. The drill script is deploy/drills/backup-restore.sh.

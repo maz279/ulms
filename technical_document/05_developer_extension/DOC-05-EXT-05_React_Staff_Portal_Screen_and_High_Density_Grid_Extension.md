@@ -35,10 +35,17 @@ All Staff Portal screens follow the **Dynamics 365 Enterprise Design Pattern**:
 ## 2. Creating a New Banking Screen in 4 Steps
 
 1. **Define RTK Query Endpoint:**
-   In `src/store/api/loanApi.ts`, add query hook `useGetCreditAssessmentQuery`.
+   In `src/api/<domain>.ts (typed fetch hooks — the codebase uses no RTK Query/Zustand)`, add query hook `useGetCreditAssessmentQuery`.
 2. **Create Page Component:**
-   In `src/pages/credit/CreditScorecardPage.tsx`, construct layout with `DynamicsHeader`, `KpiBanner`, and `MuiDataGrid`.
+   In `src/features/<domain>/<Domain>Page.tsx (feature-folder convention)`, construct layout with `DynamicsHeader`, `KpiBanner`, and `MuiDataGrid`.
 3. **Register Route:**
-   In `src/routes.tsx`, mount route `/credit/scorecards/:id` protected by `RequireRole(['ROLE_CREDIT_ANALYST'])`.
+   In `src/app/routes.tsx`, mount route `/credit/scorecards/:id` protected by `RequireRole(['credit-analyst'])`.
 4. **Add Navigation Tile:**
-   Add entry to `src/config/nav.ts` under Origination Subsystem.
+   Add entry to `src/shell/navData.ts` under Origination Subsystem.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Frontend truth (v3.1.0): the web app is plain typed-fetch React 19 (no Redux/RTK Query/TanStack/Zustand); feature code lives under src/features/<domain>/ with navigation declared in src/shell/navData.ts and routes in src/app. Role keys are the seeded realm roles (e.g. credit-analyst).

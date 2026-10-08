@@ -18,7 +18,7 @@ document_id: DOC-01-ARCH-07
 | **Date** | 2026-10-07 |
 | **Classification** | Statutory Compliance & Security Specification |
 | **Status** | Approved Master Specification |
-| **Authority Chain** | Bangladesh Bank ICT Security Guidelines V4.0 §3.4 → Bank Company Act 1991 §27 → NIST SP 800-92 |
+| **Authority Chain** | Bangladesh Bank ICT Security Guidelines V4.0 (audit logging) → Bank Company Act 1991 (books of account; 12-year retention) → NIST SP 800-92 |
 
 ---
 
@@ -86,11 +86,18 @@ An automated daily cron job audits the chain integrity:
 ```sql
 -- Detect any broken link in the HMAC-SHA256 hash chain
 WITH RankedAudit AS (
-    SELECT id, prev_hash, record_hash,
-           LAG(record_hash, 1) OVER (ORDER BY id) as expected_prev_hash
+    SELECT id, hash,
+           LAG(hash, 1) OVER (ORDER BY id) as expected_prev_hash
     FROM ulms.audit_entry
 )
 SELECT * FROM RankedAudit 
-WHERE prev_hash != expected_prev_hash AND expected_prev_hash IS NOT NULL;
+WHERE hash != expected_prev_hash AND expected_prev_hash IS NOT NULL;
 ```
 If any row has been modified, deleted, or inserted out of order, the query returns immediate discrepancies, triggering an automated critical SRE alert.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Chain definition unified (v3.1.0): the authoritative record hash is SHA-256 chained over the previous entry's hash and the canonical payload (single definition — see ARCH-04's audit_entry DDL: id, actor, action, aggregate, aggregate_id, payload JSONB, hash, at, request_id). The earlier HMAC-SHA256 formulation was a draft variant and is superseded.

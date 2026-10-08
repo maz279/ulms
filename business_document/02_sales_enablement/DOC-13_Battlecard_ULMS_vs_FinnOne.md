@@ -28,7 +28,7 @@ target_audience: [account_executive, solution_architect, sales_director, pre_sal
 | **Primary Architecture** | Proprietary Java EE Monolith, Oracle DB Dependent | Modular Monolith (Spring Boot 4, PostgreSQL 17, React 19) |
 | **Pricing & Currency** | USD Denominated ($1.2M – $2.5M USD) | 100% BDT Denominated (BDT 4.00 Crore Turnkey) |
 | **Cross-Border Tax Burden**| 20% Withholding Tax (WHT) + Cross-border Remittance Friction | 100% Domestic Billing; 0% Cross-Border Tax Penalties |
-| **Local Presence** | Small liaison office / remote flying engineers | Dedicated 100+ Person Engineering HQ in Begum Rokeya Sarani, Dhaka |
+| **Local Presence** | Small liaison office / remote flying engineers | Dedicated 40+ Person Engineering HQ in Begum Rokeya Sarani, Dhaka |
 
 ---
 
@@ -69,7 +69,7 @@ flowchart TD
 
 ### 2. The Offshore Support Bottleneck:
 * **The Reality:** Nucleus relies heavily on offshore development teams in Noida, India. When critical production issues arise or urgent custom patches are needed for Bangladesh Bank circulars, banks face visa delays, remote communication bottlenecks, and expensive fly-in consulting fees.
-* **The Pitch:** *"When an auditor from Bangladesh Bank is sitting in your boardroom demanding an explanation, Unisoft's senior software architects can be physically on-site in your Motijheel or Gulshan datacenter within 60 minutes."*
+* **The Pitch:** *"When an auditor from Bangladesh Bank is sitting in your boardroom demanding an explanation, Unisoft's senior software architects can be physically on-site in your Motijheel or Gulshan datacenter within 30 minutes (metro) / 2 hours (national)."*
 
 ### 3. Costly Infrastructure Sizing (Oracle Lock-In):
 * **The Reality:** FinnOne Neo requires expensive Oracle Database Enterprise Edition licenses and high-spec proprietary application servers, adding millions of Taka in mandatory third-party software overhead.
@@ -86,7 +86,7 @@ flowchart TD
 | **Bangladesh Bank CIB Online Gateway** | Custom Integration Layer | **Native Automated REST Parser** | **ULMS Decisive Win** |
 | **Election Commission e-KYC Verification**| Third-Party Middleware | **Integrated Face Match & NID OCR** | **ULMS Decisive Win** |
 | **Database Licensing Cost** | Requires Oracle DB ($150k+ extra) | **Zero Cost: PostgreSQL 17** | **ULMS Decisive Win** |
-| **On-Site SLA in Dhaka** | Remote or 48-72h Flight Notice | **Guaranteed 2-Hour Physical On-Site** | **ULMS Decisive Win** |
+| **On-Site SLA in Dhaka** | Remote or 48-72h Flight Notice | **Guaranteed 30-Minute Metro / 2-Hour National On-Site** | **ULMS Decisive Win** |
 | **Implementation Timeline** | 9 to 14 Months | **12 Weeks Turnkey Pilot** | **ULMS Decisive Win** |
 
 ---

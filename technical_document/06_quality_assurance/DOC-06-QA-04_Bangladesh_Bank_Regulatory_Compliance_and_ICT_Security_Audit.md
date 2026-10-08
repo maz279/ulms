@@ -28,7 +28,7 @@ document_id: DOC-06-QA-04
 |---|---|---|---|---|
 | **Bank Company Act 1991** | §27 | Mandatory credit checking before loan approval | Automated CIB check hard block in `OriginationWorkflow` | **100% COMPLIANT** |
 | **BRPD Circular 15/2024** | Classification | 7-stage loan aging and provisioning | `BrpdClassifier.java` nightly automated DPD staging | **100% COMPLIANT** |
-| **BRPD Circular 15/2024** | DBR Limit | Maximum 50% Debt-Burden Ratio cap | Hard rule validation in `DebtBurdenCalculator.java` | **100% COMPLIANT** |
+| **BRPD Circular 15/2024** | DBR Limit | Maximum 50% Debt-Burden Ratio cap | Hard rule validation in `AssessmentService.java (DBR validation)` | **100% COMPLIANT** |
 | **BFIU Guidelines** | e-KYC | Biometric & NIDW customer identification | NID verification adapter with photo face match | **100% COMPLIANT** |
 | **BB ICT Security V4.0** | §3.4 Audit Trail | Immutable 12-year audit trail | Cryptographic HMAC-SHA256 chained `ulms.audit_entry` | **100% COMPLIANT** |
 | **BB ICT Security V4.0** | §4.2 BCMS | RPO < 15 min, RTO < 60 min | Patroni HA cluster with continuous WAL archiving | **100% COMPLIANT** |
@@ -41,3 +41,10 @@ Annual Bangladesh Bank comprehensive inspections can inspect:
 1. Live audit trail hash chain via `DOC-01-ARCH-07`.
 2. Automated classification test results via `BrpdBoundaryLockTest`.
 3. Double-entry accounting ledger balance sheets via `DOC-01-ARCH-05`.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0): DBR hard-rule validation lives in AssessmentService (no DebtBurdenCalculator class exists); statute attributions aligned (BCA §27 = CIB-before-sanction; 12-year retention per Bank Company Act books-of-account provisions); continuity targets per the canonical MNT-03 baseline (RPO ≤15 min / RTO ≤60 min); IFRS-9 full ECL provisioning due December 2027 (pilot June 2027).

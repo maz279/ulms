@@ -110,9 +110,9 @@ To achieve deal velocity, Unisoft sales representatives must engage every stakeh
   * **Clean, Non-Disruptive Architecture:** Spring Boot 4 modular monolith with strict boundary enforcement (ADR-001).
   * **Open Standard Tech Stack:** Java 21 LTS, React 19, PostgreSQL 17, Keycloak 26, containerized on private k3s/Kubernetes.
   * **Pre-Built CBS Connectors:** Proven REST/SOAP connectors that isolate core banking ledgers.
-  * **Local Engineering Center:** 40+ software engineers permanently stationed at Youth Tower, Dhaka.
+  * **Local Engineering Center:** 40+ software engineers at the Youth Tower engineering center, Dhaka.
 * **Winning Pitch Talk-Track:**
-  > *"Mr. CIO, we do not require you to rip and replace anything. ULMS operates as a specialized digital lending layer that interfaces cleanly with your existing CBS via standard REST APIs. The platform runs entirely on-premises in your private datacenter on modern Spring Boot 4 and PostgreSQL 17, with Keycloak 26 identity and zero proprietary lock-in. And if you ever need an engineer on-site, our team is at Youth Tower, 20 minutes from your datacenter."*
+  > *"Mr. CIO, we do not require you to rip and replace anything. ULMS operates as a specialized digital lending layer that interfaces cleanly with your existing CBS via standard REST APIs. The platform runs entirely on-premises in your private datacenter on modern Spring Boot 4 and PostgreSQL 17, with Keycloak 26 identity and zero proprietary lock-in. And if you ever need an engineer on-site, our team is at Youth Tower, 30-minute on-site SLA coverage across metro Dhaka."*
 * **Key Collateral to Share:** `DOC-27_Architecture_Integration_Annex.md`, `DOC-28_ICT_Security_Compliance_Annex.md`, `DOC-30_SLA_Local_Support_Framework.md`.
 
 ---
@@ -135,7 +135,7 @@ To achieve deal velocity, Unisoft sales representatives must engage every stakeh
   * **Audited Sub-9-Month Payback:** Tangible cost offsets through labor savings and lower provisioning charges.
   * **NBR VAT Compliance:** Unisoft is the creator of the NBR-Approved UniVAT™ system, guaranteeing full tax legitimacy.
 * **Winning Pitch Talk-Track:**
-  > *"Mr. CFO, every dollar you spend on a foreign LMS is subject to currency depreciation, central bank outward remittance approvals, and high withholding taxes. ULMS is billed 100% in local currency (BDT) at 80% lower cost. Over 5 years, we save your bank more than ৳18 Crore in direct IT spend while delivering full capital payback in under 9 months."*
+  > *"Mr. CFO, every dollar you spend on a foreign LMS is subject to currency depreciation, central bank outward remittance approvals, and high withholding taxes. ULMS is billed 100% in local currency (BDT) at 80% lower cost. Over 5 years, we save your bank ৳89.30 Crore five-year TCO variance against foreign LMS vendors (DOC-32) while delivering full capital payback in under 9 months."*
 * **Key Collateral to Share:** `DOC-24_Master_RFP_Financial_Proposal.md`, `DOC-31_Commercial_Pricing_Matrix.md`, `DOC-32_TCO_and_ROI_Calculator_Guide.md`.
 
 ---
@@ -231,7 +231,7 @@ Use this matrix to identify common alignment points and neutralize conflicting p
 
 | Buying Stage | Lead Department | Supporting Departments | Primary Consensus Blocker | How ULMS Overcomes the Blocker |
 |---|---|---|---|---|
-| **Stage 1: Initial Discovery** | Business Lines (Retail/SME) | IT, Risk | "We don't have budget for a new system this year." | Present `DOC-03` & `DOC-32` showing that ULMS pays for itself in 8.5 months through operational savings. |
+| **Stage 1: Initial Discovery** | Business Lines (Retail/SME) | IT, Risk | "We don't have budget for a new system this year." | Present `DOC-03` & `DOC-32` showing that ULMS pays for itself in 6.64 months (base case; 8.5 under conservative phased adoption) through operational savings. |
 | **Stage 2: Solution Mapping** | IT (CIO/CTO) | Business, Security | "We don't want another siloed software that can't talk to our CBS." | Present `DOC-27` demonstrating out-of-the-box connectors for Temenos, FLEXCUBE, Finacle, and Flora Bank. |
 | **Stage 3: Risk Clearance** | Risk (CRO) | Compliance, Legal | "Does this strictly comply with BRPD Circular 15/2024?" | Share `DOC-35` detailing the exact mathematical staging and provisioning engine embedded in the core code. |
 | **Stage 4: Tender Bidding** | Procurement | Technical Evaluation Committee | "Foreign vendors have stronger global branding." | Deploy `DOC-11`–`DOC-14` battlecards and `DOC-30` showing local Dhaka 24/7 on-site engineering SLA. |
@@ -240,3 +240,10 @@ Use this matrix to identify common alignment points and neutralize conflicting p
 ---
 
 *Unisoft Systems Limited — Enterprise Sales Enablement Division.*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Canonical figures per DOC-32: base payback 6.64 months; conservative 8.5; five-year foreign-vendor TCO variance ৳89.30 Crore.

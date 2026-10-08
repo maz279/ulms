@@ -104,6 +104,15 @@ c:\software_project\mim_project\LMS\
 │   ├── 06-deployment/                # DevOps & deployment
 │   └── templates/                    # Document templates
 │
+├── technical_document/               # MASTER TECHNICAL DOCUMENTATION SUITE
+│   ├── MASTER_TECHNICAL_DOCUMENTATION_CATALOG.md # 42 Technical documents blueprint
+│   └── 01-06 categories             # Architecture, troubleshooting, maintenance, deployment, extensions, QA
+│
+├── business_document/                # MASTER BUSINESS & SALES DOCUMENTATION SUITE (NEW - Oct 2026)
+│   ├── MASTER_BUSINESS_DOCUMENTATION_CATALOG.md # 42 Essential business & sales documents blueprint
+│   ├── README.md                     # Sales quick-start guide & navigation index
+│   └── 01_strategic_marketing/ to 07_poc_and_contracting/ # 7 Strategic sales/commercial categories
+│
 ├── Business_Requirements_Document_LMS.md     # BRD v1.0 (30 KB)
 ├── User_Requirements_Document_v2.md          # URD v2.0 (42 KB)
 ├── Technology_Stack_Recommendation_v2.md     # Tech Stack v2.0 (28 KB)
@@ -151,6 +160,8 @@ Authority order: Compliance Matrix → SRS → PLANNING suite → Front_end prot
 | `Front_end/` (prototype) | 18 files | **Validated UX contract + QA harnesses** | Team, Stakeholders |
 | `LMS_CODEBASE/PLANNING/` (14 docs) | ~74 KB | **Build/development/implementation plan** | Team |
 | `LMS_CODEBASE/apps/web` (staff app + mock API) | — | React 19 app; `npm run mock:api` + `npm run dev` runs the full UI + OpenAPI-contract mock without Docker | Team |
+| `technical_document/` | 127 KB | **Master Technical Documentation Catalog & Operational Blueprint (42 Docs)** | Architects, DevOps, SRE |
+| `business_document/` | 195 KB (MD) + 13.5 MB (DOCX) | **Master Business Documentation Suite: 21 Microsoft Word (.docx) & Markdown (.md) documents, 74 embedded production build screenshots/exhibits, 4-iteration executive styling; forensically re-audited & corrected 2026-10-08 (see audit/docx_forensic_audit_2026-10-08.md)** | Sales, Marketing, C-Suite |
 
 ### Research Reports
 

@@ -42,8 +42,8 @@ flowchart TD
             CP3["Control Plane Node 3 (etcd)"]
             W1["Worker Node 1: ulms-api (Replica 1) + Keycloak"]
             W2["Worker Node 2: ulms-api (Replica 2) + Fineract"]
-            W3["Worker Node 3: ulms-web + Redis Primary"]
-            W4["Worker Node 4: Batch Worker + Redis Replica"]
+            W3["Worker Node 3: ulms-web + Object Storage (SeaweedFS)"]
+            W4["Worker Node 4: Batch scheduler (in-monolith) + Observability"]
         end
         subgraph DB_Tier ["Dedicated Bare-Metal Database Tier"]
             DB_PRI["PostgreSQL 17 Primary (NVMe RAID-10)"]
@@ -116,14 +116,14 @@ spec:
         livenessProbe:
           httpGet:
             path: /actuator/health/liveness
-            port: 8081
+            port: 9977
           initialDelaySeconds: 45
           periodSeconds: 10
           failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /actuator/health/readiness
-            port: 8081
+            port: 9977
           initialDelaySeconds: 20
           periodSeconds: 5
           failureThreshold: 2
@@ -154,14 +154,14 @@ docker push internal-registry.bank.com.bd/ulms/api:2.0.0
 ### Step 2: Initialize HA k3s Cluster
 ```bash
 # On First Control Plane Node (Server 1)
-curl -sfL https://get.k3s.io | sh -s - server \
+INSTALL_K3S_SKIP_DOWNLOAD=true $AIRGAP/install-k3s.sh -s - server \
   --cluster-init \
   --tls-san=api.ulms.bank.com.bd \
   --disable=traefik \
   --data-dir=/var/lib/rancher/k3s
 
 # On Control Plane Nodes 2 and 3
-curl -sfL https://get.k3s.io | sh -s - server \
+INSTALL_K3S_SKIP_DOWNLOAD=true $AIRGAP/install-k3s.sh -s - server \
   --server https://10.10.1.10:6443 \
   --token-file /etc/rancher/node-token \
   --data-dir=/var/lib/rancher/k3s
@@ -188,3 +188,10 @@ helm upgrade --install ulms-prod ./deploy/k3s/helm/ulms \
 ---
 
 *— End of Bank On-Premises k3s & Kubernetes Production Deployment Guide —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0): actuator probes must target the management port 9977 (not 8081); the chart path is deploy/chart/ulms; in an air-gapped zone the k3s installer is pre-staged from the airgap bundle (INSTALL_K3S_SKIP_DOWNLOAD) — never fetched from the public internet; Redis removed from the topology (deferred by Tech Stack v3). Continuity targets: see the canonical RPO/RTO note in MNT-03.

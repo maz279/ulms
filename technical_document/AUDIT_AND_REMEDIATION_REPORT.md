@@ -44,8 +44,8 @@ To enforce deterministic accuracy, an automated AST, schema, and filesystem pars
 
 ### Codebase Truth Inventory Scanned
 - **Flyway SQL Tables:** 67 tables across migrations `V1__init.sql` through `V18__field_gateway.sql`.
-- **API Endpoints:** 285 authoritative routes extracted from `packages/openapi/ulms-api.yaml` and Spring `@RestController` classes.
-- **Java Symbols:** 494 classes and 95 package namespaces in `apps/api/src/main/java`.
+- **API Endpoints:** 140 OpenAPI paths (166 operations) extracted from `packages/openapi/ulms-api.yaml` and Spring `@RestController` classes.
+- **Java Symbols:** 252 main-source classes and 96 package namespaces (plus 55 test classes) in `apps/api/src/main/java`.
 - **Database Schemas:** Dual-schema separation (`ulms` application schema vs `fineract_default` core ledger schema).
 - **Financial Invariants:** Zero floating-point math, mandatory integer Poisha (`amount_minor`), Bankers Rounding (`HALF_EVEN`).
 
@@ -153,8 +153,8 @@ Every markdown document in the repository was compiled into a publication-grade 
 | **Hyperlink Integrity** | All `file:///...` links point to real existing files | 0 broken links (100% resolve) | **PASS** |
 | **Codebase Path Integrity** | All `LMS_CODEBASE/...` backtick paths exist in repo | 0 invalid path references | **PASS** |
 | **Flyway Schema Parity** | All `ulms.<table_name>` citations exist in V1–V18 | 67/67 tables verified | **PASS** |
-| **REST API Route Parity** | All `/api/v1/...` routes exist in OpenAPI/Controllers | 285/285 routes verified | **PASS** |
-| **Java Symbol Parity** | All `com.uslbd.ulms.*` citations exist in source tree | 589 classes/packages verified | **PASS** |
+| **REST API Route Parity** | All `/api/v1/...` routes exist in OpenAPI/Controllers | 140/140 paths · 166/166 operations verified | **PASS** |
+| **Java Symbol Parity** | All `com.uslbd.ulms.*` citations exist in source tree | 307 Java files verified (252 main + 55 test) | **PASS** |
 | **Financial Math Invariant** | Poisha minor units & zero floating-point numbers | `MoneyMath.java` & `ModularityTest` pass | **PASS** |
 | **Regulatory Compliance** | BRPD 15/2024 DPD rules & Bank Company Act 1991 | Verified against circular tables | **PASS** |
 
@@ -169,3 +169,10 @@ The **ULMS v2.0 Technical Documentation Suite** is hereby certified as complete,
 ---
 
 *— End of Forensic Audit & Remediation Report —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Independent re-audit note (8 October 2026): the route/class counts originally published in this report (285 routes; 494/589 symbols) were re-verified against the repository and corrected to 140 paths / 166 operations and 252 main + 55 test Java files across 96 packages. A full forensic re-audit (audit/docx_forensic_audit_2026-10-08.md) additionally found and corrected schema-name, port, Fineract-version and stack drift across the suite in revision 3.1.0; the '0 discrepancies' certification below is superseded by that report.

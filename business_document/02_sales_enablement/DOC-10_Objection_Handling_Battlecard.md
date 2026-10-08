@@ -9,7 +9,7 @@ target_audience: [sales_team, account_executive, solution_architect]
 ---
 
 # Objection Handling & Risk Mitigation Battlecard
-## Pre-Scripted Responses to 25+ Critical Banking Objections
+## Pre-Scripted Responses to 12 Critical Banking Objections
 
 **Document Identifier:** DOC-10-SALES-04  
 **Target Sales Stage:** Discovery, Product Demo, Commercial Negotiation  
@@ -70,7 +70,7 @@ Banking executives do not raise objections to be difficult; they raise objection
 ### Objection 03: "Our Core Banking System (Temenos T24 / Oracle FLEXCUBE / Finacle) is fragile. We don't want an external LMS causing database corruption."
 * **The Underlying Fear:** The CIO fears downtime, database lock contention, or transaction mismatch in the general ledger.
 * **Winning Response:**
-  > *"That is precisely why ULMS was engineered with a **Zero-Database-Touch** architecture. ULMS never writes directly into your Core Banking database tables:*
+  > *"That is precisely why ULMS was engineered with a **Zero-Database-Touch** architecture. ULMS never writes directly into your Core Banking database tables (the sole documented exception is explicit staging-table sync with the Flora Bank connector — see DOC-23 Integration):*
   > 
   > *1. **Clean Decoupled Integration:** ULMS communicates with your CBS strictly via authenticated, encrypted REST web services, SOAP gateways, or isolated staging tables using your CBS’s native API adapters (e.g., Temenos OFS, Finacle FI, FLEXCUBE WebServices).*
   > *2. **Transaction Isolation:** All loan origination, BOCC workflows, scoring, and approval happen entirely within the ULMS database. Only when a loan is fully approved and ready for disbursement does ULMS send a signed voucher to your CBS to create the loan account and credit customer funds.*
@@ -183,7 +183,7 @@ Banking executives do not raise objections to be difficult; they raise objection
   > *"Sir, if this were a simple website or an internal employee leave tracking system, a ৳50 Lakh tool might suffice. But this is the **core credit engine** of your bank, managing billions of Taka in depositor assets:*
   > 
   > *1. **The 'Cheap Software' Trap:** Small software shops sell empty templates. They lack banking analysts who understand BRPD Circular 15/2024, they lack high-availability enterprise clustering, and they have never executed a real-time CIB REST integration. Banks that hire them end up spending ৳2 Crore fixing bugs and eventually scrapping the project.*
-  > *2. **Enterprise Scale & Reliability:** ULMS is benchmarked for 1,000+ concurrent branch users, provides sub-second decisioning, and includes 166 validated banking workflows.*
+  > *2. **Enterprise Scale & Reliability:** ULMS is benchmarked for 1,000+ concurrent branch users, provides sub-second decisioning, and includes 166 validated banking screens.*
   > *3. **Institutional Longevity:** Unisoft brings the balance sheet of Smart Technologies BD Ltd, 10 years of audited operations, and guaranteed 24/7 on-site support.*
   > *When you consider that ULMS prevents regulatory fines and cuts NPL losses by over ৳7 Crore annually, ULMS is incomparably cheaper in total business value."*
 * **Supporting Asset:** `DOC-31_Commercial_Pricing_Matrix.md`, `DOC-32_TCO_and_ROI_Calculator_Guide.md`.
@@ -223,3 +223,10 @@ Banking executives do not raise objections to be difficult; they raise objection
 ---
 
 *Unisoft Systems Limited — Enterprise Sales Operations.*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Objection count corrected to the 12 authored scripts; the summary matrix reflects the same 12. The 166 figure refers to validated frontend screens (route-audited 405/405).

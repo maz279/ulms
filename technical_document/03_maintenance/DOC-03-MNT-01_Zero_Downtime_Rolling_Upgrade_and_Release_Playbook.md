@@ -84,14 +84,14 @@ kubectl get pods -n ulms-prod
 
 # 2. Execute backward-compatible Flyway database migration
 kubectl run flyway-migrator --rm -i --restart=Never \
-  --image=internal-registry.bank.com.bd/ulms/migrator:2.1.0 \
+  --image=internal-registry.bank.com.bd/ulms/api:2.1.0 (Flyway runs on app boot; standalone migrator only for break-glass) \
   --namespace=ulms-prod --command -- ./flyway migrate
 ```
 
 ### Phase 2: Canary Pod Promotion
 ```bash
 # Deploy single canary replica receiving 5% traffic
-helm upgrade ulms-prod ./deploy/k3s/helm/ulms \
+helm upgrade ulms-prod ./deploy/chart/ulms \
   --namespace ulms-prod \
   --set canary.enabled=true \
   --set canary.image.tag="2.1.0" \
@@ -104,7 +104,7 @@ helm upgrade ulms-prod ./deploy/k3s/helm/ulms \
 ### Phase 3: Full Production Promotion
 ```bash
 # Promote new version across all production replicas
-helm upgrade ulms-prod ./deploy/k3s/helm/ulms \
+helm upgrade ulms-prod ./deploy/chart/ulms \
   --namespace ulms-prod \
   --set image.tag="2.1.0" \
   --set canary.enabled=false \
@@ -127,7 +127,7 @@ If error rates breach 0.1% or P99 latency spikes during or immediately following
 
 ```bash
 # 1. Trigger atomic Helm rollback to previous revision
-helm rollback ulms-prod 0 --namespace ulms-prod
+helm rollback ulms-prod <PREVIOUS-REVISION> --namespace ulms-prod  # revisions start at 1; find via: helm history ulms-prod -n ulms-prod
 
 # 2. Verify all pods revert to previous image version
 kubectl rollout status deployment/ulms-api -n ulms-prod
@@ -141,3 +141,10 @@ Because all database migrations strictly adhere to the Expand-Contract pattern (
 ---
 
 *— End of Zero-Downtime Rolling Upgrade & Release Playbook —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0): chart path is deploy/chart/ulms (values at deploy/chart/ulms/values.yaml + environment overlays); helm rollback requires a real revision number (history first); canary --set keys require the corresponding values.yaml block — verify against deploy/chart/ulms/values.yaml before use.

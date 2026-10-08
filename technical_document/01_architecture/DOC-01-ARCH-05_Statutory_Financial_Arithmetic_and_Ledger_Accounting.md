@@ -84,7 +84,7 @@ ULMS enforces strict role-based credit limits matching commercial bank governanc
 
 | Approval Tier | Approver Role | Single Borrower Limit (BDT) | Unsecured Limit (BDT) | Governance Body |
 |---|---|---|---|---|
-| **Tier 1** | Branch Manager | Up to BDT 1,000,000 | Up to BDT 200,000 | Branch Credit Committee |
+| **Tier 1** | Branch Officer (L1) | Up to BDT 500,000 | Up to BDT 200,000 | Branch Credit Committee |
 | **Tier 2** | Regional Credit Manager (CRM) | Up to BDT 5,000,000 | Up to BDT 500,000 | Regional Office |
 | **Tier 3** | Head of Credit (HoC) | Up to BDT 20,000,000 | Up to BDT 1,000,000 | Head Office CRM Division |
 | **Tier 4** | Managing Director & CEO | Up to BDT 50,000,000 | Up to BDT 2,500,000 | Executive Management Committee |
@@ -148,3 +148,10 @@ TOTAL DEBITS: BDT 50,000.00 | TOTAL CREDITS: BDT 50,000.00 (BALANCED)
 ---
 
 *— End of Statutory Financial Arithmetic & Banking Accounting Specification —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- §4 delegation table superseded (v3.1.0): the authoritative ladder is the seeded 7-level ulms.approval_band (V2__origination_workflow.sql): L1 Branch Officer ≤ ৳5 Lakh; L2 Branch Manager ≤ ৳10 Lakh; L3 Regional Manager ≤ ৳25 Lakh; L4 Divisional Head ≤ ৳50 Lakh; L5 Head of Credit ≤ ৳2.5 Crore; L6 Credit Committee ≤ ৳10 Crore; L7 Managing Director > ৳10 Crore. The tiered table above is retained as historical draft context only. Rounding mode corrected to HALF_EVEN (banker's rounding).

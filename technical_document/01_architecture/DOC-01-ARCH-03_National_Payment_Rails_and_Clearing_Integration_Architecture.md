@@ -91,8 +91,8 @@ Stored in `ulms.payment`, preventing double-crediting during network timeouts or
 
 | Rail | Settlement Frequency | Cutoff Window | Latency SLA | Fallback Protocol |
 |---|---|---|---|---|
-| **BEFTN** | 2 Sessions Daily | 10:30 AM & 03:00 PM | $T+0$ to $T+1$ | Next clearing cycle |
-| **BD-RTGS** | Real-Time Continuous | 09:30 AM – 04:00 PM | $< 15$ seconds | Queue in Outbox until RTGS open |
+| **BEFTN** | 3 Sessions Daily | S1 12:00–15:00 · S2 15:00–23:59 · S3 00:00–10:00 (same-day cut-off 12:30; closed Fri/Sat/holidays) | $T+0$ to $T+1$ | Next clearing cycle |
+| **BD-RTGS** | Real-Time Continuous | per current PSD schedule (Sunday–Thursday; illustrative 09:00–16:30) | $< 15$ seconds | Queue in Outbox until RTGS open |
 | **NPSB** | Real-Time $24/7$ | Continuous | $< 3$ seconds | Retry 3 times, fail to BEFTN |
 | **bKash / Nagad** | Real-Time $24/7$ | Continuous | $< 5$ seconds | Asynchronous webhook reconciliation |
 
@@ -105,3 +105,10 @@ Every morning at 06:00 AM, the ULMS Reconciliation Batch executes:
 2. Matches external settlement references against `ulms.payment`.
 3. In case of returned items, reverses loan credits and restores borrower DPD counters.
 4. Generates an unbalanced clearing exceptions alert to the treasury desk.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- BEFTN session data refreshed (v3.1.0): three settlement sessions per working day per current Bangladesh Bank PSD operating schedule; RTGS window shown as illustrative pending the current PSD circular.

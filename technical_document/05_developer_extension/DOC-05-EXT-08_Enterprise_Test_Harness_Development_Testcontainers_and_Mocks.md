@@ -42,3 +42,10 @@ public abstract class AbstractIntegrationTest {
     }
 }
 ```
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Expansion pending (flagged): WireMock configuration and mock-adapter guidance (promised in the catalog) not yet authored; the Testcontainers-PostgreSQL principle stated here is correct (no H2).

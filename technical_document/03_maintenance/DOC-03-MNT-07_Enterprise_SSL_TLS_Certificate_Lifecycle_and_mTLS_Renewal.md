@@ -49,3 +49,10 @@ spec:
   - api.lms.bank.local
   renewBefore: 360h # 15 days prior to expiry
 ```
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Expansion pending (flagged by the forensic re-audit): this runbook currently covers topology + cert-manager renewal only; keystore/truststore rotation, expiry monitoring/alerting, and mTLS client-cert rollover procedures are required before operational use.

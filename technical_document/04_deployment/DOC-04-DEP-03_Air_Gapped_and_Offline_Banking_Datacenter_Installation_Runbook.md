@@ -33,14 +33,14 @@ Tier-1 commercial banks in Bangladesh prohibit production servers from connectin
 ```bash
 # 1. Export k3s air-gap images
 docker pull postgres:17-alpine
-docker pull apache/fineract:1.12.0
-docker pull quay.io/keycloak/keycloak:26.0
+docker pull apache/fineract@fd01236df6
+docker pull quay.io/keycloak/keycloak:26.0.8
 
 # 2. Save images to compressed tarball
 docker save -o ulms-airgap-images.tar \
     postgres:17-alpine \
-    apache/fineract:1.12.0 \
-    quay.io/keycloak/keycloak:26.0 \
+    apache/fineract@fd01236df6 \
+    quay.io/keycloak/keycloak:26.0.8 \
     ulms-api:2.0.0 \
     ulms-web:2.0.0
 
@@ -55,3 +55,10 @@ sha256sum ulms-airgap-images.tar > ulms-airgap-images.tar.sha256
 1. Verify SHA-256 checksum before mounting media.
 2. Push images into local air-gapped Harbor or Docker registry: `registry.bank.local:5000`.
 3. Apply Helm charts referencing local image registry.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Bundle completeness (v3.1.0): the offline image set must also include chrislusf/seaweedfs:3.80, prom/prometheus:v3.5.0 and grafana/grafana:11.6.0 (plus the pinned Fineract digest image), the packaged Helm chart, deploy/seed/ artifacts, and the k3s airgap installer bundle; Keycloak pinned to 26.0.8.

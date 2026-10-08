@@ -77,7 +77,7 @@ The **Unisoft Loan Management System (ULMS v2.0)**, engineered by **Unisoft Syst
 * **Dual-Banking Engine:** Seamlessly supports both Conventional Interest-Bearing loans and Shariah-Compliant Islamic Financing modes (Murabaha, Ijara, Musharaka, Mudaraba, Bai-Muajjal).
 
 ### 1.3 Purpose of the Master Business Documentation Catalog
-This master catalog serves as the **authoritative operational blueprint and inventory** for all sales and marketing documentation. It equips the revenue team, pre-sales engineers, bid managers, and executive leadership with an exhaustive, battle-tested collateral library designed to guide prospective banks through every phase of the institutional buying journey—from initial executive awareness to final procurement award and delivery handoff.
+This master catalog serves as the **authoritative operational blueprint and inventory** for all sales and marketing documentation. It equips the revenue team, pre-sales engineers, bid managers, and executive leadership with an collateral library (21 of 42 planned documents authored in this release) designed to guide prospective banks through every phase of the institutional buying journey—from initial executive awareness to final procurement award and delivery handoff.
 
 ---
 
@@ -108,7 +108,7 @@ flowchart TD
     subgraph S4 ["Stage 4: Formal Tender & QCBS Bidding"]
         B1["Envelope-1: Master Technical Proposal"]
         B2["Envelope-2: Formatted Financial Proposal"]
-        B3["160+ Point Functional Compliance Matrix"]
+        B3["100+ Point Functional Compliance Matrix"]
         B4["Vendor Pre-Qualification & Tax Dossier"]
     end
 
@@ -138,7 +138,7 @@ flowchart TD
 2. **Stage 2: Targeted Outreach & MEDDPIC Qualification (Discovery):** Identifying bank-specific pain points (e.g., rising SME NPLs, manual CIB delays) and qualifying economic buyers.
 3. **Stage 3: Solution Mapping & Master Product Demonstrations (Evaluation):** Delivering role-based demonstrations that prove how ULMS slashes loan processing time from 21 days to under 48 hours.
 4. **Stage 4: Formal Tender Bidding & QCBS Proposal Defense (Procurement):** Submitting airtight, two-envelope technical and financial bids that achieve maximum technical evaluation scores (>90/100).
-5. **Stage 5: Commercial Structuring & CFO/Board ROI Justification (Business Case):** Providing defensible financial models demonstrating a sub-9-month payback period and 300%+ 5-year return on investment.
+5. **Stage 5: Commercial Structuring & CFO/Board ROI Justification (Business Case):** Providing defensible financial models demonstrating a sub-9-month payback period and modeled 5-year IRR ≈179% (DOC-32).
 6. **Stage 6: Regulatory Assurance, Risk Clearance & PoC Validation (Due Diligence):** Assuring the Chief Risk Officer (CRO), Chief Information Officer (CIO), and Head of Internal Control & Compliance (ICC) through compliance dossiers and controlled, bounded Proofs of Concept.
 7. **Stage 7: Contract Execution, SLA Finalization & Delivery Handoff (Closing):** Executing standard institutional contracts and conducting formal handoffs to the Unisoft implementation engineering team.
 
@@ -190,7 +190,7 @@ c:\software_project\mim_project\LMS\business_document\
 │   ├── DOC-23_Master_RFP_Technical_Proposal.md# Envelope-1: Master Technical Proposal Template
 │   ├── DOC-24_Master_RFP_Financial_Proposal.md# Envelope-2: Master Commercial Proposal & Price Schedules
 │   ├── DOC-25_Vendor_PreQualification_EOI.md  # Expression of Interest (EOI) & Statutory Profile
-│   ├── DOC-26_Functional_Compliance_Matrix.md # 160-Point Out-of-the-Box Requirement Library
+│   ├── DOC-26_Functional_Compliance_Matrix.md # 100-Point Out-of-the-Box Requirement Library
 │   ├── DOC-27_Architecture_Integration_Annex.md# Technical Architecture, CBS & External Rail Annex
 │   ├── DOC-28_ICT_Security_Compliance_Annex.md# BB ICT Guidelines V4.0 & ISO 27001 Security Dossier
 │   ├── DOC-29_Implementation_Methodology.md   # 12-Week Pilot & Phased Rollout Governance Charter
@@ -198,7 +198,7 @@ c:\software_project\mim_project\LMS\business_document\
 │
 ├── 05_commercial_and_pricing/                 # CAT-05: Pricing Models, TCO Calculators & Contracts
 │   ├── README.md                              # Category Index & Asset Summary
-│   ├── DOC-31_Commercial_Pricing_Matrix.md    # Tiered Pricing Models (Standard, Enterprise, Universal)
+│   ├── DOC-31_Commercial_Pricing_Matrix.md    # Tiered Pricing Models (Scheduled PCB (Conv.), Islamic PCB, NBFI-Digital)
 │   ├── DOC-32_TCO_and_ROI_Calculator_Guide.md # 5-Year Financial Justification & Break-Even Calculator
 │   ├── DOC-33_Professional_Services_Rate_Card.md# Customization, Migration & Consulting Rate Card
 │   └── DOC-34_AMC_Support_Tier_Agreement.md   # 20% Annual Maintenance Contract Terms & Escalations
@@ -222,7 +222,7 @@ c:\software_project\mim_project\LMS\business_document\
 
 ## 4. Master Categorical Taxonomy & Document Index
 
-The 42 essential business documents are distributed across seven strategic categories:
+The business documentation program plans 42 documents across seven strategic categories; 21 are authored in this release (gaps in DOC numbering = planned, not shipped):
 
 | Category ID | Category Name | Primary Objective | Sales Funnel Stage | Target Document Count | Document Code Range |
 |---|---|---|---|---|---|
@@ -294,7 +294,7 @@ The 42 essential business documents are distributed across seven strategic categ
   2. The Executive Challenge: Skyrocketing NPLs, BRPD 15/2024 Deadlines, and Crushing Legacy IT Costs
   3. Why Legacy Foreign Monoliths Fail in Bangladesh: Multi-Million Dollar Drains, Inflexible Customization, Offshore Support Delays
   4. The ULMS Advantage Matrix: 100% Local Compliance, 80% Lower TCO, 12-Week Go-Live, Dhaka 24/7 Engineers
-  5. Quantified ROI Snapshot: Payback in <9 Months, 5-Year Net Savings Exceeding ৳15 Crore
+  5. Quantified ROI Snapshot: Payback 6.64 months (base) / 8.5 months (conservative); 5-year net benefit ৳48.23 Crore (DOC-32)
   6. Strategic Next Step: Request a Customized 45-Minute Executive Briefing & Live Demonstration
 * **Core Value Proposition:** Provide busy C-level executives with immediate, undeniable business justification for choosing ULMS over multinational alternatives.
 * **Required Inputs & Exhibits:** Executive comparison table (ULMS vs. Global Monoliths vs. In-House Legacy).
@@ -458,7 +458,7 @@ The 42 essential business documents are distributed across seven strategic categ
   1. Competitor Overview: Finastra Fusion Loan IQ Market Positioning and Footprint
   2. Competitor Strengths: Dominance in Complex Global Syndicated Lending, International Brand Recognition
   3. Competitor Critical Vulnerabilities:
-     - Astronomical Cost: $3M–$6M USD License + $1M Implementation + High Dollar Maintenance
+     - Astronomical Cost: $3M–$7M USD License + $1M Implementation + High Dollar Maintenance
      - Over-Engineered for Bangladesh: Heavy syndicated focus, lacks localized retail/SME/Islamic features
      - Zero Native Regulatory Integration: Requires custom middleware for CIB, NIDW, BRPD 15/2024
      - Remote Offshore Support: Zero dedicated engineering team in Dhaka; exorbitant change-order fees
@@ -779,7 +779,7 @@ The 42 essential business documents are distributed across seven strategic categ
 * **Target File Path:** `business_document/04_rfp_and_tenders/DOC-26_Functional_Compliance_Matrix.md`
 * **Lifecycle Phase:** RFP Response & Technical Evaluation
 * **Target Audience:** Bank Technical RFP Evaluation Committees, External IT Auditors
-* **Operational Purpose:** An exhaustive, cross-referenced compliance library answering 160+ standard banking RFP functional requirements, categorized as "Fully Supported Out-of-the-Box (O)", "Configurable (C)", or "Custom Development (CD)".
+* **Operational Purpose:** An exhaustive, cross-referenced compliance library answering 100+ standard banking RFP functional requirements, categorized as "Fully Supported Out-of-the-Box (O)", "Configurable (C)", or "Custom Development (CD)".
 * **Detailed Table of Contents:**
   1. Compliance Scoring Legend & Methodology
   2. Section 1: Customer Onboarding, e-KYC & NIDW Verification (15 Requirements)
@@ -926,7 +926,7 @@ The 42 essential business documents are distributed across seven strategic categ
      - Turnaround Time Revenue Gains: Capturing High-Quality Borrowers Before Competitors
      - Regulatory Penalty Avoidance: Zero BB Non-Compliance Fines
   5. The Financial Calculator: Net Present Value (NPV), Internal Rate of Return (IRR), and Payback Period Formulae
-  6. Sample 5-Year Financial Projection for a ৳10,000 Crore Bank Portfolio (Net Savings > ৳18 Crore)
+  6. Sample 5-Year Financial Projection for a ৳10,000 Crore Bank Portfolio (5-year TCO variance ৳89.30 Crore; net benefit ৳48.23 Crore (DOC-32))
 * **Core Value Proposition:** Arm the bank's project sponsor with undeniable financial mathematics to win unanimous Board and CFO budget approval.
 * **Required Inputs & Exhibits:** Mathematical KaTeX ROI equations, 5-year cash-flow comparison charts.
 * **Maintenance Owner:** Lead Financial Analyst & Pre-Sales Director.
@@ -1089,7 +1089,7 @@ The 42 essential business documents are distributed across seven strategic categ
   2. Ground Rules: Strict 14-Calendar-Day Duration; Cloud/Sandbox Deployment; Bounded Scope
   3. Roles and Responsibilities Matrix (Bank Evaluation Team vs. Unisoft Pre-Sales Engineers)
   4. Test Environment Provisioning and Anonymized Sample Data Requirements
-  5. The 10 Mandatory Evaluation Scenarios (Retail Onboarding, e-KYC, CIB Inquiry, Scorecard Calculation, BOCC Approval, Amortization, BRPD Classification)
+  5. The mandatory evaluation scenarios (Retail Onboarding, e-KYC, CIB Inquiry, Scorecard Calculation, BOCC Approval, Amortization, BRPD Classification)
   6. Objective Pass/Fail Acceptance Criteria (Performance, Usability, Regulatory Correctness)
   7. Commercial Conversion Clause: Formal Agreement that Satisfying Criteria Triggers Immediate Contract Finalization
   8. Formal Sign-Off Certificate Template
@@ -1189,7 +1189,7 @@ Final Combined Score (S) = (Technical Score St × 0.70) + (Financial Score Sf ×
 
 1. **Maximize Technical Score ($S_t > 92/100$):**
    - Submit `DOC-23` (Master Technical Proposal) with comprehensive CVs and institutional experience.
-   - Attach `DOC-26` verifying 100% compliance across all 160+ functional points.
+   - Attach `DOC-26` verifying 100% compliance across all 100+ functional points.
    - Present `DOC-27` and `DOC-28` to achieve maximum points in architecture and security.
 2. **Win Financial Evaluation ($S_f = 100/100$):**
    - Foreign competitors routinely bid $2M–$5M USD (BDT ~24–60 Crore).
@@ -1218,3 +1218,10 @@ Every business document specified in this catalog is an active commercial asset 
 ## 8. Summary of Document Generation Plan
 
 With this master architecture established, the physical directory structure and the corresponding 42 markdown documents shall be progressively authored, audited, and maintained within `C:\software_project\mim_project\LMS\business_document\`, transforming Unisoft's sales and marketing department into an unstoppable commercial force in the South Asian enterprise banking software market.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Catalog status: authored documents = 21; DOC-02/04–07/15/17–22/25/27–30/33/34/38/41/42 are planned and cited as future collateral. Financial figures canonicalized to the DOC-32 model: payback 6.64 months base / 8.5 conservative; 5-year net benefit ৳48.23 Crore; foreign-vendor TCO variance ৳89.30 Crore; Unisoft turnkey ৳4.00 Crore + 15% VAT.

@@ -44,3 +44,10 @@ sequenceDiagram
     Server-->>SyncEngine: 200 OK (Confirmed Server IDs & Ack)
     SyncEngine->>LocalDB: Mark rows as SYNCED
 ```
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Expansion pending (flagged): catalog-promised sections (SQLite schema extension, MMKV queue internals, camera/geo-tagging, EAS build profiles) not yet authored; the offline sync engine reference (apps/mobile/src/sync/engine.ts) is real and authoritative.

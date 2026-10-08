@@ -43,7 +43,7 @@ Staff users on older branch banking hardware running Chromium or Edge report:
 - **Fix:** Ensure the mutation hook properly invalidates the tag:
   ```typescript
   approveLoan: builder.mutation<void, string>({
-    query: (id) => ({ url: `/loans/${id}/approve`, method: 'POST' }),
+    query: (id) => ({ url: `/approval/tasks/${taskId}/approve`, method: 'POST' }),
     invalidatesTags: (result, error, id) => [{ type: 'Loan', id }, { type: 'Pipeline' }],
   }),
   ```
@@ -52,3 +52,10 @@ Staff users on older branch banking hardware running Chromium or Edge report:
 For branch PCs with limited RAM:
 - Set DataGrid pagination to server-side (`paginationMode="server"`).
 - Page size capped at 50 records per page.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Scope note (v3.1.0): the staff portal is a client-rendered Vite SPA — classic SSR hydration does not apply; this guide covers SPA cache invalidation, chunk-loading and state synchronization. Mutation routes aligned to the /approval/tasks/{taskId}/approve contract.

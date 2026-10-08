@@ -198,3 +198,11 @@ When Bangladesh Bank inspection teams conduct on-site examinations:
 ---
 
 *Unisoft Systems Limited — Regulatory Compliance & Financial Architecture.*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Statutory currency note: BRPD Circular No. 05 of 25 June 2025 amends and complements Circular No. 15 of 27 November 2024 (risk-sensitivity enhancements to loan classification and provisioning). The seven-stage DPD/provisioning tables in this paper state the Circular 15/2024 baseline; the free regulatory-update commitment covers Circular 05/2025 changes. Issuance (27 Nov 2024) and effectiveness (1 Apr 2025) verified against Bangladesh Bank publications.
+- IFRS-9 roadmap (verified): the BRPD circular of 23 January 2025 requires full ECL-based provisioning by December 2027, with pilot coverage — branches holding at least 75% of the loan portfolio — by June 2027.
