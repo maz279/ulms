@@ -18,7 +18,7 @@ document_id: DOC-06-QA-02
 | **Date** | 2026-10-07 |
 | **Classification** | Information Security Specification |
 | **Status** | Approved Master Specification |
-| **Authority Chain** | OWASP ASVS v4.0.3 Level 2 → BB ICT Security Guidelines V4.0 §5.0 |
+| **Authority Chain** | OWASP ASVS v4.0.3 Level 3 → BB ICT Security Guidelines V4.0 §5.0 |
 
 ---
 
@@ -40,3 +40,10 @@ In every CI pipeline:
 - **SonarQube SAST:** Zero blocker, critical, or high security bugs.
 - **OWASP Dependency-Check:** Zero dependencies with CVSS score $\ge 7.0$.
 - **Trivy Container Scanner:** Zero vulnerabilities in base Alpine Linux OS packages.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- ASVS level unified to Level 3 corpus-wide (v3.1.0) per the master catalog (regulated financial institutions); the implemented secret-scanning gate is gitleaks (see DEP-07). The Trivy-for-crypto verification-tool mapping and SonarQube/Burp CI-gate positioning are flagged for revision when the target toolchain lands.
