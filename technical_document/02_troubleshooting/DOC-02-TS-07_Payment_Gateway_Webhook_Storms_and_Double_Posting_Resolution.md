@@ -42,7 +42,7 @@ ADD CONSTRAINT uk_payment_external_tx_ref UNIQUE (payment_rail, external_tx_ref)
 
 When a duplicate webhook hits the controller:
 1. `RailWebhookHandler` checks existence of `external_tx_ref`.
-2. If already processed, immediately responds with HTTP 200 OK (so the rail ceases retries) without re-executing ledger posting.
+2. Verify the HMAC signature (ULMS_RAILS_WEBHOOK_SECRET) and timestamp drift BEFORE any response — reject invalid signatures with 401. If valid and already processed, respond with HTTP 200 OK (so the rail ceases retries) without re-executing ledger posting.
 3. If concurrent requests arrive simultaneously, the second transaction is aborted with a PostgreSQL unique violation and gracefully swallowed.
 
 ---
@@ -50,6 +50,13 @@ When a duplicate webhook hits the controller:
 ## 3. Discrepancy Resolution Protocol
 
 If an upstream gateway sends conflicting amounts under the same transaction ID:
-1. Lock affected account temporarily: `UPDATE ulms.loan SET locked = true WHERE id = :id`.
+1. Lock affected account temporarily: `-- no locked column on ulms.loan; serialize via SELECT ... FOR UPDATE on the loan row plus the idempotency_key table`.
 2. Inspect payment rail logs: `SELECT * FROM ulms.payment WHERE external_tx_ref = :ref`.
 3. Run treasury adjustment journal voucher via `FineractJournalPort`.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0): webhook handling now verifies the HMAC signature and timestamp drift before any 200 ACK (the verifier fails closed when ULMS_RAILS_WEBHOOK_SECRET is unset); the nonexistent ulms.loan.locked column replaced with row-level locking via SELECT ... FOR UPDATE + the idempotency_key table. The POST /api/v1/loans/payments/reconcile route cited here is the contract-verified canonical (per the corpus audit GAP-05 alignment).

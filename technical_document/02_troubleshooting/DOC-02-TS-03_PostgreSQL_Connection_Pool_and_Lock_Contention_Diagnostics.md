@@ -58,7 +58,7 @@ flowchart TD
 SELECT state, count(*), 
        max(now() - state_change) as longest_state_duration
 FROM pg_stat_activity 
-WHERE datname = 'ulms_db'
+WHERE datname = 'ulms'
 GROUP BY state;
 ```
 
@@ -98,5 +98,12 @@ WHERE NOT blocked_locks.granted;
    SELECT pg_terminate_backend(<blocking_pid>);
    ```
 2. **Permanent HikariCP Pool Sizing Rule:**
-   $$	ext{MaximumPoolSize} = (	ext{CPU\_Cores} 	imes 2) + 	ext{Effective\_Spindle\_Count}$$
-   For a 4-vCPU database instance, configure `spring.datasource.hikari.maximum-pool-size=20` and `idle-timeout=30000`.
+   $$	\t\text{MaximumPoolSize} = (	ext{CPU\_Cores} 	imes 2) + 	\t\text{Effective\_Spindle\_Count}$$
+   For a 4-vCPU database instance, configure `spring.datasource.hikari.maximum-pool-size=9` and `idle-timeout=30000`.
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0): database name unified to ulms (psql -d ulms); the HikariCP pool-size recommendation reconciled with the stated formula (4 vCPU → ≈9 per instance, not 20); LaTeX rendering of the formula repaired. The HA cluster figure depicts the target-state synchronous-standby topology — the current compose stack ships a single PostgreSQL 17 node (see MNT-03 for the canonical RPO/RTO baseline).

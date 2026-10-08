@@ -102,7 +102,7 @@ curl -s -m 5 -o /dev/null -w "%{http_code}\n" http://localhost:9002/ulms-documen
 ### Step 3: Auth-Gate Verification
 Determine whether an issue is in the application routing layer or identity provider:
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8081/api/v1/compliance/classification
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8081/api/v1/compliance/classification/board
 ```
 - **`401 Unauthorized`**: **NORMAL.** Proves the API is alive, network routing works, and the JWT filter is intercepting requests.
 - **`502 Bad Gateway` / `000 Connection Refused`**: **API DOWN.** The API container has crashed or hung.
@@ -166,15 +166,15 @@ If an outbox event encounters an unrecoverable exception, preventing downstream 
 1. Identify the stuck event:
    ```bash
    docker compose exec -T postgres psql -U ulms -d ulms -c \
-     "SELECT id, aggregate_type, aggregate_id, error_detail 
+     "SELECT id, aggregate, aggregate_id, attempts 
       FROM ulms.outbox_event 
-      WHERE dispatched_at IS NULL AND retry_count >= 5 LIMIT 5;"
+      WHERE dispatched_at IS NULL AND attempts >= 5 LIMIT 5;"
    ```
 2. Quarantine the poison-pill record to a dead-letter state:
    ```bash
    docker compose exec -T postgres psql -U ulms -d ulms -c \
      "UPDATE ulms.outbox_event 
-      SET dispatched_at = now(), status = 'DEAD_LETTER' 
+      SET dispatched_at = now()  -- no status column; dead-letter = manual triage via attempts 
       WHERE id = '<STUCK_EVENT_ID>';"
    ```
 3. Trigger a manual outbox dispatcher sweep via Actuator:
@@ -202,3 +202,10 @@ If an outbox event encounters an unrecoverable exception, preventing downstream 
 ---
 
 *— End of SRE Incident Runbook —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0): the health probe now targets the real route /api/v1/compliance/classification/board; outbox triage SQL aligned to the actual ulms.outbox_event columns (aggregate, attempts — there are no error_detail/status/retry_count columns; created_at and dispatched_at are real and used above).

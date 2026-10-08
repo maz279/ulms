@@ -33,7 +33,7 @@ flowchart TD
         P1["Phase 1: DPD Recalculation<br/>Compare due dates against system EOD date<br/>Calculate exact overdue days per loan"]
         P2["Phase 2: BRPD 15/2024 Classification<br/>Evaluate 7-stage classification rules<br/>Check for qualitative overrides & stay orders"]
         P3["Phase 3: Statutory Provisioning<br/>Apply rates (1%, 5%, 20%, 50%, 100%)<br/>Calculate base provision & net provisions in poisha"]
-        P4["Phase 4: History Snapshot<br/>Insert immutable records into<br/>ulms_app.classification_history"]
+        P4["Phase 4: History Snapshot<br/>Insert immutable records into<br/>ulms.classification_history"]
         P5["Phase 5: Fineract GL Journal Entry<br/>Prepare balanced zero-sum JV<br/>Post provision delta to General Ledger"]
     end
     P1 --> P2 --> P3 --> P4 --> P5
@@ -123,7 +123,7 @@ docker compose exec -T postgres psql -U ulms -d ulms -c "
     total_classified_minor,
     total_provision_minor,
     created_at
-  FROM ulms_app.provision_run 
+  FROM ulms.provision_run 
   WHERE run_date >= CURRENT_DATE - INTERVAL '3 days'
   ORDER BY run_date DESC;" > /var/log/ulms/eod_pre_rerun_audit_$(date +%Y%m%d_%H%M%S).txt
 ```
@@ -187,3 +187,10 @@ When evaluated by the EOD batch, the engine detects the active stay order, retai
 ---
 
 *— End of Nightly EOD Batch & Classification Diagnostic Guide —*
+
+
+---
+
+## Addendum — v3.1.0 corrections (Independent Forensic Re-audit, 8 October 2026)
+
+- Corrections (v3.1.0): schema prefix unified to ulms (no ulms schema exists). The provision-jv inquiry/reversal routes shown here (/api/v1/compliance/provision-jv/by-date/{date} and /{id}/reverse) are pending verification against packages/openapi/ulms-api.yaml before operational use — the eod/run and overrides routes are contract-verified.
