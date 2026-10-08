@@ -32,7 +32,7 @@ The **Bank Company Act 1991** requires commercial banks to maintain loan account
 
 High-volume tables (`ulms.payment` and `ulms.audit_entry`) are partitioned by date:
 ```sql
-CREATE TABLE ulms.payment_y2026m10 PARTITION OF ulms.payment
+CREATE TABLE ulms.payment_y2026m10 PARTITION OF ulms.payment_transaction
     FOR VALUES FROM ('2026-10-01 00:00:00+06') TO ('2026-11-01 00:00:00+06');
 ```
 
