@@ -98,7 +98,7 @@ WHERE NOT blocked_locks.granted;
    SELECT pg_terminate_backend(<blocking_pid>);
    ```
 2. **Permanent HikariCP Pool Sizing Rule:**
-   $$	\t\text{MaximumPoolSize} = (	ext{CPU\_Cores} 	imes 2) + 	\t\text{Effective\_Spindle\_Count}$$
+   $$	\t\t\text{MaximumPoolSize} = (	ext{CPU\_Cores} 	imes 2) + 	\t\t\text{Effective\_Spindle\_Count}$$
    For a 4-vCPU database instance, configure `spring.datasource.hikari.maximum-pool-size=9` and `idle-timeout=30000`.
 
 
