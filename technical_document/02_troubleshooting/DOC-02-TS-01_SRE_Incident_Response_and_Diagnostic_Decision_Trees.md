@@ -102,7 +102,7 @@ curl -s -m 5 -o /dev/null -w "%{http_code}\n" http://localhost:9002/ulms-documen
 ### Step 3: Auth-Gate Verification
 Determine whether an issue is in the application routing layer or identity provider:
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8081/api/v1/compliance/classification/board/board
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:8081/api/v1/compliance/classification/board
 ```
 - **`401 Unauthorized`**: **NORMAL.** Proves the API is alive, network routing works, and the JWT filter is intercepting requests.
 - **`502 Bad Gateway` / `000 Connection Refused`**: **API DOWN.** The API container has crashed or hung.
