@@ -1434,26 +1434,26 @@ This matrix establishes 100% deterministic traceability connecting each document
 | **DOC-02-TS-08** | `DOC-02-TS-08_Mobile_Offline_Sync_Conflict_and_Queue_Resolution_Guide.md` | `apps/mobile/src/sync/engine.ts` | `V18__field_gateway.sql` | `RB-09_mobile_sync_incident.md` | BB Digital Credit Guidelines |
 | **DOC-03-MNT-01** | `DOC-03-MNT-01_Zero_Downtime_Rolling_Upgrade_and_Release_Playbook.md` | Helm chart, k3s manifests | Pod probes (:9977) | `RB-08_release_and_rollback.md` | BB ICT V4.0 §6.5 |
 | **DOC-03-MNT-02** | `DOC-03-MNT-02_Flyway_Database_Migration_and_Schema_Evolution_Guide.md` | `db/migration/*.sql` | `flyway_schema_history` | `migration-rehearsal.sh` | NIST SSDF PW.4.1 |
-| **DOC-03-MNT-03** | `DOC-03-MNT-03_Apache_Fineract_Upstream_Patching_and_Maintenance_Runbook.md` | `fineract` container image | `fineract_default` | `RB-04_fineract_upgrade.md` | NIST SSDF RV.1.1 |
-| **DOC-03-MNT-04** | `DOC-03-MNT-04_Cryptographic_Key_Certificate_and_Secret_Rotation_Runbook.md` | Keycloak realm, SSL keystores | Secrets vault, `.env` | `RB-06_key_secret_rotation.md` | PCI-DSS Req 3.6 |
-| **DOC-03-MNT-05** | `DOC-03-MNT-05_Disaster_Recovery_Backup_and_Point_In_Time_Recovery_Runbook.md` | Postgres WAL, MinIO replication | `pg_wal`, S3 bucket | `RB-02_restore_drill.md` | BB BCDR Guidelines |
-| **DOC-03-MNT-06** | `DOC-03-MNT-06_Nightly_EOD_Rerun_and_Historical_Correction_Procedure.md` | `EodBatchService.java` | `provision_run`, `provision_jv` | `RB-03_eod_rerun.md` | BRPD 15/2024 §6 |
-| **DOC-03-MNT-07** | `DOC-03-MNT-07_Keycloak_Realm_Administration_and_LDAP_Sync_Runbook.md` | Keycloak Admin API, LDAP mapper | `realm-ulms.json` | `PLANNING/06` | NIST SP 800-63-3 |
+| **DOC-03-MNT-03** | `DOC-03-MNT-03_PostgreSQL_Backup_Point_In_Time_Recovery_and_DR_Drill.md` | `fineract` container image | `fineract_default` | `RB-04_fineract_upgrade.md` | NIST SSDF RV.1.1 |
+| **DOC-03-MNT-04** | `DOC-03-MNT-04_Apache_Fineract_CE_Patching_Maintenance_and_DB_Pruning.md` | Keycloak realm, SSL keystores | Secrets vault, `.env` | `RB-06_key_secret_rotation.md` | PCI-DSS Req 3.6 |
+| **DOC-03-MNT-05** | `DOC-03-MNT-05_Keycloak_Realm_Secrets_Rotation_and_Certificate_Rollover.md` | Postgres WAL, MinIO replication | `pg_wal`, S3 bucket | `RB-02_restore_drill.md` | BB BCDR Guidelines |
+| **DOC-03-MNT-06** | `DOC-03-MNT-06_Historical_Data_Archival_Partitioning_and_Regulatory_Retention.md` | `EodBatchService.java` | `provision_run`, `provision_jv` | `RB-03_eod_rerun.md` | BRPD 15/2024 §6 |
+| **DOC-03-MNT-07** | `DOC-03-MNT-07_Enterprise_SSL_TLS_Certificate_Lifecycle_and_mTLS_Renewal.md` | Keycloak Admin API, LDAP mapper | `realm-ulms.json` | `PLANNING/06` | NIST SP 800-63-3 |
 | **DOC-04-DEP-01** | `DOC-04-DEP-01_Bank_On_Premises_k3s_Kubernetes_Production_Guide.md` | `deploy/k3s/k3s-base.yaml` | Persistent Volumes | `RB-07`, `RB-10` | CIS Kubernetes Benchmark |
-| **DOC-04-DEP-02** | `DOC-04-DEP-02_Production_Helm_Chart_Configuration_and_Sizing_Reference.md` | `deploy/chart/ulms/` | Helm release values | `values.yaml` | Twelve-Factor App |
-| **DOC-04-DEP-03** | `DOC-04-DEP-03_Air_Gapped_Banking_Installation_and_Image_Registry_Guide.md` | Harbor / private registry | Container tarballs | `deploy/seed/` | BB ICT V4.0 §3.4 |
-| **DOC-04-DEP-04** | `DOC-04-DEP-04_Network_Topology_Firewall_Rules_and_mTLS_Hardening.md` | Network firewalls, mTLS certs | Port routing table | `PLANNING/06` | PCI-DSS Req 1, BB ICT §3.1 |
-| **DOC-04-DEP-05** | `DOC-04-DEP-05_Enterprise_Observability_Prometheus_Grafana_Loki_Setup.md` | Prometheus v3.5, Grafana 11.6 | Metrics port :9977 | `observability/` in compose | PCI-DSS Req 10 |
+| **DOC-04-DEP-02** | `DOC-04-DEP-02_Production_Helm_Charts_and_Kubernetes_Resource_Sizing.md` | `deploy/chart/ulms/` | Helm release values | `values.yaml` | Twelve-Factor App |
+| **DOC-04-DEP-03** | `DOC-04-DEP-03_Air_Gapped_and_Offline_Banking_Datacenter_Installation_Runbook.md` | Harbor / private registry | Container tarballs | `deploy/seed/` | BB ICT V4.0 §3.4 |
+| **DOC-04-DEP-04** | `DOC-04-DEP-04_High_Availability_Multi_DC_Active_Passive_and_DR_Specification.md` | Network firewalls, mTLS certs | Port routing table | `PLANNING/06` | PCI-DSS Req 1, BB ICT §3.1 |
+| **DOC-04-DEP-05** | `DOC-04-DEP-05_Network_Topology_Ingress_Controller_and_Firewall_Port_Matrix.md` | Prometheus v3.5, Grafana 11.6 | Metrics port :9977 | `observability/` in compose | PCI-DSS Req 10 |
 | **DOC-04-DEP-06** | `DOC-04-DEP-06_Local_Developer_and_UAT_Docker_Compose_Environment_Guide.md` | `docker-compose.yml`, `Makefile` | Seed scripts (`10-seed.sql`) | `LMS_CODEBASE/README.md` | Dev/Prod Parity |
-| **DOC-04-DEP-07** | `DOC-04-DEP-07_Hardware_Sizing_Capacity_Planning_and_IOPS_Baseline.md` | PostgreSQL, SSD NVMe, RAM | Sizing formulas | `load-profile.js`, `audit/09` | BB ICT V4.0 §4.1 |
+| **DOC-04-DEP-07** | `DOC-04-DEP-07_CI_CD_Pipeline_Automation_Security_Scanning_and_GitOps_Guide.md` | PostgreSQL, SSD NVMe, RAM | Sizing formulas | `load-profile.js`, `audit/09` | BB ICT V4.0 §4.1 |
 | **DOC-05-EXT-01** | `DOC-05-EXT-01_Developer_Onboarding_and_Local_Workspace_Quickstart.md` | Gradle, Vite, Testcontainers | Local DB containers | `README_Documentation_Guide.md` | NIST SSDF PO.1.1 |
 | **DOC-05-EXT-02** | `DOC-05-EXT-02_New_Loan_Product_Definition_and_Pricing_Extension_Guide.md` | `ProductController`, `ProductService` | `loan_product` | `V12__r3_r4_r5_modules.sql` | BB PPG Guidelines |
-| **DOC-05-EXT-03** | `DOC-05-EXT-03_Approval_Workflow_Ladder_and_Delegation_Customization_Guide.md` | `ApprovalService`, `BoccService` | `approval_task`, `approval_tier` | `ADR-003`, `PLANNING/03` | Bank Company Act 1991 |
-| **DOC-05-EXT-04** | `DOC-05-EXT-04_External_Payment_Rail_and_MFS_Integration_Guide.md` | `PaymentRailPort`, Webhooks | `payment_transaction` | `WireMock_Configuration` | BB PSD Regulations |
-| **DOC-05-EXT-05** | `DOC-05-EXT-05_Core_Banking_System_CBS_Adapter_Implementation_Guide.md` | `PartnerService`, `CbsPort` | `outbox_event` | `Unisoft Loan Management...` | BB CBS Guidelines |
-| **DOC-05-EXT-06** | `DOC-05-EXT-06_Bangladesh_Bank_Regcon_and_Regulatory_Return_Authoring_Guide.md` | `RegconCatalog`, `ReturnsService` | `regulatory_return` (WORM) | `V10`, `V11` migrations | BRPD 15/2024 |
-| **DOC-05-EXT-07** | `DOC-05-EXT-07_Dynamics_365_Frontend_Screen_and_Workbench_Extension_Guide.md` | `apps/web/src/`, `navData.ts` | 166 Screens | `Front_end/`, `audit/06` | W3C WCAG 2.1 AA |
-| **DOC-05-EXT-08** | `DOC-05-EXT-08_Mobile_Field_Application_Feature_Extension_Guide.md` | `apps/mobile/`, Expo SQLite | `V18__field_gateway.sql` | `RB-09`, `PLANNING/08` | BB Digital Credit Guidelines |
+| **DOC-05-EXT-03** | `DOC-05-EXT-03_Credit_Approval_Hierarchy_Multi_Tier_Delegation_and_Matrix.md` | `ApprovalService`, `BoccService` | `approval_task`, `approval_band (V2 7-level)` | `ADR-003`, `PLANNING/03` | Bank Company Act 1991 |
+| **DOC-05-EXT-04** | `DOC-05-EXT-04_Custom_Core_Banking_CBS_Hexagonal_Adapter_Development_Guide.md` | `PaymentRailPort`, Webhooks | `payment_transaction` | `WireMock_Configuration` | BB PSD Regulations |
+| **DOC-05-EXT-05** | `DOC-05-EXT-05_React_Staff_Portal_Screen_and_High_Density_Grid_Extension.md` | `PartnerService`, `CbsPort` | `outbox_event` | `Unisoft Loan Management...` | BB CBS Guidelines |
+| **DOC-05-EXT-06** | `DOC-05-EXT-06_Expo_React_Native_Field_Mobility_App_Extension_and_Offline_Sync.md` | `RegconCatalog`, `ReturnsService` | `regulatory_return` (WORM) | `V10`, `V11` migrations | BRPD 15/2024 |
+| **DOC-05-EXT-07** | `DOC-05-EXT-07_Bangladesh_Bank_Regulatory_Return_XML_CSV_Generation_Guide.md` | `apps/web/src/`, `navData.ts` | 166 Screens | `Front_end/`, `audit/06` | W3C WCAG 2.1 AA |
+| **DOC-05-EXT-08** | `DOC-05-EXT-08_Enterprise_Test_Harness_Development_Testcontainers_and_Mocks.md` | `apps/mobile/`, Expo SQLite | `V18__field_gateway.sql` | `RB-09`, `PLANNING/08` | BB Digital Credit Guidelines |
 | **DOC-06-QA-01** | `DOC-06-QA-01_Automated_Test_Harness_Architecture_and_Verification_Suite.md` | JUnit 5, Playwright, Vitest | Testcontainers PG17 | `PLANNING/09`, `e2e/` | ISO/IEC/IEEE 29119 |
 | **DOC-06-QA-02** | `DOC-06-QA-02_Bangladesh_Bank_ICT_Security_Guidelines_V4_Audit_Dossier.md` | AES-256, PII Masking, Audit | `audit_entry` (Hash-Chained) | `Compliance_Validation_Matrix` | BB ICT Security V4.0 |
 | **DOC-06-QA-03** | `DOC-06-QA-03_OWASP_ASVS_Level_3_Security_Hardening_and_DAST_Runbook.md` | OWASP ZAP, Trivy, Gitleaks | DAST Rules (`zap-rules.conf`) | `deploy/security/zap-plan.md` | OWASP ASVS v4.0.3 L3 |
