@@ -58,8 +58,10 @@ The two new corpora were generated against an **imagined v2-era stack** and an u
 
 ## 6. Outstanding recommendations (not auto-fixable; owner: content team)
 
-1. **Author the 14 skeletal technical docs** to their catalog TOCs (each is flagged in-place).
-2. **Repair master-catalog metadata rotation** (~20 title↔purpose pairs shifted; mapping listed in this report's working notes) and add authored/planned status columns to both catalogs.
+> **Progress update (10 October 2026, resume passes at `9fcaac57` + `9e1943ad`):** items 2 and 3 below are now CLOSED, and item 1 is 2 of 14 done. The master-catalog traceability matrix was repaired (16 parallel-universe filenames aligned to the shipped documents + the `approval_tier`→`approval_band` evidence fix); all 8 truncated Mermaid blocks in the business docx were completed with syntactically valid continuations (the md twins were already complete — the truncation was a Word-conversion artifact); and the two thinnest skeletal docs were expanded with deployment-verified content (DEP-02: real `deploy/chart/ulms/values.yaml` parameter matrix, HPA corrected to the shipped fixed-replicas reality, sizing tiers; MNT-07: certificate inventory + three renewal runbooks anchored on the real `ulms-tls` secret, Fineract in-cluster 8443 mTLS, and the CIB PKCS12 keystore), each under a v3.2.0 revision row.
+
+1. **Author the remaining 12 skeletal technical docs** to their catalog TOCs (each is flagged in-place; DEP-02 and MNT-07 are now expanded).
+2. ~~Repair master-catalog metadata rotation~~ **DONE** (see progress update above).
 3. **Complete or delete truncated Mermaid blocks** (001, 004, 008, 009, 012, 017, 018, 019 business; figure order scrambled in six technical docs) and replace UI screenshots standing in for ER/component diagrams in ARCH-01/04.
 4. **Close the WCAG evidence chain** (166-screen claim vs 9-view automated axe coverage; enable color-contrast in the release gate) — tracked with QA-01/03.
 5. **Write the missing MSLA schedules/clauses** for signature (confidentiality, acceptance, termination, force majeure, notarization, OSS schedule C) — stubs listed in DOC-40's addendum.
